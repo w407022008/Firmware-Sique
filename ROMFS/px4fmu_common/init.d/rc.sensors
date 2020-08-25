@@ -83,8 +83,39 @@ then
 	teraranger start -X
 fi
 
+# TFmini-s tof sensor
+#if (param compare -s SENS_EN_TFMINI_D 1)||(param compare -s SENS_EN_TFMINI_F 1)||(param compare -s SENS_EN_TFMINI_L 1)||(param compare -s SENS_EN_TFMINI_R 1)||(param compare -s SENS_EN_TFMINI_U 1)||(param compare -s SENS_EN_TFMINI_B 1)
+#then
+#	tfmini_s start -a
+#fi
+
+if param compare -s SENS_EN_TFMINI_D 1
+then
+	tfmini_s_down start -a
+fi
+
+if param compare -s SENS_EN_TFMINI_F 1
+then
+	tfmini_s_forward start -a
+fi
+
+if param compare -s SENS_EN_TFMINI_L 1
+then
+	tfmini_s_left start -a
+fi
+
+if param compare -s SENS_EN_TFMINI_R 1
+then
+	tfmini_s_right start -a
+fi
+
+if param compare -s SENS_EN_TFMINI_U 01
+then
+	tfmini_s_upward start -a
+fi
+
 # Possible external pmw3901 optical flow sensor
-if param greater -s SENS_EN_PMW3901 0
+if param compare -s SENS_EN_PMW3901 1
 then
 	pmw3901 -S start
 fi
