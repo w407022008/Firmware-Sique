@@ -559,7 +559,7 @@ public:
 private:
 	uORB::Subscription _status_sub{ORB_ID(vehicle_status)};
 	uORB::Subscription _cpuload_sub{ORB_ID(cpuload)};
-	uORB::Subscription _battery_status_sub[ORB_MULTI_MAX_INSTANCES] {
+    uORB::Subscription _battery_status_sub[4] { // ORB_MULTI_MAX_INSTANCES
 		{ORB_ID(battery_status), 0}, {ORB_ID(battery_status), 1}, {ORB_ID(battery_status), 2}, {ORB_ID(battery_status), 3}
 	};
 
@@ -576,7 +576,7 @@ protected:
 	{
 		bool updated_battery = false;
 
-		for (int i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
+        for (int i = 0; i < 4; i++) { // ORB_MULTI_MAX_INSTANCES
 			if (_battery_status_sub[i].updated()) {
 				updated_battery = true;
 			}
@@ -589,15 +589,15 @@ protected:
 			cpuload_s cpuload{};
 			_cpuload_sub.copy(&cpuload);
 
-			battery_status_s battery_status[ORB_MULTI_MAX_INSTANCES] {};
+            battery_status_s battery_status[4] {}; // ORB_MULTI_MAX_INSTANCES
 
-			for (int i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
+            for (int i = 0; i < 4; i++) { // ORB_MULTI_MAX_INSTANCES
 				_battery_status_sub[i].copy(&battery_status[i]);
 			}
 
 			int lowest_battery_index = 0;
 
-			for (int i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
+            for (int i = 0; i < 4; i++) { // ORB_MULTI_MAX_INSTANCES
 				if (battery_status[i].connected && (battery_status[i].remaining < battery_status[lowest_battery_index].remaining)) {
 					lowest_battery_index = i;
 				}
@@ -670,7 +670,7 @@ public:
 	{
 		unsigned total_size = 0;
 
-		for (int i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
+        for (int i = 0; i < 4; i++) { // ORB_MULTI_MAX_INSTANCES
 			if (_battery_status_sub[i].advertised()) {
 				total_size += MAVLINK_MSG_ID_BATTERY_STATUS_LEN + MAVLINK_NUM_NON_PAYLOAD_BYTES;
 			}
@@ -680,7 +680,7 @@ public:
 	}
 
 private:
-	uORB::Subscription _battery_status_sub[ORB_MULTI_MAX_INSTANCES] {
+    uORB::Subscription _battery_status_sub[4] { // ORB_MULTI_MAX_INSTANCES
 		{ORB_ID(battery_status), 0}, {ORB_ID(battery_status), 1}, {ORB_ID(battery_status), 2}, {ORB_ID(battery_status), 3}
 	};
 
@@ -697,7 +697,7 @@ protected:
 	{
 		bool updated = false;
 
-		for (int i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
+        for (int i = 0; i < 4; i++) { // ORB_MULTI_MAX_INSTANCES
 			battery_status_s battery_status;
 
 			if (_battery_status_sub[i].update(&battery_status)) {
@@ -804,7 +804,7 @@ public:
 	{
 		unsigned total_size = 0;
 
-		for (int i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
+        for (int i = 0; i < 4; i++) { // ORB_MULTI_MAX_INSTANCES
 			if (_battery_status_sub[i].advertised()) {
 				total_size += MAVLINK_MSG_ID_BATTERY_STATUS_LEN + MAVLINK_NUM_NON_PAYLOAD_BYTES;
 			}
@@ -814,7 +814,7 @@ public:
 	}
 
 private:
-	uORB::Subscription _battery_status_sub[ORB_MULTI_MAX_INSTANCES] {
+    uORB::Subscription _battery_status_sub[4] { // ORB_MULTI_MAX_INSTANCES
 		{ORB_ID(battery_status), 0}, {ORB_ID(battery_status), 1}, {ORB_ID(battery_status), 2}, {ORB_ID(battery_status), 3}
 	};
 
@@ -831,7 +831,7 @@ protected:
 	{
 		bool updated = false;
 
-		for (int i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
+        for (int i = 0; i < 4; i++) { // ORB_MULTI_MAX_INSTANCES
 			battery_status_s battery_status;
 
 			if (_battery_status_sub[i].update(&battery_status)) {
@@ -899,7 +899,7 @@ public:
 	}
 
 private:
-	uORB::Subscription _vehicle_imu_sub[ORB_MULTI_MAX_INSTANCES] {{ORB_ID(vehicle_imu), 0}, {ORB_ID(vehicle_imu), 1}, {ORB_ID(vehicle_imu), 2}, {ORB_ID(vehicle_imu), 3}};
+    uORB::Subscription _vehicle_imu_sub[4] {{ORB_ID(vehicle_imu), 0}, {ORB_ID(vehicle_imu), 1}, {ORB_ID(vehicle_imu), 2}, {ORB_ID(vehicle_imu), 3}}; // ORB_MULTI_MAX_INSTANCES
 	uORB::Subscription _sensor_selection_sub{ORB_ID(sensor_selection)};
 	uORB::Subscription _bias_sub{ORB_ID(estimator_sensor_bias)};
 	uORB::Subscription _differential_pressure_sub{ORB_ID(differential_pressure)};
@@ -2935,7 +2935,7 @@ public:
 private:
 	uORB::Subscription _sensor_selection_sub{ORB_ID(sensor_selection)};
 
-	uORB::Subscription _vehicle_imu_status_sub[ORB_MULTI_MAX_INSTANCES] {
+    uORB::Subscription _vehicle_imu_status_sub[4] { // ORB_MULTI_MAX_INSTANCES
 		{ORB_ID(vehicle_imu_status), 0},
 		{ORB_ID(vehicle_imu_status), 1},
 		{ORB_ID(vehicle_imu_status), 2},
@@ -2994,7 +2994,7 @@ protected:
 			}
 
 			// accel 0, 1, 2 cumulative clipping
-			for (int i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
+            for (int i = 0; i < 4; i++) { // ORB_MULTI_MAX_INSTANCES
 				vehicle_imu_status_s status;
 
 				if (_vehicle_imu_status_sub[i].copy(&status)) {

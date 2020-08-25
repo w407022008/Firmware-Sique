@@ -3925,7 +3925,7 @@ void Commander::data_link_check()
 void Commander::avoidance_check()
 {
 
-	for (unsigned i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
+    for (unsigned i = 0; i < 5; i++) { // ORB_MULTI_MAX_INSTANCES
 		if (_sub_distance_sensor[i].updated()) {
 			distance_sensor_s distance_sensor {};
 			_sub_distance_sensor[i].copy(&distance_sensor);
@@ -3963,7 +3963,7 @@ void Commander::battery_status_check()
 {
 	bool battery_sub_updated = false;
 
-	battery_status_s batteries[ORB_MULTI_MAX_INSTANCES];
+    battery_status_s batteries[4]; // ORB_MULTI_MAX_INSTANCES
 	size_t num_connected_batteries = 0;
 
 	for (size_t i = 0; i < sizeof(_battery_subs) / sizeof(_battery_subs[0]); i++) {

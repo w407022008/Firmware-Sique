@@ -183,11 +183,12 @@ private:
 
 	uORB::SubscriptionCallbackWorkItem _battery_status_sub{this, ORB_ID(battery_status)};
 	uORB::SubscriptionCallbackWorkItem _diff_pressure_sub{this, ORB_ID(differential_pressure)};
-	uORB::SubscriptionCallbackWorkItem _distance_sensor_sub[ORB_MULTI_MAX_INSTANCES] {
+    uORB::SubscriptionCallbackWorkItem _distance_sensor_sub[5] { // ORB_MULTI_MAX_INSTANCES
 		{this, ORB_ID(distance_sensor), 0},
 		{this, ORB_ID(distance_sensor), 1},
 		{this, ORB_ID(distance_sensor), 2},
 		{this, ORB_ID(distance_sensor), 3},
+        {this, ORB_ID(distance_sensor), 4},
 	};
 	uORB::SubscriptionCallbackWorkItem _sensor_baro_sub{this, ORB_ID(sensor_baro)};
 	uORB::SubscriptionCallbackWorkItem _sensor_mag_sub{this, ORB_ID(sensor_mag)};

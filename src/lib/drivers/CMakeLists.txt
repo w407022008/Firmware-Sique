@@ -32,6 +32,7 @@
 ############################################################################
 
 add_subdirectory(accelerometer)
+add_subdirectory(anemometer)
 add_subdirectory(airspeed)
 add_subdirectory(barometer)
 add_subdirectory(device)
