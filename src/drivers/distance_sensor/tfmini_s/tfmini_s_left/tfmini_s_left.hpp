@@ -55,7 +55,7 @@ using namespace time_literals;
 #define TFMINI_S_MAX_DISTANCE             (12.00f)
 #define TFMINI_S_MIN_DISTANCE             (0.10f)
 
-#define TFMINI_S_MEASUREMENT_INTERVAL         10_ms
+#define TFMINI_S_MEASUREMENT_INTERVAL         1_ms
 
 class tfmini_s_left : public device::I2C, public I2CSPIDriver<tfmini_s_left>
 {

@@ -82,7 +82,7 @@ extern "C" __EXPORT int tfmini_s_right_main(int argc, char *argv[])
 	using ThisDriver = tfmini_s_right;
 	BusCLIArguments cli{true, false};// I2C ? SPI
 	cli.orientation = distance_sensor_s::ROTATION_RIGHT_FACING;
-	cli.default_i2c_frequency = 100000;
+	cli.default_i2c_frequency = 400000;
 
 	while ((ch = cli.getopt(argc, argv, "R:")) != EOF) {
 		switch (ch) {

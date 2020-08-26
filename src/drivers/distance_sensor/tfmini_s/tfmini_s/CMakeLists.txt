@@ -1,6 +1,6 @@
 ############################################################################
 #
-#   Copyright (c) 2017 PX4 Development Team. All rights reserved.
+#   Copyright (c) 2017-2020 PX4 Development Team. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -30,24 +30,12 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 ############################################################################
-
-add_subdirectory(cm8jl65)
-add_subdirectory(leddar_one)
-add_subdirectory(ll40ls)
-add_subdirectory(ll40ls_pwm)
-add_subdirectory(mappydot)
-add_subdirectory(mb12xx)
-add_subdirectory(pga460)
-add_subdirectory(sf0x)
-add_subdirectory(sf1xx)
-add_subdirectory(srf02)
-add_subdirectory(teraranger)
-add_subdirectory(tfmini)
-#add_subdirectory(tfmini_s/tfmini_s)
-add_subdirectory(tfmini_s/tfmini_s_down)
-add_subdirectory(tfmini_s/tfmini_s_forward)
-add_subdirectory(tfmini_s/tfmini_s_upward)
-add_subdirectory(tfmini_s/tfmini_s_left)
-add_subdirectory(tfmini_s/tfmini_s_right)
-add_subdirectory(ulanding_radar)
-add_subdirectory(vl53l0x)
+px4_add_module(
+	MODULE drivers__distance_sensor__tfmini_s
+	MAIN tfmini_s
+	SRCS
+		tfmini_s.cpp
+	DEPENDS
+		drivers_rangefinder
+		px4_work_queue
+	)

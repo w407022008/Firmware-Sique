@@ -81,7 +81,7 @@ int tfmini_s_down::collect()
 		perf_end(_sample_perf);
 		return ret_val;
 	}
-	while (val[0] != 0x59 || val[1] != 0x59){
+	if (val[0] != 0x59 || val[1] != 0x59){
 		PX4_ERR("error reading from sensor: 0x%02X 0x%02X", val[0], val[1]);
 		perf_count(_comms_errors);
 		perf_end(_sample_perf);
@@ -127,8 +127,7 @@ int tfmini_s_down::init()
 		PX4_WARN("Disabled");
 		return PX4_ERROR;
 
-	case 1: // Enable 
-	{
+	case 1: // Enable
 		int32_t address = TFMINI_S_D_ADDR;
 		set_device_address(address);
 		if (I2C::init() != OK) {
@@ -141,15 +140,12 @@ int tfmini_s_down::init()
 			_px4_rangefinder.set_min_distance(TFMINI_S_MIN_DISTANCE);
 			_px4_rangefinder.set_max_distance(TFMINI_S_MAX_DISTANCE);
 		}
-		}
-		break;
+		return PX4_OK;
 
 	default:
 		PX4_ERR("invalid HW model %d.", hw_model);
 		return PX4_ERROR;
 	}
-
-	return PX4_OK;
 }
 
 int tfmini_s_down::measure()

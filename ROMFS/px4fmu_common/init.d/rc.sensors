@@ -109,7 +109,7 @@ then
 	tfmini_s_right start -X
 fi
 
-if param compare -s SENS_EN_TFMINI_U 01
+if param compare -s SENS_EN_TFMINI_U 1
 then
 	tfmini_s_upward start -X
 fi

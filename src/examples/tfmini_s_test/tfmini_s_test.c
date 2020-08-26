@@ -71,6 +71,7 @@ int tfmini_s_test_main(int argc, char *argv[])
         for (int j=0;j<5;j++){
             bool updated;
             orb_check(_sub_distance_sensor[j], &updated);
+
             if(updated){
                 index++;
                 /* obtained data for the first file descriptor */
@@ -87,7 +88,7 @@ int tfmini_s_test_main(int argc, char *argv[])
         }
     }
 
-    PX4_INFO("exiting at the index: %d",index/5);
+    PX4_INFO("exiting with outputs %d times",index);
 
     return 0;
 }

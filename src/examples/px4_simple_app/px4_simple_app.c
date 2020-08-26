@@ -59,8 +59,8 @@ int px4_simple_app_main(int argc, char *argv[])
 
 	/* subscribe to vehicle_acceleration topic */
 	int sensor_sub_fd = orb_subscribe(ORB_ID(vehicle_acceleration));
-	/* limit the update rate to 5 Hz */
-	orb_set_interval(sensor_sub_fd, 200);
+	/* limit the update rate to 1000 Hz */
+	orb_set_interval(sensor_sub_fd, 1);
 
 	/* advertise attitude topic */
 	struct vehicle_attitude_s att;
@@ -77,7 +77,9 @@ int px4_simple_app_main(int argc, char *argv[])
 
 	int error_counter = 0;
 
-	for (int i = 0; i < 5; i++) {
+	const hrt_abstime now = hrt_absolute_time();
+    	int index=0;
+    	while (hrt_absolute_time()-now<1000000) {
 		/* wait for sensor update of 1 file descriptor for 1000 ms (1 second) */
 		int poll_ret = px4_poll(fds, 1, 1000);
 
@@ -98,6 +100,7 @@ int px4_simple_app_main(int argc, char *argv[])
 		} else {
 
 			if (fds[0].revents & POLLIN) {
+				index++;
 				/* obtained data for the first file descriptor */
 				struct vehicle_acceleration_s accel;
 				/* copy sensors raw data into local buffer */
@@ -122,8 +125,7 @@ int px4_simple_app_main(int argc, char *argv[])
 			 */
 		}
 	}
-
-	PX4_INFO("exiting");
+	PX4_INFO("exiting at the index: %d",index);
 
 	return 0;
 }
