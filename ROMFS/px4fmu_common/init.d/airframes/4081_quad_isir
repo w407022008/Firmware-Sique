@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# @name quad_isir SITL
+#
+# @type Quadrotor x
+# @class Copter
+#
+# @output MAIN1 motor 1
+# @output MAIN2 motor 2
+# @output MAIN3 motor 3
+# @output MAIN4 motor 4
+
+sh /etc/init.d/rc.mc_defaults
+set MAV_TYPE 2
+set MIXER quad_isir
+
+param set MC_ROLL_P 3.5
+param set MC_ROLLRATE_P 14.0
+param set MC_ROLLRATE_D 0
+param set MC_ROLLRATE_I 4
+param set MC_ROLLRATE_K 0
+param set MC_RR_INT_LIM 0.3
+
+param set MC_PITCH_P 3.5
+param set MC_PITCHRATE_P 14.0
+param set MC_PITCHRATE_D 0
+param set MC_PITCHRATE_I 4
+param set MC_PITCHRATE_K 0
+param set MC_PR_INT_LIM 0.3
+
+param set MC_YAW_P 2.0
+param set MC_YAWRATE_P 4.0
+param set MC_YAWRATE_D 0
+param set MC_YAWRATE_I 0
+param set MC_YAWRATE_K 0
+param set MC_YR_INT_LIM 0.3
+# Need to set all 8 channels
+set PWM_OUT 12345678

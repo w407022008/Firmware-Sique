@@ -78,12 +78,13 @@ int tfmini_s_test_main(int argc, char *argv[])
                 struct distance_sensor_s raw;
                 /* copy sensors raw data into local buffer */
                 orb_copy(ORB_ID(distance_sensor), _sub_distance_sensor[j], &raw);
-                PX4_INFO("Orientation:%2d \t Distance:%8.4f \t Signal Quality:%2d",
-                         (int)raw.orientation,
+                PX4_INFO("Time:%2llu \t Orientation:%2d \t Distance:%8.4f \t Signal Quality:%2d",
+                        (uint64_t)raw.timestamp,
+                         (uint8_t)raw.orientation,
                          (double)raw.current_distance,
-                         (int)raw.signal_quality);
+                         (uint8_t)raw.signal_quality);
             } else{
-                //PX4_INFO("not updated!");
+                PX4_INFO("not updated!");
             }
         }
     }

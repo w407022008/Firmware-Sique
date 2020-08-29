@@ -119,15 +119,10 @@ int tfmini_s_down::collect()
 
 int tfmini_s_down::init()
 {
-	int32_t hw_model = 0;
-	param_get(param_find("SENS_EN_TFMINI_D"), &hw_model);
+	int32_t hw_enable = 0;
+	param_get(param_find("SENS_EN_TFMINI_D"), &hw_enable);
 
-	switch (hw_model) {
-	case 0: // Disabled
-		PX4_WARN("Disabled");
-		return PX4_ERROR;
-
-	case 1: // Enable
+	if (hw_enable){
 		int32_t address = TFMINI_S_D_ADDR;
 		set_device_address(address);
 		if (I2C::init() != OK) {
@@ -141,11 +136,11 @@ int tfmini_s_down::init()
 			_px4_rangefinder.set_max_distance(TFMINI_S_MAX_DISTANCE);
 		}
 		return PX4_OK;
-
-	default:
-		PX4_ERR("invalid HW model %d.", hw_model);
+	}else{
+		PX4_WARN("Disabled");
 		return PX4_ERROR;
 	}
+
 }
 
 int tfmini_s_down::measure()

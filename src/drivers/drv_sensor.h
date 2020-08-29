@@ -166,5 +166,10 @@
 #define DRV_DEVTYPE_UNUSED		0xff
 #define DRV_ANEMO_DEVTYPE_SFM3000       0xf0
 #define DRV_DIST_DEVTYPE_TFMINI_S       0xf1
+#define DRV_DIST_DEVTYPE_TFMINI_S_D      0xf2
+#define DRV_DIST_DEVTYPE_TFMINI_S_F       0xf3
+#define DRV_DIST_DEVTYPE_TFMINI_S_L       0xf4
+#define DRV_DIST_DEVTYPE_TFMINI_S_R       0xf5
+#define DRV_DIST_DEVTYPE_TFMINI_S_U       0xf6
 
 #endif /* _DRV_SENSOR_H */
