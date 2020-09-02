@@ -92,7 +92,7 @@ int tfmini_s_upward::collect()
 	int strength = (val[5] << 8) | val[4];
 //  uint16_t temperature = ((val[7] << 8) | val[6]) / 8 - 256;
 
-	PX4_ERR("distance %d cm", distance_cm);
+	// PX4_ERR("distance %d cm", distance_cm);
 	// Final data quality evaluation. This is based on the datasheet and simple heuristics retrieved from experiments
 	// Step 1: Normalize signal strength to 0...100 percent using the absolute signal peak strength.
 	uint8_t signal_quality = 100 * strength / 65535.0f;
@@ -127,7 +127,7 @@ int tfmini_s_upward::init()
 		PX4_WARN("Disabled");
 		return PX4_ERROR;
 
-	case 1: // Enable 
+	case 1: // Enable
 	{
 		int32_t address = TFMINI_S_U_ADDR;
 		set_device_address(address);
