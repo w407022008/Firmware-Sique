@@ -90,7 +90,7 @@ int tfmini_s_down::collect()
 	uint16_t distance_cm = (val[3] << 8) | val[2];
 	float distance_m = static_cast<float>(distance_cm) * 1e-2f;
 	int strength = (val[5] << 8) | val[4];
-//  uint16_t temperature = ((val[7] << 8) | val[6]) / 8 - 256;
+	//uint16_t temperature = ((val[7] << 8) | val[6]) / 8 - 256;
 
 	// PX4_ERR("distance %d cm", distance_cm);
 	// Final data quality evaluation. This is based on the datasheet and simple heuristics retrieved from experiments
@@ -105,7 +105,7 @@ int tfmini_s_down::collect()
 
 	if (crc8(val, 8) == val[8]) {
 		 _px4_rangefinder.update(timestamp_sample, distance_m,signal_quality);
-		 PX4_INFO("Tested data as %f m",double(distance_m));
+		 //PX4_INFO("Tested data as %f m",double(distance_m));
 	}
 
 	// Next phase is measurement.

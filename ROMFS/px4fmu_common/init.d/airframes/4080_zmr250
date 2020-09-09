@@ -26,20 +26,22 @@ then
 
 	param set FAILSAFE 100
 
-	param set MC_ROLL_P 2.5
-	param set MC_ROLLRATE_P 0.06
-	param set MC_ROLLRATE_I 0.2
-	param set MC_ROLLRATE_D 0.0017
+	param set MC_ROLL_P  40
+	param set MC_ROLLRATE_P 0.05
+	param set MC_ROLLRATE_I 0.055
+	param set MC_ROLLRATE_D 0.02
+	param set MC_RR_INT_LIM 0.2
 
-	param set MC_PITCH_P 2.2
-	param set MC_PITCHRATE_P 0.06
-	param set MC_PITCHRATE_I 0.2
-	param set MC_PITCHRATE_D 0.0017
+	param set MC_PITCH_P 40
+	param set MC_PITCHRATE_P 0.05
+	param set MC_PITCHRATE_I 0.04
+	param set MC_PITCHRATE_D 0.02
+	param set MC_PR_INT_LIM 0.2
 
 	param set MC_YAW_P 1
 	param set MC_YAWRATE_P 0.15
-	param set MC_YAWRATE_I 0.2
-	param set MC_YAWRATE_D 0
+	param set MC_YAWRATE_I 0.11
+	param set MC_YAWRATE_D 0.012
 
 	param set MC_ACRO_R_MAX 1000
 	param set MC_ACRO_P_MAX 1000

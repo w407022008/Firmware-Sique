@@ -61,10 +61,11 @@ int tfmini_s_test_main(int argc, char *argv[])
     int _sub_distance_sensor[5];
     for (int i=0;i<5;i++){
         _sub_distance_sensor[i] = orb_subscribe_multi(ORB_ID(distance_sensor),i);
-        /* limit the update rate to 100 Hz */
-        orb_set_interval(_sub_distance_sensor[i], 10);
+        /* limit the update rate to 1000 Hz */
+        orb_set_interval(_sub_distance_sensor[i], 1);
     }
     const hrt_abstime now = hrt_absolute_time();
+    int index_updated=0;
     int index=0;
     while (hrt_absolute_time()-now<1000000) {
 
@@ -73,23 +74,23 @@ int tfmini_s_test_main(int argc, char *argv[])
             orb_check(_sub_distance_sensor[j], &updated);
 
             if(updated){
-                index++;
                 /* obtained data for the first file descriptor */
                 struct distance_sensor_s raw;
                 /* copy sensors raw data into local buffer */
                 orb_copy(ORB_ID(distance_sensor), _sub_distance_sensor[j], &raw);
-                PX4_INFO("Time:%2llu \t Orientation:%2d \t Distance:%8.4f \t Signal Quality:%2d",
+                index_updated++;
+                /*PX4_INFO("Time:%2llu \t Orientation:%2d \t Distance:%8.4f \t Signal Quality:%2d",
                         (uint64_t)raw.timestamp,
                          (uint8_t)raw.orientation,
                          (double)raw.current_distance,
-                         (uint8_t)raw.signal_quality);
+                         (uint8_t)raw.signal_quality);*/
             } else{
-                PX4_INFO("not updated!");
+                PX4_INFO("not updated! with %d", index++);
             }
         }
     }
 
-    PX4_INFO("exiting with outputs %d times",index);
+    PX4_INFO("exiting with updates %d times in 1 second",index_updated);
 
     return 0;
 }
