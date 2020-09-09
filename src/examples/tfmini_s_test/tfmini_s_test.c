@@ -90,6 +90,10 @@ int tfmini_s_test_main(int argc, char *argv[])
             bool updated;
             orb_check(_sub_distance_sensor[j], &updated);
             if(updated){
+                // obtained data for the first file descriptor
+                struct distance_sensor_s raw;
+                // copy sensors raw data into local buffer
+                orb_copy(ORB_ID(distance_sensor), _sub_distance_sensor[j], &raw);
                 index_updated++;
             }
         }
