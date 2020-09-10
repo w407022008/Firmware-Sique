@@ -47,7 +47,7 @@ static uint8_t crc8(uint8_t *p, uint8_t len)
 }
 
 tfmini_s_upward::tfmini_s_upward(I2CSPIBusOption bus_option, const int bus, const uint8_t rotation, int bus_frequency) :
-	I2C(DRV_DIST_DEVTYPE_TFMINI_S, MODULE_NAME, bus, TFMINI_S_U_ADDR, bus_frequency),
+	I2C(DRV_DIST_DEVTYPE_TFMINI_S_U, MODULE_NAME, bus, TFMINI_S_U_ADDR, bus_frequency),
 	I2CSPIDriver(MODULE_NAME, px4::device_bus_to_wq(get_device_id()), bus_option, bus),
         _px4_rangefinder(get_device_id(), rotation)
 {
