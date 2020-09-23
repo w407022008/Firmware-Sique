@@ -31,36 +31,36 @@
  *
  ****************************************************************************/
 
-#include "sfm.hpp"
+#include "tfmini_s_1.hpp"
 
 #include <px4_platform_common/getopt.h>
 #include <px4_platform_common/module.h>
 
 void
-sfm::print_usage()
+tfmini_s_1::print_usage()
 {
 	PRINT_MODULE_DESCRIPTION(
 		R"DESCR_STR(
 ### Description
 
-I2C bus driver for SENSIRION SFM3000 Low Pressure DropDigital Flow Meter (i2c).
+I2C bus driver for TFmini-s 0x11 rangefinders.
 
-The sensor/driver must be enabled using the parameter SENS_EN_SFM.
+The sensor/driver must be enabled using the parameter SENS_EN_TFMINI_1.
 
 Setup/usage information: https://docs.px4.io/master/en/sensor/tfmini.html
 )DESCR_STR");
-	PRINT_MODULE_USAGE_NAME("sfm", "driver");
-	PRINT_MODULE_USAGE_SUBCATEGORY("anemometer");
+	PRINT_MODULE_USAGE_NAME("tfmini_s_1", "driver");
+	PRINT_MODULE_USAGE_SUBCATEGORY("distance_sensor");
 	PRINT_MODULE_USAGE_COMMAND("start");
 	PRINT_MODULE_USAGE_PARAMS_I2C_SPI_DRIVER(true, false);
-	PRINT_MODULE_USAGE_PARAM_INT('R', 25, 1, 25, "Sensor rotation - downward facing by default", true);
+	PRINT_MODULE_USAGE_PARAM_INT('R', 25, 1, 25, "Sensor rotation - forward facing by default", true);
 	PRINT_MODULE_USAGE_DEFAULT_COMMANDS();
 }
 
-I2CSPIDriverBase *sfm::instantiate(const BusCLIArguments &cli, const BusInstanceIterator &iterator,
+I2CSPIDriverBase *tfmini_s_1::instantiate(const BusCLIArguments &cli, const BusInstanceIterator &iterator,
 				     int runtime_instance)
 {
-        sfm *instance = new sfm(iterator.configuredBusOption(), iterator.bus(), cli.orientation, cli.bus_frequency);
+	tfmini_s_1 *instance = new tfmini_s_1(iterator.configuredBusOption(), iterator.bus(), cli.orientation, cli.bus_frequency);
 
 	if (instance == nullptr) {
 		PX4_ERR("alloc failed");
@@ -76,13 +76,13 @@ I2CSPIDriverBase *sfm::instantiate(const BusCLIArguments &cli, const BusInstance
 	return instance;
 }
 
-extern "C" __EXPORT int sfm_main(int argc, char *argv[])
+extern "C" __EXPORT int tfmini_s_1_main(int argc, char *argv[])
 {
 	int ch;
-	using ThisDriver = sfm;
-        BusCLIArguments cli{true, false};// I2C ? SPI
-        cli.orientation = windspeed_s::ROTATION_RIGHT_FACING;
-        cli.default_i2c_frequency = 400000;
+	using ThisDriver = tfmini_s_1;
+	BusCLIArguments cli{true, false};// I2C ? SPI
+	cli.orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING;
+	cli.default_i2c_frequency = 400000;
 
 	while ((ch = cli.getopt(argc, argv, "R:")) != EOF) {
 		switch (ch) {
@@ -99,7 +99,7 @@ extern "C" __EXPORT int sfm_main(int argc, char *argv[])
 		return -1;
 	}
 
-	BusInstanceIterator iterator(MODULE_NAME, cli, DRV_ANEMO_DEVTYPE_SFM3000);
+	BusInstanceIterator iterator(MODULE_NAME, cli, DRV_DIST_DEVTYPE_TFMINI_S);
 
 	if (!strcmp(verb, "start")) {
 		return ThisDriver::module_start(cli, iterator);

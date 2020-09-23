@@ -726,6 +726,7 @@ MulticopterPositionControl::start_flight_task()
 		return;
 	}
 
+    // transition
 	if (_vehicle_status.in_transition_mode) {
 		should_disable_task = false;
 		FlightTaskError error = _flight_tasks.switchTask(FlightTaskIndex::Transition);

@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (c) 2019 PX4 Development Team. All rights reserved.
+ *   Copyright (c) 2017 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,33 +31,14 @@
  *
  ****************************************************************************/
 
-#pragma once
-
-#include <drivers/drv_hrt.h>
-#include <drivers/drv_anemometer.h>
-#include <lib/conversion/rotation.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/windspeed.h>
-
-class PX4Anemometer
-{
-
-public:
-        PX4Anemometer(const uint32_t device_id,
-               const uint8_t device_orientation = windspeed_s::ROTATION_DOWNWARD_FACING);
-	~PX4Anemometer();
-
-	void set_device_type(uint8_t device_type);
-	//void set_air_temperature_celsius(uint64_t air_temperature_celsius) { _anemometer_pub.get().air_temperature_celsius = air_temperature_celsius; }
-
-	void set_device_id(const uint8_t device_id) { _anemometer_pub.get().id = device_id; };
-
-    void set_orientation(const uint8_t device_orientation);
-
-	void update(const hrt_abstime &timestamp_sample, const float measurement[3], const float confidence[3], const int orientation = windspeed_s::ROTATION_DOWNWARD_FACING, const float air_temperature_celsius = 0);
-
-private:
-
-	uORB::PublicationMultiData<windspeed_s> _anemometer_pub;
-
-};
+/**
+ * TFmini-s 0x13 Rangefinder (i2c)
+ *
+ * @reboot_required true
+ * @min 0
+ * @max 1
+ * @group Sensors
+ * @value 0 Disabled
+ * @value 1 Enabled
+ */
+PARAM_DEFINE_INT32(SENS_EN_TFMINI_3, 1);

@@ -66,7 +66,7 @@ int tfmini_s_test_main(int argc, char *argv[])
     }
     const hrt_abstime now = hrt_absolute_time();
     int index_updated=0;
-    /*while (hrt_absolute_time()-now<1000000) {
+    while (hrt_absolute_time()-now<1000000) {
         for (int j=0;j<5;j++){
             bool updated;
             orb_check(_sub_distance_sensor[j], &updated);
@@ -84,8 +84,8 @@ int tfmini_s_test_main(int argc, char *argv[])
                 PX4_INFO("not updated!");
             }
         }
-    }*/
-    while (hrt_absolute_time()-now<1000000) {
+    }
+    while (hrt_absolute_time()-now<2000000) {
         for (int j=0;j<5;j++){
             bool updated;
             orb_check(_sub_distance_sensor[j], &updated);

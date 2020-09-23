@@ -111,6 +111,7 @@ void LoggedTopics::add_default_topics()
 	add_topic_multi("multirotor_motor_limits", 1000);
 	add_topic_multi("telemetry_status", 1000);
 	add_topic_multi("wind_estimate", 1000);
+    add_topic_multi("windspeed", 1000);
 
 	// log all raw sensors at minimal rate (at least 1 Hz)
 	add_topic_multi("battery_status", 300);

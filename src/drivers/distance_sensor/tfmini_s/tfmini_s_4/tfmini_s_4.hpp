@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (c) 2019 PX4 Development Team. All rights reserved.
+ *   Copyright (c) 2013-2020 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,33 +31,69 @@
  *
  ****************************************************************************/
 
+/**
+ * @file tfmini_s_4.cpp
+ * @author Ze WANG
+ *
+ * Driver for the TFmini-s range finders connected via I2C.
+ */
+
 #pragma once
 
-#include <drivers/drv_hrt.h>
-#include <drivers/drv_anemometer.h>
-#include <lib/conversion/rotation.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/windspeed.h>
+#include <drivers/device/i2c.h>
+#include <px4_platform_common/px4_config.h>
+#include <px4_platform_common/i2c_spi_buses.h>
+#include <lib/drivers/rangefinder/PX4Rangefinder.hpp>
+#include <lib/perf/perf_counter.h>
 
-class PX4Anemometer
+using namespace time_literals;
+
+/* Configuration Constants */
+#define TFMINI_S_ADDR                 0x14 // 7-bit address.
+
+/* Device limits */
+#define TFMINI_S_MAX_DISTANCE             (12.00f)
+#define TFMINI_S_MIN_DISTANCE             (0.10f)
+
+#define TFMINI_S_MEASUREMENT_INTERVAL         1_ms
+
+class tfmini_s_4 : public device::I2C, public I2CSPIDriver<tfmini_s_4>
 {
-
 public:
-        PX4Anemometer(const uint32_t device_id,
-               const uint8_t device_orientation = windspeed_s::ROTATION_DOWNWARD_FACING);
-	~PX4Anemometer();
+	tfmini_s_4(I2CSPIBusOption bus_option, const int bus, const uint8_t rotation, int bus_frequency);
+	~tfmini_s_4() override;
 
-	void set_device_type(uint8_t device_type);
-	//void set_air_temperature_celsius(uint64_t air_temperature_celsius) { _anemometer_pub.get().air_temperature_celsius = air_temperature_celsius; }
+	static I2CSPIDriverBase *instantiate(const BusCLIArguments &cli, const BusInstanceIterator &iterator,
+					     int runtime_instance);
+	static void print_usage();
 
-	void set_device_id(const uint8_t device_id) { _anemometer_pub.get().id = device_id; };
+	virtual int init() override;
+	void print_status() override;
 
-    void set_orientation(const uint8_t device_orientation);
+	void RunImpl();
+protected:
 
-	void update(const hrt_abstime &timestamp_sample, const float measurement[3], const float confidence[3], const int orientation = windspeed_s::ROTATION_DOWNWARD_FACING, const float air_temperature_celsius = 0);
+	virtual int probe() override;
 
 private:
+	void start();
+	int collect();
+	int measure();
 
-	uORB::PublicationMultiData<windspeed_s> _anemometer_pub;
+	/**
+	* Test whether the device supported by the driver is present at a
+	* specific address.
+	*
+	* @param address The I2C bus address to probe.
+	* @return True if the device is present.
+	*/
+	int probe_address(const uint8_t address);
 
+
+	PX4Rangefinder _px4_rangefinder;
+
+	bool _collect_phase{false};
+
+	perf_counter_t _comms_errors{perf_alloc(PC_COUNT, MODULE_NAME": comm_err")};
+	perf_counter_t _sample_perf{perf_alloc(PC_ELAPSED, MODULE_NAME": read")};
 };

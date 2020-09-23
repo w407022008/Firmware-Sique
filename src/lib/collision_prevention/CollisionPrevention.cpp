@@ -101,7 +101,7 @@ hrt_abstime CollisionPrevention::getElapsedTime(const hrt_abstime *ptr)
 
 bool CollisionPrevention::is_active()
 {
-	bool activated = _param_cp_dist.get() > 0;
+    bool activated = _param_cp_dist.get() > 0;
 
 	if (activated && !_was_active) {
 		_time_activated = getTime();
@@ -273,7 +273,7 @@ CollisionPrevention::_addDistanceSensorData(distance_sensor_s &distance_sensor, 
 		float sensor_dist_scale = cosf(Eulerf(attitude_sensor_frame).theta());
 
 		if (distance_reading < distance_sensor.max_distance) {
-			distance_reading = distance_reading * sensor_dist_scale;
+            distance_reading = distance_reading * sensor_dist_scale; // large plan hypothesis !!!!!!!
 		}
 
 		uint16_t sensor_range = static_cast<uint16_t>(100.0f * distance_sensor.max_distance + 0.5f); // convert to cm
@@ -294,7 +294,7 @@ CollisionPrevention::_addDistanceSensorData(distance_sensor_s &distance_sensor, 
 void
 CollisionPrevention::_adaptSetpointDirection(Vector2f &setpoint_dir, int &setpoint_index, float vehicle_yaw_angle_rad)
 {
-	const float col_prev_d = _param_cp_dist.get();
+    const float col_prev_d = _param_cp_dist.get(); // col_prev_d is a positive number
 	const int guidance_bins = floor(_param_cp_guide_ang.get() / INTERNAL_MAP_INCREMENT_DEG);
 	const int sp_index_original = setpoint_index;
 	float best_cost = 9999.f;
@@ -319,8 +319,8 @@ CollisionPrevention::_adaptSetpointDirection(Vector2f &setpoint_dir, int &setpoi
 
 		const int bin = wrap_bin(i);
 		mean_dist = mean_dist / (2.f * filter_size + 1.f);
-		const float deviation_cost = col_prev_d * 50.f * abs(i - sp_index_original);
-		const float bin_cost = deviation_cost - mean_dist - _obstacle_map_body_frame.distances[bin];
+        const float deviation_cost = col_prev_d * 50.f * abs(i - sp_index_original); // change slightly
+        const float bin_cost = deviation_cost - mean_dist - _obstacle_map_body_frame.distances[bin];
 
 		if (bin_cost < best_cost && _obstacle_map_body_frame.distances[bin] != UINT16_MAX) {
 			best_cost = bin_cost;

@@ -81,7 +81,7 @@ bool FlightTaskManualAltitude::activate(const vehicle_local_position_setpoint_s 
 
 void FlightTaskManualAltitude::_updateConstraintsFromEstimator()
 {
-	if (PX4_ISFINITE(_sub_vehicle_local_position.get().hagl_min)) {
+    if (PX4_ISFINITE(_sub_vehicle_local_position.get().hagl_min)) { // minimum hight above ground limitation
 		_constraints.min_distance_to_ground = _sub_vehicle_local_position.get().hagl_min;
 
 	} else {

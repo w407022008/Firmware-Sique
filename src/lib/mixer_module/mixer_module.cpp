@@ -388,7 +388,7 @@ bool MixingOutput::update()
 
 	/* the output limit call takes care of out of band errors, NaN and constrains */
 	output_limit_calc(_throttle_armed, armNoThrottle(), mixed_num_outputs, _reverse_output_mask,
-			  _disarmed_value, _min_value, _max_value, outputs, _current_output_value, &_output_limit);
+              _disarmed_value, _min_value, _max_value, outputs, _current_output_value, &_output_limit);// outputs: scale -1~1; _current_output_value: effictive_ouput PWM
 
 	/* overwrite outputs in case of force_failsafe with _failsafe_value values */
 	if (_armed.force_failsafe) {
@@ -435,7 +435,7 @@ MixingOutput::setAndPublishActuatorOutputs(unsigned num_outputs, actuator_output
 	}
 
 	actuator_outputs.timestamp = hrt_absolute_time();
-	_outputs_pub.publish(actuator_outputs);
+    _outputs_pub.publish(actuator_outputs); //PWM
 }
 
 void

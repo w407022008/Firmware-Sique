@@ -171,5 +171,6 @@
 #define DRV_DIST_DEVTYPE_TFMINI_S_L       0xf4
 #define DRV_DIST_DEVTYPE_TFMINI_S_R       0xf5
 #define DRV_DIST_DEVTYPE_TFMINI_S_U       0xf6
+#define DRV_DIST_DEVTYPE_TFMINI_S_B       0xf7
 
 #endif /* _DRV_SENSOR_H */

@@ -84,34 +84,39 @@ then
 fi
 
 # TFmini-s tof sensor
-#if (param compare -s SENS_EN_TFMINI_D 1)||(param compare -s SENS_EN_TFMINI_F 1)||(param compare -s SENS_EN_TFMINI_L 1)||(param compare -s SENS_EN_TFMINI_R 1)||(param compare -s SENS_EN_TFMINI_U 1)||(param compare -s SENS_EN_TFMINI_B 1)
+#if (param compare -s SENS_EN_TFMINI_0 1)||(param compare -s SENS_EN_TFMINI_1 1)||(param compare -s SENS_EN_TFMINI_2 1)||(param compare -s SENS_EN_TFMINI_3 1)||(param compare -s SENS_EN_TFMINI_4 1)||(param compare -s SENS_EN_TFMINI_5 1)
 #then
 #	tfmini_s start -a
 #fi
 
-if param compare -s SENS_EN_TFMINI_D 1
+if param compare -s SENS_EN_TFMINI_0 1
 then
-	tfmini_s_down start -X
+	tfmini_s_0 start -X -R 7
 fi
 
-if param compare -s SENS_EN_TFMINI_F 1
+if param compare -s SENS_EN_TFMINI_1 1
 then
-	tfmini_s_forward start -X
+	tfmini_s_1 start -X -R 1
 fi
 
-if param compare -s SENS_EN_TFMINI_L 1
+if param compare -s SENS_EN_TFMINI_2 1
 then
-	tfmini_s_left start -X
+	tfmini_s_2 start -X -R -3
 fi
 
-if param compare -s SENS_EN_TFMINI_R 1
+if param compare -s SENS_EN_TFMINI_3 1
 then
-	tfmini_s_right start -X
+	tfmini_s_3 start -X -R -5
 fi
 
-if param compare -s SENS_EN_TFMINI_U 1
+if param compare -s SENS_EN_TFMINI_4 1
 then
-	tfmini_s_upward start -X
+	tfmini_s_4 start -X -R 24
+fi
+
+if param compare -s SENS_EN_TFMINI_5 1
+then
+	tfmini_s_5 start -X
 fi
 
 # Possible external pmw3901 optical flow sensor

@@ -111,7 +111,7 @@ void FlightTaskManualPosition::_scaleSticks()
 	_rotateIntoHeadingFrame(vel_sp_xy);
 
 	// collision prevention
-	if (_collision_prevention.is_active()) {
+    if (_collision_prevention.is_active()) { // active if the param CP_DIST > 0 (by default: negative)
 		_collision_prevention.modifySetpoint(vel_sp_xy, _velocity_scale, Vector2f(_position),
 						     Vector2f(_velocity));
 	}

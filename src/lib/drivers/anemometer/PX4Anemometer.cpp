@@ -40,8 +40,8 @@ PX4Anemometer::PX4Anemometer(const uint32_t device_id, const uint8_t device_orie
 {
 	_anemometer_pub.advertise();
 
-	set_device_id(device_id);
-	set_orientation(device_orientation);
+    set_device_id(device_id);
+    set_orientation(device_orientation);
 }
 
 PX4Anemometer::~PX4Anemometer()

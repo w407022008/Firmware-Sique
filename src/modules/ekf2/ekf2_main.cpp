@@ -665,7 +665,7 @@ Ekf2::~Ekf2()
 
 bool Ekf2::init()
 {
-	const uint32_t device_id = _param_ekf2_imu_id.get();
+    const uint32_t device_id = _param_ekf2_imu_id.get(); // EKF2_IMU_ID = 0 by default
 
 	// if EKF2_IMU_ID is non-zero we use the corresponding IMU, otherwise the voted primary (sensor_combined)
 	if (device_id != 0) {
@@ -769,15 +769,16 @@ void Ekf2::Run()
 	hrt_abstime imu_dt = 0; // for tracking time slip later
 	estimator_sensor_bias_s bias{};
 
+    // if EKF2_IMU_ID is non-zero we use the corresponding IMU, otherwise use system selected (sensor_combined) IMU [Default].
 	if (_imu_sub_index >= 0) {
 		vehicle_imu_s imu;
-		updated = _vehicle_imu_subs[_imu_sub_index].update(&imu);
+        updated = _vehicle_imu_subs[_imu_sub_index].update(&imu); // get from ORB_ID(sensor_accel) in VehicleIMU.cpp, pub from PX4Acceleromeer.cpp
 
 		imu_sample_new.time_us = imu.timestamp_sample;
-		imu_sample_new.delta_ang_dt = imu.delta_angle_dt * 1.e-6f;
-		imu_sample_new.delta_ang = Vector3f{imu.delta_angle};
+        imu_sample_new.delta_ang_dt = imu.delta_angle_dt * 1.e-6f; // intergration period in us
+        imu_sample_new.delta_ang = Vector3f{imu.delta_angle}; // angle in NED in one intergration
 		imu_sample_new.delta_vel_dt = imu.delta_velocity_dt * 1.e-6f;
-		imu_sample_new.delta_vel = Vector3f{imu.delta_velocity};
+        imu_sample_new.delta_vel = Vector3f{imu.delta_velocity}; // velocity in NED in one intergration
 
 		if (imu.delta_velocity_clipping > 0) {
 			imu_sample_new.delta_vel_clipping[0] = imu.delta_velocity_clipping & vehicle_imu_s::CLIPPING_X;
@@ -790,9 +791,9 @@ void Ekf2::Run()
 		bias.accel_device_id = imu.accel_device_id;
 		bias.gyro_device_id = imu.gyro_device_id;
 
-	} else {
+    } else {
 		sensor_combined_s sensor_combined;
-		updated = _sensor_combined_sub.update(&sensor_combined);
+        updated = _sensor_combined_sub.update(&sensor_combined);// pub from sensors.cpp, get from ORB_ID(vehicle_imu)
 
 		imu_sample_new.time_us = sensor_combined.timestamp;
 		imu_sample_new.delta_ang_dt = sensor_combined.gyro_integral_dt * 1.e-6f;
@@ -871,7 +872,7 @@ void Ekf2::Run()
 			_imu_bias_reset_request = !_ekf.reset_imu_bias();
 		}
 
-		// push imu data into estimator
+        // push imu data into estimator to predictState in ekf.cpp
 		_ekf.setIMUData(imu_sample_new);
 
 		// publish attitude immediately (uses quaternion from output predictor)

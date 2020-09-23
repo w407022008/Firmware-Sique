@@ -41,12 +41,24 @@
  * @value 0 Disabled
  * @value 1 SFM3000
  */
+PARAM_DEFINE_INT32(SENS_EN_TCA9578A, 0);
+
+/**
+ * SENSIRION SFM Low Pressure DropDigital Flow Meter (i2c)
+ *
+ * @reboot_required true
+ * @min 0
+ * @max 1
+ * @group Sensors
+ * @value 0 Disabled
+ * @value 1 SFM3000
+ */
 PARAM_DEFINE_INT32(SENS_EN_SFM, 0);
 
 /**
  * SFM Sensor 0 Rotation
  *
- * This parameter defines the queue number of SFM sensor whose orientation wrt the platform is along x-axis, defualt: the First one
+ * This parameter defines the queue number of SFM sensor with FORWARD-FACING, defualt: the First one
  *
  * @reboot_required true
  * @min 0
@@ -63,7 +75,7 @@ PARAM_DEFINE_INT32(SFM_ROT_X, 1);
 /**
  * SFM Sensor 1 Rotation
  *
- * This parameter defines the queue number of SFM sensor whose orientation wrt the platform is along y-axis, defualt: the Second one
+ * This parameter defines the queue number of SFM sensor with RIGHT_FACING, defualt: the Second one
  *
  * @reboot_required true
  * @min 0
@@ -80,7 +92,7 @@ PARAM_DEFINE_INT32(SFM_ROT_Y, 2);
 /**
  * SFM Sensor 2 Rotation
  *
- * This parameter defines the queue number of SFM sensor whose orientation wrt the platform is along z-axis, defualt: the Third one
+ * This parameter defines the queue number of SFM sensor with DOWNWARD-FACING, defualt: the Third one
  *
  * @reboot_required true
  * @min 0
