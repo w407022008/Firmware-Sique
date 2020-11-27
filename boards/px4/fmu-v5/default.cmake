@@ -66,6 +66,7 @@ px4_add_board(
 		battery_status
 		camera_feedback
 		commander
+		custom_airspeed_estimation
 		dataman
 		ekf2
 		esc_battery
@@ -120,11 +121,13 @@ px4_add_board(
 		work_queue
 	EXAMPLES
                 anemometer_test
+		custom_airspeed_estimation_test
 		fake_magnetometer
 		fixedwing_control # Tutorial code from https://px4.io/dev/example_fixedwing_control
 		hello
 		hwtest # Hardware test
 		#matlab_csv_serial
+		px4flow_test
 		px4_mavlink_debug # Tutorial code from http://dev.px4.io/en/debug/debug_values.html
 		px4_simple_app # Tutorial code from http://dev.px4.io/en/apps/hello_sky.html
 		rover_steering_control # Rover example app

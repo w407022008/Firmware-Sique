@@ -872,7 +872,7 @@ void Ekf2::Run()
 			_imu_bias_reset_request = !_ekf.reset_imu_bias();
 		}
 
-        // push imu data into estimator to predictState in ekf.cpp
+        // push imu data into estimator to predictState in ekf.cpp. _imu_buffer->_imu_sample_delayed->predictState
 		_ekf.setIMUData(imu_sample_new);
 
 		// publish attitude immediately (uses quaternion from output predictor)

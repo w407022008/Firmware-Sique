@@ -1,6 +1,6 @@
 ############################################################################
 #
-#   Copyright (c) 2017-2020 PX4 Development Team. All rights reserved.
+#   Copyright (c) 2015 PX4 Development Team. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -31,13 +31,10 @@
 #
 ############################################################################
 px4_add_module(
-	MODULE drivers__anemometer__sfm3000
-	MAIN sfm3000
+	MODULE examples__px4flow_test
+	MAIN px4flow_test
+	STACK_MAIN 2000
 	SRCS
-		sfm3000_main.cpp
-		sfm3000.cpp
-		sfm3000.hpp
+		px4flow_test.c
 	DEPENDS
-		drivers_anemometer
-		px4_work_queue
 	)

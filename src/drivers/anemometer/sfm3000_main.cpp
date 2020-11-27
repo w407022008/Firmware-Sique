@@ -31,13 +31,13 @@
  *
  ****************************************************************************/
 
-#include "sfm.hpp"
+#include "sfm3000.hpp"
 
 #include <px4_platform_common/getopt.h>
 #include <px4_platform_common/module.h>
 
 void
-sfm::print_usage()
+sfm3000::print_usage()
 {
 	PRINT_MODULE_DESCRIPTION(
 		R"DESCR_STR(
@@ -45,22 +45,22 @@ sfm::print_usage()
 
 I2C bus driver for SENSIRION SFM3000 Low Pressure DropDigital Flow Meter (i2c).
 
-The sensor/driver must be enabled using the parameter SENS_EN_SFM.
+The sensor/driver must be enabled using the parameter SENS_EN_SFM3000.
 
 Setup/usage information: https://docs.px4.io/master/en/sensor/tfmini.html
 )DESCR_STR");
-	PRINT_MODULE_USAGE_NAME("sfm", "driver");
+	PRINT_MODULE_USAGE_NAME("sfm3000", "driver");
 	PRINT_MODULE_USAGE_SUBCATEGORY("anemometer");
 	PRINT_MODULE_USAGE_COMMAND("start");
 	PRINT_MODULE_USAGE_PARAMS_I2C_SPI_DRIVER(true, false);
-	PRINT_MODULE_USAGE_PARAM_INT('R', 25, 1, 25, "Sensor rotation - downward facing by default", true);
+	PRINT_MODULE_USAGE_PARAM_INT('R', 0, 1, 25, "Sensor rotation - forward facing by default", true);
 	PRINT_MODULE_USAGE_DEFAULT_COMMANDS();
 }
 
-I2CSPIDriverBase *sfm::instantiate(const BusCLIArguments &cli, const BusInstanceIterator &iterator,
+I2CSPIDriverBase *sfm3000::instantiate(const BusCLIArguments &cli, const BusInstanceIterator &iterator,
 				     int runtime_instance)
 {
-        sfm *instance = new sfm(iterator.configuredBusOption(), iterator.bus(), cli.orientation, cli.bus_frequency);
+        sfm3000 *instance = new sfm3000(iterator.configuredBusOption(), iterator.bus(), cli.orientation, cli.bus_frequency);
 
 	if (instance == nullptr) {
 		PX4_ERR("alloc failed");
@@ -76,12 +76,12 @@ I2CSPIDriverBase *sfm::instantiate(const BusCLIArguments &cli, const BusInstance
 	return instance;
 }
 
-extern "C" __EXPORT int sfm_main(int argc, char *argv[])
+extern "C" __EXPORT int sfm3000_main(int argc, char *argv[])
 {
 	int ch;
-	using ThisDriver = sfm;
+	using ThisDriver = sfm3000;
         BusCLIArguments cli{true, false};// I2C ? SPI
-        cli.orientation = windspeed_s::ROTATION_RIGHT_FACING;
+        cli.orientation = windspeed_s::ROTATION_FORWARD_FACING;
         cli.default_i2c_frequency = 400000;
 
 	while ((ch = cli.getopt(argc, argv, "R:")) != EOF) {

@@ -1,6 +1,6 @@
 ############################################################################
 #
-#   Copyright (c) 2017-2020 PX4 Development Team. All rights reserved.
+#   Copyright (c) 2018 PX4 Development Team. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -30,14 +30,13 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 ############################################################################
+
 px4_add_module(
-	MODULE drivers__anemometer__sfm3000
-	MAIN sfm3000
+	MODULE templates__custom_airspeed_estimation
+	MAIN custom_airspeed_estimation
 	SRCS
-		sfm3000_main.cpp
-		sfm3000.cpp
-		sfm3000.hpp
+		custom_airspeed_estimation.cpp
 	DEPENDS
-		drivers_anemometer
 		px4_work_queue
 	)
+

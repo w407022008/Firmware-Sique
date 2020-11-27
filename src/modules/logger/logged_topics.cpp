@@ -111,7 +111,6 @@ void LoggedTopics::add_default_topics()
 	add_topic_multi("multirotor_motor_limits", 1000);
 	add_topic_multi("telemetry_status", 1000);
 	add_topic_multi("wind_estimate", 1000);
-    add_topic_multi("windspeed", 1000);
 
 	// log all raw sensors at minimal rate (at least 1 Hz)
 	add_topic_multi("battery_status", 300);
@@ -125,6 +124,7 @@ void LoggedTopics::add_default_topics()
 	add_topic_multi("vehicle_gps_position", 1000);
 	add_topic_multi("vehicle_imu", 500);
 	add_topic_multi("vehicle_imu_status", 1000);
+	add_topic_multi("windspeed", 100);//custom message
 
 #ifdef CONFIG_ARCH_BOARD_PX4_SITL
 	add_topic("actuator_controls_virtual_fw");
@@ -222,9 +222,10 @@ void LoggedTopics::add_raw_imu_accel_fifo()
 void LoggedTopics::add_system_identification_topics()
 {
 	// for system id need to log imu and controls at full rate
-	add_topic("actuator_controls_0");
-	add_topic("actuator_controls_1");
-	add_topic("sensor_combined");
+	//add_topic("actuator_controls_0");
+	//add_topic("actuator_controls_1");
+	//add_topic("sensor_combined");
+	add_topic("custom_airspeed_estimation");
 }
 
 int LoggedTopics::add_topics_from_file(const char *fname)

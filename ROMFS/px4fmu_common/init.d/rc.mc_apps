@@ -68,3 +68,8 @@ mc_pos_control start
 # Start Multicopter Land Detector.
 #
 land_detector start multicopter
+
+#
+# Publish Custom Airspeed Estimation Topic
+#
+custom_airspeed_estimation start

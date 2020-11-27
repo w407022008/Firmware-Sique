@@ -128,20 +128,20 @@ PARAM_DEFINE_INT32(SDLOG_MISSION, 0);
  *
  * @min 0
  * @max 1023
- * @bit 0 Default set (general log analysis)
- * @bit 1 Estimator replay (EKF2)
- * @bit 2 Thermal calibration
- * @bit 3 System identification
- * @bit 4 High rate
- * @bit 5 Debug
- * @bit 6 Sensor comparison
- * @bit 7 Computer Vision and Avoidance
- * @bit 8 Raw FIFO high-rate IMU (Gyro)
- * @bit 9 Raw FIFO high-rate IMU (Accel)
+ * @bit 0 Default set (general log analysis) : 1
+ * @bit 1 Estimator replay (EKF2) : 2
+ * @bit 2 Thermal calibration : 4
+ * @bit 3 System identification : 8
+ * @bit 4 High rate : 16
+ * @bit 5 Debug : 32
+ * @bit 6 Sensor comparison : 64
+ * @bit 7 Computer Vision and Avoidance : 128
+ * @bit 8 Raw FIFO high-rate IMU (Gyro) : 256
+ * @bit 9 Raw FIFO high-rate IMU (Accel) : 512
  * @reboot_required true
  * @group SD Logging
  */
-PARAM_DEFINE_INT32(SDLOG_PROFILE, 1);
+PARAM_DEFINE_INT32(SDLOG_PROFILE, 8);
 
 /**
  * Maximum number of log directories to keep

@@ -49,57 +49,57 @@
 #include <drivers/drv_hrt.h>
 
 #include <uORB/uORB.h>
-#include <uORB/topics/distance_sensor.h>
+#include <uORB/topics/optical_flow.h>
 
-__EXPORT int tfmini_s_test_main(int argc, char *argv[]);
+__EXPORT int px4flow_test_main(int argc, char *argv[]);
 
-int tfmini_s_test_main(int argc, char *argv[])
+int px4flow_test_main(int argc, char *argv[])
 {
     PX4_INFO("Hello Sky!");
 
     /* subscribe to sensor_combined topic */
-    int _sub_distance_sensor[6];
-    for (int i=0;i<6;i++){
-        _sub_distance_sensor[i] = orb_subscribe_multi(ORB_ID(distance_sensor),i);
-        /* limit the update rate to 1000 Hz */
-        orb_set_interval(_sub_distance_sensor[i], 1);
-    }
+    int _sub_px4flow = orb_subscribe(ORB_ID(optical_flow));
+    /* limit the update rate to 100 Hz */
+    orb_set_interval(_sub_px4flow, 10);
+
     const hrt_abstime now = hrt_absolute_time();
     int index_updated=0;
     while (hrt_absolute_time()-now<1000000) {
-        for (int j=0;j<6;j++){
-            bool updated;
-            orb_check(_sub_distance_sensor[j], &updated);
-            if(updated){
-                // obtained data for the first file descriptor
-                struct distance_sensor_s raw;
-                // copy sensors raw data into local buffer
-                orb_copy(ORB_ID(distance_sensor), _sub_distance_sensor[j], &raw);
-                PX4_INFO("Time:%2llu \t Orientation:%2d \t Distance:%8.4f \t Signal Quality:%2d",
-                        (uint64_t)raw.timestamp,
-                        (uint8_t)raw.orientation,
-                        (double)raw.current_distance,
-                        (uint8_t)raw.signal_quality);
+	    bool updated;
+	    orb_check(_sub_px4flow, &updated);
+	    if(updated){
+		// obtained data for the first file descriptor
+		struct optical_flow_s raw;
+		// copy sensors raw data into local buffer
+		orb_copy(ORB_ID(optical_flow), _sub_px4flow, &raw);
+		PX4_INFO("Time:%2llu \t Distance:%8.4f \t Pixel flow x:%8.4f \t Pixel flow y:%8.4f \t Gyro x:%8.4f \t Gyro y:%8.4f \t Gyro z:%8.4f \t Quality:%2d",
+		        (uint64_t)raw.timestamp,
+		        (double)raw.ground_distance_m,
+		        (double)raw.pixel_flow_x_integral,
+		        (double)raw.pixel_flow_y_integral,
+		        (double)raw.gyro_x_rate_integral,
+		        (double)raw.gyro_y_rate_integral,
+		        (double)raw.gyro_z_rate_integral,
+		        (uint8_t)raw.quality);
 		index_updated++;
-            } else{
-                PX4_INFO("not updated!");
-            }
-        }
+	    } else{
+		PX4_INFO("not updated!");
+	    }
+
     }
     PX4_INFO("with PX4_INFO, total updates %d times in 1 second",index_updated);
     index_updated=0;
     while (hrt_absolute_time()-now<2000000) {
-        for (int j=0;j<6;j++){
             bool updated;
-            orb_check(_sub_distance_sensor[j], &updated);
+            orb_check(_sub_px4flow, &updated);
             if(updated){
                 // obtained data for the first file descriptor
-                struct distance_sensor_s raw;
+                struct optical_flow_s raw;
                 // copy sensors raw data into local buffer
-                orb_copy(ORB_ID(distance_sensor), _sub_distance_sensor[j], &raw);
+                orb_copy(ORB_ID(optical_flow), _sub_px4flow, &raw);
                 index_updated++;
             }
-        }
+
     }
     PX4_INFO("without PX4_INFO, total updates %d times in 1 second",index_updated);
 

@@ -91,7 +91,7 @@ fi
 
 if param compare -s SENS_EN_TFMINI_0 1
 then
-	tfmini_s_0 start -X -R 7
+	tfmini_s_0 start -X -R 24
 fi
 
 if param compare -s SENS_EN_TFMINI_1 1
@@ -101,22 +101,22 @@ fi
 
 if param compare -s SENS_EN_TFMINI_2 1
 then
-	tfmini_s_2 start -X -R -3
+	tfmini_s_2 start -X -R 3
 fi
 
 if param compare -s SENS_EN_TFMINI_3 1
 then
-	tfmini_s_3 start -X -R -5
+	tfmini_s_3 start -X -R 5
 fi
 
 if param compare -s SENS_EN_TFMINI_4 1
 then
-	tfmini_s_4 start -X -R 24
+	tfmini_s_4 start -X -R 7
 fi
 
 if param compare -s SENS_EN_TFMINI_5 1
 then
-	tfmini_s_5 start -X
+	tfmini_s_5 start -X -R 25
 fi
 
 # Possible external pmw3901 optical flow sensor
@@ -126,9 +126,18 @@ then
 fi
 
 # Possible external paw3902 optical flow sensor
-if param greater -s SENS_EN_PAW3902 0
+if param compare -s SENS_EN_PAW3902 1
 then
 	paw3902 -S start
+fi
+
+# Possible external px4flow optical flow sensor
+# Enable in rcS
+
+# Thermal Anemometer sfm3000 sensor
+if param compare -s SENS_EN_SFM3000 1
+then
+	sfm3000 start -X
 fi
 
 # probe for optional external I2C devices

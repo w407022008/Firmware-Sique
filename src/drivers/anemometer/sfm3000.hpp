@@ -32,7 +32,7 @@
  ****************************************************************************/
 
 /**
- * @file tfmin_s.cpp
+ * @file sfm3000.cpp
  * @author Ze WANG
  *
  * Driver for the SFM3000 Anemometer connected via I2C.
@@ -53,16 +53,16 @@ using namespace time_literals;
 #define SFM_BASEADDR                 	0x40 // 7-bit address.
 
 /* Device limits */
-#define SFM_MEASUREMENT_INTERVAL         500 // us
+#define SFM_MEASUREMENT_INTERVAL         1000 // us
 
 #define ANEMOMETER_MAX_SENSORS           	3	// Maximum number of sensors on bus
 #define TCA9578A_MAX_CHANAL					8	// Maximum number of chanals of multiplexer TCA9578A
 
-class sfm : public device::I2C, public I2CSPIDriver<sfm>
+class sfm3000 : public device::I2C, public I2CSPIDriver<sfm3000>
 {
 public:
-    sfm(I2CSPIBusOption bus_option, const int bus, const uint8_t rotation, int bus_frequency);
-    ~sfm() override;
+    sfm3000(I2CSPIBusOption bus_option, const int bus, const uint8_t rotation, int bus_frequency);
+    ~sfm3000() override;
 
     static I2CSPIDriverBase *instantiate(const BusCLIArguments &cli, const BusInstanceIterator &iterator,
                                          int runtime_instance);

@@ -63,7 +63,7 @@
 /* PX4FLOW Registers addresses */
 #define PX4FLOW_REG			0x16	///< Measure Register 22
 
-#define PX4FLOW_CONVERSION_INTERVAL_DEFAULT 100000	///< in microseconds! = 10Hz
+#define PX4FLOW_CONVERSION_INTERVAL_DEFAULT 10000	///< in microseconds! = 100Hz
 #define PX4FLOW_CONVERSION_INTERVAL_MIN      10000	///< in microseconds! = 100 Hz
 #define PX4FLOW_CONVERSION_INTERVAL_MAX    1000000	///< in microseconds! = 1 Hz
 

@@ -53,7 +53,7 @@ PARAM_DEFINE_INT32(SENS_EN_TCA9578A, 0);
  * @value 0 Disabled
  * @value 1 SFM3000
  */
-PARAM_DEFINE_INT32(SENS_EN_SFM, 0);
+PARAM_DEFINE_INT32(SENS_EN_SFM3000, 1);
 
 /**
  * SFM Sensor 0 Rotation
