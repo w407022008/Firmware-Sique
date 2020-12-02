@@ -120,7 +120,7 @@ px4_add_board(
 		ver
 		work_queue
 	EXAMPLES
-                anemometer_test
+		anemometer_test
 		custom_airspeed_estimation_test
 		fake_magnetometer
 		fixedwing_control # Tutorial code from https://px4.io/dev/example_fixedwing_control

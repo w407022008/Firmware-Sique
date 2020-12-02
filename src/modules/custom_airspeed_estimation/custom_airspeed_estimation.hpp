@@ -42,11 +42,13 @@
 #include <uORB/Subscription.hpp>
 #include <uORB/topics/parameter_update.h>
 #include <uORB/topics/actuator_controls.h>
+#include <uORB/topics/actuator_outputs.h>
 #include <uORB/topics/vehicle_angular_velocity.h>
 #include <uORB/topics/vehicle_attitude.h>
 #include <uORB/topics/vehicle_acceleration.h>
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/windspeed.h>
+#include <uORB/topics/battery_status.h>
 
 #include <uORB/topics/custom_airspeed_estimation.h>
 
@@ -90,20 +92,17 @@ private:
 	// Subscriptions
 	uORB::Subscription	_parameter_update_sub{ORB_ID(parameter_update)};
 	uORB::Subscription 	_actuator_controls_sub{ORB_ID(actuator_controls_0)};
+	uORB::Subscription 	_actuator_outputs_sub{ORB_ID(actuator_outputs),1};
 	uORB::Subscription 	_vehicle_rate_sub{ORB_ID(vehicle_angular_velocity)};
 	uORB::Subscription 	_vehicle_attitude_sub{ORB_ID(vehicle_attitude)};
 	uORB::Subscription 	_vehicle_local_sub{ORB_ID(vehicle_local_position)};
+	uORB::Subscription 	_vehicle_acceleration_sub{ORB_ID(vehicle_acceleration)};
 	uORB::Subscription 	_windspeed_sub{ORB_ID(windspeed)};
+	uORB::Subscription 	_battery_sub{ORB_ID(battery_status)};
 	uORB::Subscription 	_cst_airspeed_est_sub{ORB_ID(custom_airspeed_estimation)};
 
 	// Publications
 	uORB::PublicationData<custom_airspeed_estimation_s>	_cst_airspeed_est_pub{ORB_ID(custom_airspeed_estimation)};			/**< rate setpoint publication */
-
-	bool _actuator_controls_updated;
-	bool _vehicle_rate_updated;
-	bool _vehicle_attitude_updated;
-	bool _vehicle_local_updated;
-	bool _windspeed_updated;
 
 	perf_counter_t	_loop_perf{perf_alloc(PC_ELAPSED, MODULE_NAME": cycle")};
 	perf_counter_t	_loop_interval_perf{perf_alloc(PC_INTERVAL, MODULE_NAME": interval")};

@@ -7,6 +7,7 @@ bool z_valid				# true if z is valid
 bool v_xy_valid				# true if vy and vy are valid
 bool v_z_valid				# true if vz is valid
 
+## ========================== Local frame ==============================
 # Position in local NED frame
 float32 x				# North position in NED earth-fixed frame, (metres)
 float32 y				# East position in NED earth-fixed frame, (metres)
@@ -31,6 +32,7 @@ uint8 vxy_reset_counter
 
 float32 delta_vz
 uint8 vz_reset_counter
+
 # Acceleration in NED frame
 float32 ax        # North velocity derivative in NED earth-fixed frame, (metres/sec^2)
 float32 ay        # East velocity derivative in NED earth-fixed frame, (metres/sec^2)
@@ -40,6 +42,7 @@ float32 heading				# Euler yaw angle transforming the tangent plane relative to 
 float32 delta_heading
 uint8 heading_reset_counter
 
+## ========================== Global frame ==============================
 # Position of reference point (local NED frame origin) in global (GPS / WGS84) frame
 bool xy_global				# true if position (x, y) has a valid global reference (ref_lat, ref_lon)
 bool z_global				# true if z has a valid global reference (ref_alt)

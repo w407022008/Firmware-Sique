@@ -90,9 +90,15 @@ void AirspeedEstimation::Run()
 	if (_cst_airspeed_est_sub.updated()){
 		custom_airspeed_estimation_s last_data;
 		_cst_airspeed_est_sub.update(&last_data);
+
 		report.timestamp_sample_ctl = last_data.timestamp_sample_ctl;
 		for(int i=0;i<4;i++){
 			report.control[i] = last_data.control[i];
+		}
+
+		report.timestamp_sample_pwm = last_data.timestamp_sample_pwm;
+		for(int i=0;i<4;i++){
+			report.output[i] = last_data.output[i];
 		}
 
 		report.timestamp_sample_rate = last_data.timestamp_sample_rate;
@@ -105,16 +111,24 @@ void AirspeedEstimation::Run()
 			report.vehicle_attitude_quaternion_ned[i] = last_data.vehicle_attitude_quaternion_ned[i];
 		}
 
-		report.timestamp_sample_local = last_data.timestamp_sample_local;
-		report.vehicle_acceleration_ned[0] = last_data.vehicle_acceleration_ned[0];
-		report.vehicle_acceleration_ned[1] = last_data.vehicle_acceleration_ned[1];
-		report.vehicle_acceleration_ned[2] = last_data.vehicle_acceleration_ned[2];
-		report.vehicle_velocity_ned[0] = last_data.vehicle_velocity_ned[0];
-		report.vehicle_velocity_ned[1] = last_data.vehicle_velocity_ned[1];
-		report.vehicle_velocity_ned[2] = last_data.vehicle_velocity_ned[2];
+		report.timestamp_sample_acc = last_data.timestamp_sample_acc;
+		report.vehicle_acceleration_xyz[0] = last_data.vehicle_acceleration_xyz[0];
+		report.vehicle_acceleration_xyz[1] = last_data.vehicle_acceleration_xyz[1];
+		report.vehicle_acceleration_xyz[2] = last_data.vehicle_acceleration_xyz[2];
+
+		report.timestamp_sample_ground_truth = last_data.timestamp_sample_ground_truth;
+		report.ground_truth_acceleration_ned[0] = last_data.ground_truth_acceleration_ned[0];
+		report.ground_truth_acceleration_ned[1] = last_data.ground_truth_acceleration_ned[1];
+		report.ground_truth_acceleration_ned[2] = last_data.ground_truth_acceleration_ned[2];
+		report.ground_truth_velocity_ned[0] = last_data.ground_truth_velocity_ned[0];
+		report.ground_truth_velocity_ned[1] = last_data.ground_truth_velocity_ned[1];
+		report.ground_truth_velocity_ned[2] = last_data.ground_truth_velocity_ned[2];
 
 		report.timestamp_sample_wind = last_data.timestamp_sample_wind;
 		report.windspeed_x = last_data.windspeed_x;
+
+		report.timestamp_sample_bat = last_data.timestamp_sample_bat;
+		report.scale = last_data.scale;
 	}
 
 	if (_actuator_controls_sub.updated()){
@@ -126,12 +140,30 @@ void AirspeedEstimation::Run()
 		}
 	}
 
+	if (_actuator_outputs_sub.updated()){
+		actuator_outputs_s actuator_outputs;
+		_actuator_outputs_sub.update(&actuator_outputs);
+		report.timestamp_sample_pwm = actuator_outputs.timestamp;
+		for(int i=0;i<4;i++){
+			report.output[i] = actuator_outputs.output[i];
+		}
+	}
+
 	if (_vehicle_rate_sub.updated()){
 		vehicle_angular_velocity_s vehicle_angular_velocity;
 		_vehicle_rate_sub.update(&vehicle_angular_velocity);
 		report.timestamp_sample_rate = vehicle_angular_velocity.timestamp_sample;
 		for(int i=0;i<3;i++){
 			report.vehicle_angular_velocity_xyz[i] = vehicle_angular_velocity.xyz[i];
+		}
+	}
+
+	if (_vehicle_acceleration_sub.updated()){
+		vehicle_acceleration_s vehicle_acceleration;
+		_vehicle_acceleration_sub.update(&vehicle_acceleration);
+		report.timestamp_sample_acc = vehicle_acceleration.timestamp_sample;
+		for(int i=0;i<3;i++){
+			report.vehicle_acceleration_xyz[i] = vehicle_acceleration.xyz[i];
 		}
 	}
 
@@ -145,15 +177,15 @@ void AirspeedEstimation::Run()
 	}
 
 	if (_vehicle_local_sub.updated()){
-		vehicle_local_position_s vehicle_local_data;
-		_vehicle_local_sub.update(&vehicle_local_data);
-		report.timestamp_sample_local = vehicle_local_data.timestamp;
-		report.vehicle_acceleration_ned[0] = vehicle_local_data.ax;
-		report.vehicle_acceleration_ned[1] = vehicle_local_data.ay;
-		report.vehicle_acceleration_ned[2] = vehicle_local_data.az;
-		report.vehicle_velocity_ned[0] = vehicle_local_data.vx;
-		report.vehicle_velocity_ned[1] = vehicle_local_data.vy;
-		report.vehicle_velocity_ned[2] = vehicle_local_data.vz;
+		vehicle_local_position_s vehicle_ground_truth;
+		_vehicle_local_sub.update(&vehicle_ground_truth);
+		report.timestamp_sample_ground_truth = vehicle_ground_truth.timestamp;
+		report.ground_truth_acceleration_ned[0] = vehicle_ground_truth.ax;
+		report.ground_truth_acceleration_ned[1] = vehicle_ground_truth.ay;
+		report.ground_truth_acceleration_ned[2] = vehicle_ground_truth.az;
+		report.ground_truth_velocity_ned[0] = vehicle_ground_truth.vx;
+		report.ground_truth_velocity_ned[1] = vehicle_ground_truth.vy;
+		report.ground_truth_velocity_ned[2] = vehicle_ground_truth.vz;
 	}
 
 	if (_windspeed_sub.updated()){
@@ -161,6 +193,13 @@ void AirspeedEstimation::Run()
 		_windspeed_sub.update(&windspeed);
 		report.timestamp_sample_wind = windspeed.timestamp;
 		report.windspeed_x = windspeed.measurement_windspeed_x_m_s;
+	}
+	
+	if (_battery_sub.updated()){
+		battery_status_s battery_status;
+		_battery_sub.update(&battery_status);
+		report.timestamp_sample_bat = battery_status.timestamp;
+		report.scale = battery_status.scale;
 	}
 	
 	report.timestamp = hrt_absolute_time();

@@ -256,8 +256,8 @@ private:
 	int _lockstep_component{-1};
 
 	// because we can have several distance sensor instances with different orientations
-	static constexpr int MAX_RNG_SENSOR_COUNT = 4;
-	uORB::Subscription _range_finder_subs[MAX_RNG_SENSOR_COUNT] {{ORB_ID(distance_sensor), 0}, {ORB_ID(distance_sensor), 1}, {ORB_ID(distance_sensor), 2}, {ORB_ID(distance_sensor), 3}};
+    static constexpr int MAX_RNG_SENSOR_COUNT = 6;
+    uORB::Subscription _range_finder_subs[MAX_RNG_SENSOR_COUNT] {{ORB_ID(distance_sensor), 0}, {ORB_ID(distance_sensor), 1}, {ORB_ID(distance_sensor), 2}, {ORB_ID(distance_sensor), 3}, {ORB_ID(distance_sensor), 4}, {ORB_ID(distance_sensor), 5}};
 	int _range_finder_sub_index = -1; // index for downward-facing range finder subscription
 
 	// because we can have multiple GPS instances

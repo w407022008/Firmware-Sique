@@ -84,7 +84,7 @@ int sfm3000::collect()
         }
 
         uint16_t speed = uint16_t(val[0]) << 8 | val[1];
-        float speed_m_s = static_cast<float>(speed - offset) / scale * slm2ms;
+        float speed_m_s = static_cast<float>(speed - offset) / scale * slm2ms * 7;
         orientation = _sensor_rotations[index];
 
         switch (orientation) {
