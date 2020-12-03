@@ -51,7 +51,7 @@ bool FlightTaskManualAltitude::updateInitialize()
 	bool ret = FlightTask::updateInitialize();
 
 	_sticks.checkAndSetStickInputs(_time_stamp_current);
-	_sticks.setGearAccordingToSwitch(_gear);
+    _sticks.setGearAccordingToSwitch(_gear);// gear up or gear down
 
 	if (_sticks_data_required) {
 		ret = ret && _sticks.isAvailable();
@@ -99,7 +99,7 @@ void FlightTaskManualAltitude::_updateConstraintsFromEstimator()
 void FlightTaskManualAltitude::_scaleSticks()
 {
 	// Use stick input with deadzone, exponential curve and first order lpf for yawspeed
-	const float yawspeed_target = _sticks.getPositionExpo()(3) * math::radians(_param_mpc_man_y_max.get());
+    const float yawspeed_target = _sticks.getPositionExpo()(3) * math::radians(_param_mpc_man_y_max.get());// default:150deg/s
 	_yawspeed_setpoint = _applyYawspeedFilter(yawspeed_target);
 
 	// Use sticks input with deadzone and exponential curve for vertical velocity
@@ -295,7 +295,7 @@ void FlightTaskManualAltitude::_respectGroundSlowdown()
 void FlightTaskManualAltitude::_rotateIntoHeadingFrame(Vector2f &v)
 {
 	float yaw_rotate = PX4_ISFINITE(_yaw_setpoint) ? _yaw_setpoint : _yaw;
-	Vector3f v_r = Vector3f(Dcmf(Eulerf(0.0f, 0.0f, yaw_rotate)) * Vector3f(v(0), v(1), 0.0f));
+    Vector3f v_r = Vector3f(Dcmf(Eulerf(0.0f, 0.0f, yaw_rotate)) * Vector3f(v(0), v(1), 0.0f));
 	v(0) = v_r(0);
 	v(1) = v_r(1);
 }
@@ -344,7 +344,7 @@ void FlightTaskManualAltitude::_ekfResetHandlerHeading(float delta_psi)
 
 void FlightTaskManualAltitude::_updateSetpoints()
 {
-	_updateHeadingSetpoints(); // get yaw setpoint
+    _updateHeadingSetpoints(); // keep yaw&yawspeed(ekfRest when update from sub_local_pos) or track yawspeed_setpoint
 
 	// Thrust in xy are extracted directly from stick inputs. A magnitude of
 	// 1 means that maximum thrust along xy is demanded. A magnitude of 0 means no
@@ -353,11 +353,11 @@ void FlightTaskManualAltitude::_updateSetpoints()
 
 	Vector2f sp(_sticks.getPosition().slice<2, 1>(0, 0));
 
-	_man_input_filter.setParameters(_deltatime, _param_mc_man_tilt_tau.get());
-	_man_input_filter.update(sp);
-	sp = _man_input_filter.getState();
-	_rotateIntoHeadingFrame(sp);
+    _man_input_filter.setParameters(_deltatime, _param_mc_man_tilt_tau.get());//This is an AlphaFilter, where the param is by default:0.0s (means disable the filter)
+    _man_input_filter.update(sp);// filter is disabled due to 0.0s
+    sp = _man_input_filter.getState();//sp=sp
 
+    //_rotateIntoHeadingFrame(sp);// manul_input_xy(in NED) to manul_input_xy(in XYZ)
 	if (sp.length() > 1.0f) {
 		sp.normalize();
 	}

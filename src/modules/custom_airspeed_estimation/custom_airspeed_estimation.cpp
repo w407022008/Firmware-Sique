@@ -128,7 +128,7 @@ void AirspeedEstimation::Run()
 		report.windspeed_x = last_data.windspeed_x;
 
 		report.timestamp_sample_bat = last_data.timestamp_sample_bat;
-		report.scale = last_data.scale;
+		report.battery_scale = last_data.battery_scale;
 	}
 
 	if (_actuator_controls_sub.updated()){
@@ -199,7 +199,7 @@ void AirspeedEstimation::Run()
 		battery_status_s battery_status;
 		_battery_sub.update(&battery_status);
 		report.timestamp_sample_bat = battery_status.timestamp;
-		report.scale = battery_status.scale;
+		report.battery_scale = battery_status.scale;
 	}
 	
 	report.timestamp = hrt_absolute_time();

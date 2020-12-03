@@ -205,7 +205,7 @@ private:
 
 	systemlib::Hysteresis _failsafe_land_hysteresis{false}; /**< becomes true if task did not update correctly for LOITER_TIME_BEFORE_DESCEND */
 
-	WeatherVane *_wv_controller{nullptr};
+    WeatherVane *_wv_controller{nullptr}; // Just used when vtol aircraft
 	Vector3f _wv_dcm_z_sp_prev{0, 0, 1};
 
 	perf_counter_t _cycle_perf;
@@ -405,7 +405,7 @@ MulticopterPositionControl::poll_subscriptions()
 	_control_mode_sub.update(&_control_mode);
 	_home_pos_sub.update(&_home_pos);
 
-	if (_param_mpc_use_hte.get()) {
+    if (_param_mpc_use_hte.get()) {// by default: enable
 		hover_thrust_estimate_s hte;
 
 		if (_hover_thrust_estimate_sub.update(&hte)) {
@@ -535,7 +535,7 @@ MulticopterPositionControl::Run()
 		const bool was_in_failsafe = _in_failsafe;
 		_in_failsafe = false;
 
-		// activate the weathervane controller if required. If activated a flighttask can use it to implement a yaw-rate control strategy
+        // activate the weathervane controller if required (VTOL Mode). If activated a flighttask can use it to implement a yaw-rate control strategy
 		// that turns the nose of the vehicle into the wind
 		if (_wv_controller != nullptr) {
 
@@ -726,7 +726,7 @@ MulticopterPositionControl::start_flight_task()
 		return;
 	}
 
-    // transition
+    // Transition
 	if (_vehicle_status.in_transition_mode) {
 		should_disable_task = false;
 		FlightTaskError error = _flight_tasks.switchTask(FlightTaskIndex::Transition);
@@ -747,7 +747,7 @@ MulticopterPositionControl::start_flight_task()
 		return;
 	}
 
-	// offboard
+    // Offboard
 	if (_vehicle_status.nav_state == vehicle_status_s::NAVIGATION_STATE_OFFBOARD
 	    && (_control_mode.flag_control_altitude_enabled ||
 		_control_mode.flag_control_position_enabled ||
@@ -772,7 +772,10 @@ MulticopterPositionControl::start_flight_task()
 		}
 	}
 
-	// Auto-follow me
+    // Auto
+    //  AutoFollowMe
+    //  AutoLineSmoothVel
+    //  Descend
 	if (_vehicle_status.nav_state == vehicle_status_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET) {
 		should_disable_task = false;
 		FlightTaskError error = _flight_tasks.switchTask(FlightTaskIndex::AutoFollowMe);
@@ -833,7 +836,11 @@ MulticopterPositionControl::start_flight_task()
 
 	}
 
-	// manual position control
+    // Manual Position Control
+    // switch (_param_mpc_pos_mode.get()):
+    //  ManualPositionSmooth
+    //  ManualPositionSmoothVel
+    //  ManualPosition
 	if (_vehicle_status.nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL || task_failure) {
 		should_disable_task = false;
 		FlightTaskError error = FlightTaskError::NoError;
@@ -866,7 +873,11 @@ MulticopterPositionControl::start_flight_task()
 		}
 	}
 
-	// manual altitude control
+    // Manual Altitude Control
+    // switch (_param_mpc_pos_mode.get()):
+    //  ManualAltitudeSmooth
+    //  ManualAltitudeSmoothVel
+    //  ManualAltitude
 	if (_vehicle_status.nav_state == vehicle_status_s::NAVIGATION_STATE_ALTCTL || task_failure) {
 		should_disable_task = false;
 		FlightTaskError error = FlightTaskError::NoError;
@@ -899,11 +910,12 @@ MulticopterPositionControl::start_flight_task()
 		}
 	}
 
+    // Orbit
 	if (_vehicle_status.nav_state == vehicle_status_s::NAVIGATION_STATE_ORBIT) {
 		should_disable_task = false;
 	}
 
-	// check task failure
+    // Check Task Failure
 	if (task_failure) {
 
 		// for some reason no flighttask was able to start.
