@@ -36,6 +36,7 @@ px4_add_module(
 	MAIN custom_airspeed_estimation
 	SRCS
 		custom_airspeed_estimation.cpp
+		custom_airspeed_estimation.hpp
 	DEPENDS
 		px4_work_queue
 	)

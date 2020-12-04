@@ -173,8 +173,8 @@ int sfm3000::init()
                 PX4_DEBUG("There is not any sensor connected");
             }
             _sensor_count=1;
-            _sensor_rotations[1]=windspeed_s::ROTATION_FORWARD_FACING;
-            _sensor_chanal[1]=128;
+            _sensor_rotations[0]=windspeed_s::ROTATION_FORWARD_FACING;
+            _sensor_chanal[0]=128;
         }
     }
         break;
@@ -198,13 +198,13 @@ sfm3000::get_sensor_rotation(const size_t index)
     param_get(param_find("SFM_ROT_Z"),&_q_sensor_z);
     switch (index) {
     case 0:
-        return (_q_sensor_x == 1)?windspeed_s::ROTATION_FORWARD_FACING:((_q_sensor_y == 1)?windspeed_s::ROTATION_RIGHT_FACING:((_q_sensor_z == 1)?windspeed_s::ROTATION_DOWNWARD_FACING:-1));
+        return (_q_sensor_x == 1)?windspeed_s::ROTATION_FORWARD_FACING:((_q_sensor_y == 1)?windspeed_s::ROTATION_RIGHT_FACING:((_q_sensor_z == 1)?windspeed_s::ROTATION_DOWNWARD_FACING:128));
 
     case 1:
-        return (_q_sensor_x == 2)?windspeed_s::ROTATION_FORWARD_FACING:((_q_sensor_y == 2)?windspeed_s::ROTATION_RIGHT_FACING:((_q_sensor_z == 2)?windspeed_s::ROTATION_DOWNWARD_FACING:-1));
+        return (_q_sensor_x == 2)?windspeed_s::ROTATION_FORWARD_FACING:((_q_sensor_y == 2)?windspeed_s::ROTATION_RIGHT_FACING:((_q_sensor_z == 2)?windspeed_s::ROTATION_DOWNWARD_FACING:128));
 
     case 2:
-        return (_q_sensor_x == 3)?windspeed_s::ROTATION_FORWARD_FACING:((_q_sensor_y == 3)?windspeed_s::ROTATION_RIGHT_FACING:((_q_sensor_z == 3)?windspeed_s::ROTATION_DOWNWARD_FACING:-1));
+        return (_q_sensor_x == 3)?windspeed_s::ROTATION_FORWARD_FACING:((_q_sensor_y == 3)?windspeed_s::ROTATION_RIGHT_FACING:((_q_sensor_z == 3)?windspeed_s::ROTATION_DOWNWARD_FACING:128));
 
     default: return PX4_ERROR;
     }
