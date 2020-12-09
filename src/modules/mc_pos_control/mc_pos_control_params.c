@@ -395,6 +395,52 @@ PARAM_DEFINE_FLOAT(MPC_TKO_SPEED, 1.5f);
 PARAM_DEFINE_FLOAT(MPC_MAN_TILT_MAX, 35.0f);
 
 /**
+ * Yaw input mode.
+ *
+ *
+ * @min 0
+ * @max 2
+ * @value 0 Yaw rate input
+ * @value 1 Yaw angular acceleration input
+ * @group Multicopter Position Control
+ */
+PARAM_DEFINE_INT32(MPC_MAN_Y_MODE, 1);
+
+/**
+ * Max manual yaw angular acceleration
+ *
+ * @unit rad/s^2
+ * @min 0.0
+ * @max 3.14
+ * @decimal 1
+ * @group Multicopter Position Control
+ */
+PARAM_DEFINE_FLOAT(MPC_MAN_Y_A_MAX, 2.0f);
+
+/**
+ * Manual yaw angular acceleration input filter time constant
+ * Setting this parameter to 0 disables the filter
+ *
+ * @unit s
+ * @min 0.0
+ * @max 5.0
+ * @decimal 2
+ * @group Multicopter Position Control
+ */
+PARAM_DEFINE_FLOAT(MPC_MAN_Y_A_TAU, 0.08f);
+
+/**
+ * Max manual yaw rate
+ *
+ * @unit deg
+ * @min -180
+ * @max 180
+ * @decimal 1
+ * @group Multicopter Position Control
+ */
+PARAM_DEFINE_FLOAT(MPC_MAN_NED_SET, -70.0f);
+
+/**
  * Max manual yaw rate
  *
  * @unit deg/s
@@ -403,7 +449,7 @@ PARAM_DEFINE_FLOAT(MPC_MAN_TILT_MAX, 35.0f);
  * @decimal 1
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_FLOAT(MPC_MAN_Y_MAX, 150.0f);
+PARAM_DEFINE_FLOAT(MPC_MAN_Y_MAX, 180.0f);
 
 /**
  * Manual yaw rate input filter time constant
@@ -606,7 +652,7 @@ PARAM_DEFINE_FLOAT(MPC_JERK_AUTO, 4.0f);
  * @value 2 Terrain hold
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_INT32(MPC_ALT_MODE, 0);
+PARAM_DEFINE_INT32(MPC_ALT_MODE, 1);
 
 /**
  * Manual position control stick exponential curve sensitivity

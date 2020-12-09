@@ -43,6 +43,9 @@
 #include "Sticks.hpp"
 #include <lib/ecl/AlphaFilter/AlphaFilter.hpp>
 
+#define YAWRATEINPUT 0
+#define YAWACCELINPUT 1
+
 class FlightTaskManualAltitude : public FlightTask
 {
 public:
@@ -80,8 +83,12 @@ protected:
 					(ParamInt<px4::params::MPC_ALT_MODE>) _param_mpc_alt_mode,
 					(ParamFloat<px4::params::MPC_HOLD_MAX_XY>) _param_mpc_hold_max_xy,
 					(ParamFloat<px4::params::MPC_Z_P>) _param_mpc_z_p, /**< position controller altitude propotional gain */
+                    (ParamInt<px4::params::MPC_MAN_Y_MODE>) _param_mpc_man_y_mode, /**< yaw input mode */
+                    (ParamFloat<px4::params::MPC_MAN_NED_SET>) _param_mpc_man_ned_set, /**< rotate the NED frame along D-axis */
 					(ParamFloat<px4::params::MPC_MAN_Y_MAX>) _param_mpc_man_y_max, /**< scaling factor from stick to yaw rate */
 					(ParamFloat<px4::params::MPC_MAN_Y_TAU>) _param_mpc_man_y_tau,
+                    (ParamFloat<px4::params::MPC_MAN_Y_A_MAX>) _param_mpc_man_y_a_max, /**< scaling factor from stick to yaw angular acceleration */
+                    (ParamFloat<px4::params::MPC_MAN_Y_A_TAU>) _param_mpc_man_y_a_tau,
 					(ParamFloat<px4::params::MPC_MAN_TILT_MAX>) _param_mpc_man_tilt_max, /**< maximum tilt allowed for manual flight */
 					(ParamFloat<px4::params::MPC_LAND_ALT1>) _param_mpc_land_alt1, /**< altitude at which to start downwards slowdown */
 					(ParamFloat<px4::params::MPC_LAND_ALT2>) _param_mpc_land_alt2, /**< altitude below wich to land with land speed */
@@ -102,7 +109,7 @@ private:
 	 * @param yawspeed_target yaw setpoint desired by the stick
 	 * @return filtered value from independent filter state
 	 */
-	float _applyYawspeedFilter(float yawspeed_target);
+    float _applyYawspeedFilter(float yawspeed_target, float tau);
 
 	/**
 	 * Terrain following.

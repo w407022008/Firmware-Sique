@@ -65,7 +65,7 @@ bool FlightTaskManualAltitude::activate(const vehicle_local_position_setpoint_s 
 {
 	bool ret = FlightTask::activate(last_setpoint);
 	_yaw_setpoint = NAN;
-	_yawspeed_setpoint = 0.f;
+    _yawspeed_setpoint = 0.f;
 	_acceleration_setpoint = Vector3f(0.f, 0.f, NAN); // altitude is controlled from position/velocity
 	_position_setpoint(2) = _position(2);
 	_velocity_setpoint(2) = 0.f;
@@ -98,18 +98,26 @@ void FlightTaskManualAltitude::_updateConstraintsFromEstimator()
 
 void FlightTaskManualAltitude::_scaleSticks()
 {
-	// Use stick input with deadzone, exponential curve and first order lpf for yawspeed
-    const float yawspeed_target = _sticks.getPositionExpo()(3) * math::radians(_param_mpc_man_y_max.get());// default:150deg/s
-	_yawspeed_setpoint = _applyYawspeedFilter(yawspeed_target);
+    float MPC_MAN_Y_MAX = math::radians(_param_mpc_man_y_max.get());// default:150deg/s -> set: 180deg/s
+    if(_param_mpc_man_y_mode.get()==YAWRATEINPUT) {
+        // Use stick input with deadzone, exponential curve and first order lpf for yawspeed
+        const float yawspeed_target = _sticks.getPositionExpo()(3) * MPC_MAN_Y_MAX;
+        _yawspeed_setpoint = _applyYawspeedFilter(yawspeed_target,_param_mpc_man_y_tau.get());//by default: tau=0.08s
+    } else if(_param_mpc_man_y_mode.get()==YAWACCELINPUT) {
+        // Use stick input with deadzone, exponential curve and first order lpf for yaw angular acceleration
+        const float yawaccel_target = _sticks.getPositionExpo()(3) * _param_mpc_man_y_a_max.get();// default:2rad/s^2
+        _yawspeed_setpoint += _deltatime * _applyYawspeedFilter(yawaccel_target,_param_mpc_man_y_a_tau.get());//by default: tau=0.08s
+        _yawspeed_setpoint = math::constrain(_yawspeed_setpoint, -MPC_MAN_Y_MAX, MPC_MAN_Y_MAX);
+    }
 
 	// Use sticks input with deadzone and exponential curve for vertical velocity
 	const float vel_max_z = (_sticks.getPosition()(2) > 0.0f) ? _constraints.speed_down : _constraints.speed_up;
 	_velocity_setpoint(2) = vel_max_z * _sticks.getPositionExpo()(2);
 }
 
-float FlightTaskManualAltitude::_applyYawspeedFilter(float yawspeed_target)
+float FlightTaskManualAltitude::_applyYawspeedFilter(float yawspeed_target, float tau)
 {
-	const float den = math::max(_param_mpc_man_y_tau.get() + _deltatime, 0.001f);
+    const float den = math::max(tau + _deltatime, 0.001f);
 	const float alpha = _deltatime / den;
 	_yawspeed_filter_state = (1.f - alpha) * _yawspeed_filter_state + alpha * yawspeed_target;
 	return _yawspeed_filter_state;
@@ -127,7 +135,7 @@ void FlightTaskManualAltitude::_updateAltitudeLock()
 	const bool stopped = (_param_mpc_hold_max_z.get() < FLT_EPSILON || fabsf(_velocity(2)) < _param_mpc_hold_max_z.get());
 
 	// Manage transition between use of distance to ground and distance to local origin
-	// when terrain hold behaviour has been selected.
+    // when terrain hold behaviour has been selected. By default: _param_mpc_alt_mode.get() == 1
 	if (_param_mpc_alt_mode.get() == 2) {
 		// Use horizontal speed as a transition criteria
 		float spd_xy = Vector2f(_velocity).length();
@@ -294,10 +302,15 @@ void FlightTaskManualAltitude::_respectGroundSlowdown()
 
 void FlightTaskManualAltitude::_rotateIntoHeadingFrame(Vector2f &v)
 {
-	float yaw_rotate = PX4_ISFINITE(_yaw_setpoint) ? _yaw_setpoint : _yaw;
+    float yaw_rotate = 0.0f;
+    if(_param_mpc_man_y_mode.get()==YAWRATEINPUT) {
+        yaw_rotate = PX4_ISFINITE(_yaw_setpoint) ? _yaw_setpoint : _yaw;
+    } else if(_param_mpc_man_y_mode.get()==YAWACCELINPUT) {
+        yaw_rotate = math::radians(_param_mpc_man_ned_set.get()); //custom set:-50deg
+    }
     Vector3f v_r = Vector3f(Dcmf(Eulerf(0.0f, 0.0f, yaw_rotate)) * Vector3f(v(0), v(1), 0.0f));
-	v(0) = v_r(0);
-	v(1) = v_r(1);
+    v(0) = v_r(0);
+    v(1) = v_r(1);
 }
 
 void FlightTaskManualAltitude::_updateHeadingSetpoints()
@@ -357,7 +370,9 @@ void FlightTaskManualAltitude::_updateSetpoints()
     _man_input_filter.update(sp);// filter is disabled due to 0.0s
     sp = _man_input_filter.getState();//sp=sp
 
-    //_rotateIntoHeadingFrame(sp);// manul_input_xy(in NED) to manul_input_xy(in XYZ)
+    // by default (YAWRATEINPUT):manul_input_xy(in NED) to manul_input_xy(in XYZ)
+    // if set (YAWACCELINPUT):manul_input_xy(in NED) to manul_input_xy(in NED(modified))
+    _rotateIntoHeadingFrame(sp);
 	if (sp.length() > 1.0f) {
 		sp.normalize();
 	}
