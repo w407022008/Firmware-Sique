@@ -39,6 +39,7 @@
  */
 
 #include <float.h>
+#include <matrix/Matrix.hpp>
 
 #include <drivers/drv_hrt.h>
 #include <lib/ecl/EKF/ekf.h>
@@ -1314,6 +1315,13 @@ void Ekf2::Run()
 
 				// Vehicle odometry quaternion
 				q.copyTo(odom.q);
+
+                // Velocity of body origin in local Body frame (m/s)
+                Dcmf earth_to_body = Dcmf(q);
+                const Vector3f v_r = Vector3f(earth_to_body.transpose() * Vector3f(velocity(0), velocity(1), velocity(2)));
+                lpos.vf = v_r(0);
+                lpos.vr = v_r(1);
+                lpos.vd = v_r(2);
 
 				// Vehicle odometry angular rates
 				const Vector3f gyro_bias = _ekf.getGyroBias();

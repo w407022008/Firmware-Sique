@@ -19,6 +19,7 @@ uint64 timestamp_sample_att 			# timestamp of the data sample on which this mess
 
 uint64 timestamp_sample_ground_truth		# timestamp of the data sample on which this message is based (microseconds)
 float32[3] ground_truth_velocity_ned		# Velocity in NED earth-fixed frame, (metres/sec)
+float32[3] ground_truth_velocity_xyz		# Velocity in Body frame, (metres/sec)
 float32[3] ground_truth_acceleration_ned	# Acceleration in NED earth-fixed frame, (metres/sec)
 
 float32 windspeed_x				# Airspeed measurement along x-axis in body frame, (metres/sec)

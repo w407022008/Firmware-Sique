@@ -226,6 +226,7 @@ void LoggedTopics::add_system_identification_topics()
 	//add_topic("actuator_controls_1");
 	//add_topic("sensor_combined");
     add_topic("custom_airspeed_estimation",5);
+    add_topic("windspeed", 2);
 }
 
 int LoggedTopics::add_topics_from_file(const char *fname)

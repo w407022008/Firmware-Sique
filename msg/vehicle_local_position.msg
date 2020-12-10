@@ -25,6 +25,10 @@ float32 vx 				# North velocity in NED earth-fixed frame, (metres/sec)
 float32 vy				# East velocity in NED earth-fixed frame, (metres/sec)
 float32 vz				# Down velocity in NED earth-fixed frame, (metres/sec)
 float32 z_deriv				# Down position time derivative in NED earth-fixed frame, (metres/sec)
+# Velocity in Body frame
+float32 vf 				# Forward velocity in Body frame, (metres/sec)
+float32 vr				# Right velocity in Body frame, (metres/sec)
+float32 vd				# Down velocity in Body frame, (metres/sec)
 
 # Velocity reset delta
 float32[2] delta_vxy

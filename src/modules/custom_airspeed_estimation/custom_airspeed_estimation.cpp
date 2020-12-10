@@ -125,6 +125,9 @@ void AirspeedEstimation::Run()
 		report.ground_truth_velocity_ned[0] = last_data.ground_truth_velocity_ned[0];
 		report.ground_truth_velocity_ned[1] = last_data.ground_truth_velocity_ned[1];
 		report.ground_truth_velocity_ned[2] = last_data.ground_truth_velocity_ned[2];
+                report.ground_truth_velocity_xyz[0] = last_data.ground_truth_velocity_xyz[0];
+                report.ground_truth_velocity_xyz[1] = last_data.ground_truth_velocity_xyz[1];
+                report.ground_truth_velocity_xyz[2] = last_data.ground_truth_velocity_xyz[2];
 
 		report.timestamp_sample_wind = last_data.timestamp_sample_wind;
 		report.windspeed_x = last_data.windspeed_x;
@@ -150,6 +153,9 @@ void AirspeedEstimation::Run()
                 report.ground_truth_velocity_ned[0] = vehicle_ground_truth.vx;
                 report.ground_truth_velocity_ned[1] = vehicle_ground_truth.vy;
                 report.ground_truth_velocity_ned[2] = vehicle_ground_truth.vz;
+                report.ground_truth_velocity_xyz[0] = vehicle_ground_truth.vf;
+                report.ground_truth_velocity_xyz[1] = vehicle_ground_truth.vr;
+                report.ground_truth_velocity_xyz[2] = vehicle_ground_truth.vd;
         }
 
 	if (_vehicle_attitude_sub.updated()){
