@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# @name quad_isir SITL
+# @name mav_isir SITL
 #
 # @type Quadrotor x
 # @class Copter

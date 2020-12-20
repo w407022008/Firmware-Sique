@@ -91,13 +91,19 @@ matrix::Vector3f AttitudeControl::update(const Quatf &q) const
 	matrix::Vector3f rate_setpoint = eq.emult(_proportional_gain);
 
 	// Feed forward the yaw setpoint rate.
-	// yawspeed_setpoint is the feed forward commanded rotation around the world z-axis,
+	// usually yawspeed_setpoint is the feed forward commanded rotation around the world z-axis,
 	// but we need to apply it in the body frame (because _rates_sp is expressed in the body frame).
 	// Therefore we infer the world z-axis (expressed in the body frame) by taking the last column of R.transposed (== q.inversed)
 	// and multiply it by the yaw setpoint rate (yawspeed_setpoint).
 	// This yields a vector representing the commanded rotatation around the world z-axis expressed in the body frame
 	// such that it can be added to the rates setpoint.
-	rate_setpoint += q.inversed().dcm_z() * _yawspeed_setpoint;
+	if(_yaw_input_mode==YAWRATEINPUT) {
+		// yawspeed_setpoint is the feed forward commanded rotation around the WORLD z-axis, when input yaw rate command
+		rate_setpoint += q.inversed().dcm_z() * _yawspeed_setpoint; // which is approximated to Vector3f{0.0,0.0,1.0} world downward in body frame
+	} else if(_yaw_input_mode==YAWACCELINPUT) {
+		// yawspeed_setpoint is the feed forward commanded rotation around the BODY z-axis, when input yaw angular accel command
+		rate_setpoint += Vector3f{0.0,0.0,1.0} * _yawspeed_setpoint;
+	}
 
 	// limit rates
 	for (int i = 0; i < 3; i++) {

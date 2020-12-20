@@ -628,7 +628,7 @@ PARAM_DEFINE_FLOAT(EKF2_TAS_GATE, 3.0f);
  * @bit 8 vision velocity fusion
  * @reboot_required true
  */
-PARAM_DEFINE_INT32(EKF2_AID_MASK, 2);
+PARAM_DEFINE_INT32(EKF2_AID_MASK, 1);
 
 /**
  * Determines the primary source of height data used by the EKF.
@@ -642,7 +642,7 @@ PARAM_DEFINE_INT32(EKF2_AID_MASK, 2);
  * @value 3 Vision
  * @reboot_required true
  */
-PARAM_DEFINE_INT32(EKF2_HGT_MODE, 2);
+PARAM_DEFINE_INT32(EKF2_HGT_MODE, 0);
 
 /**
  * Integer bitmask controlling fusion sources of the terrain estimator
@@ -808,7 +808,7 @@ PARAM_DEFINE_FLOAT(EKF2_OF_GATE, 3.0f);
  * @unit m/s
  * @decimal 1
  */
-PARAM_DEFINE_FLOAT(EKF2_TERR_NOISE, 0.5f);
+PARAM_DEFINE_FLOAT(EKF2_TERR_NOISE, 5.0f);
 
 /**
  * Magnitude of terrain gradient
@@ -818,7 +818,7 @@ PARAM_DEFINE_FLOAT(EKF2_TERR_NOISE, 0.5f);
  * @unit m/m
  * @decimal 2
  */
-PARAM_DEFINE_FLOAT(EKF2_TERR_GRAD, 0.01f);
+PARAM_DEFINE_FLOAT(EKF2_TERR_GRAD, 0.5f);
 
 /**
  * Device id of IMU
@@ -858,7 +858,7 @@ PARAM_DEFINE_FLOAT(EKF2_IMU_POS_Y, 0.0f);
  * @unit m
  * @decimal 3
  */
-PARAM_DEFINE_FLOAT(EKF2_IMU_POS_Z, -0.04f);
+PARAM_DEFINE_FLOAT(EKF2_IMU_POS_Z, 0.0f);
 
 /**
  * X position of GPS antenna in body frame (forward axis with origin relative to vehicle centre of gravity)
@@ -894,7 +894,7 @@ PARAM_DEFINE_FLOAT(EKF2_GPS_POS_Z, 0.0f);
  * @unit m
  * @decimal 3
  */
-PARAM_DEFINE_FLOAT(EKF2_RNG_POS_X, 0.02f);
+PARAM_DEFINE_FLOAT(EKF2_RNG_POS_X, 0.0f);
 
 /**
  * Y position of range finder origin in body frame (right axis with origin relative to vehicle centre of gravity)
@@ -912,7 +912,7 @@ PARAM_DEFINE_FLOAT(EKF2_RNG_POS_Y, 0.0f);
  * @unit m
  * @decimal 3
  */
-PARAM_DEFINE_FLOAT(EKF2_RNG_POS_Z, 0.07f);
+PARAM_DEFINE_FLOAT(EKF2_RNG_POS_Z, 0.0f);
 
 /**
  * X position of optical flow focal point in body frame (forward axis with origin relative to vehicle centre of gravity)
@@ -939,7 +939,7 @@ PARAM_DEFINE_FLOAT(EKF2_OF_POS_Y, 0.0f);
  * @unit m
  * @decimal 3
  */
-PARAM_DEFINE_FLOAT(EKF2_OF_POS_Z, 0.06f);
+PARAM_DEFINE_FLOAT(EKF2_OF_POS_Z, 0.0f);
 
 /**
 * X position of VI sensor focal point in body frame (forward axis with origin relative to vehicle centre of gravity)

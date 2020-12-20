@@ -19,13 +19,27 @@ set PWM_OUT 1234
 
 if [ $AUTOCNF = yes ]
 then
+	# Circuit breakers
 	param set CBRK_IO_SAFETY 22027
-	param set GPS_1_CONFIG  0
-	param set SYS_USE_IO 0
-	param set DSHOT_CONFIG  300
 
+	# Sensors Parameters
+	param set SENS_FLOW_MAXHGT 12
+	param set SENS_FLOW_MINHGT 0.3
+	param set SENS_FLOW_ROT 6
+	param set SENS_EN_TFMINI_0 1
+	param set SENS_EN_TFMINI_1 1
+	param set SENS_EN_TFMINI_2 1
+	param set SENS_EN_TFMINI_3 1
+	param set SENS_EN_TFMINI_4 1
+	param set SENS_EN_PX4FLOW 1
+	param set GPS_1_CONFIG  0
+
+	# System parameters
+	# use FMU motor outputs for less delay in the rate control loop
+	param set SYS_USE_IO 0
 	param set FAILSAFE 100
 
+	# Vehicle attitude PID tuning
 	param set MC_ROLL_P  40
 	param set MC_ROLLRATE_P 0.06
 	param set MC_ROLLRATE_I 0.18
@@ -48,9 +62,34 @@ then
 	param set MC_ACRO_P_MAX 1000
 	param set MC_ACRO_Y_MAX 1000
 
+	# RTL Parameters
 	# param set NAV_RCL_ACT 6 # Lockdown
 
+	# PWM and RC Parameters
 	param set PWM_MIN 1075
 	param set PWM_RATE 400
 	param set PWM_DISARMED 900
+	param set DSHOT_CONFIG  300
+
+	# Power Parameters
+	param set BAT_N_CELLS 2
+
+	# Position Control Tuning
+	param set MPC_MAN_Y_MODE 1
+	param set MPC_MAN_NED_SET -70
+
+	# EKF2 parameters
+	param set EKF2_AID_MASK 2
+	param set EKF2_HGT_MODE 2
+	param set EKF2_RNG_NOISE 0.06
+	param set EKF2_TERR_NOISE 0.5
+	param set EKF2_TERR_GRAD 0.01
+	param set EKF2_IMU_POS_Z -0.04
+	param set EKF2_OF_POS_Z 0.06
+	param set EKF2_RNG_POS_X 0.02
+	param set EKF2_RNG_POS_Z 0.07
+
+	# MAVLink parameters
+	# Logging Parameters
+	param set SDLOG_PROFILE 8
 fi

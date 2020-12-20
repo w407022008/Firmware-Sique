@@ -32,7 +32,7 @@
 ############################################################################
 
 px4_add_module(
-	MODULE templates__custom_airspeed_estimation
+	MODULE modules__custom_airspeed_estimation
 	MAIN custom_airspeed_estimation
 	SRCS
 		custom_airspeed_estimation.cpp

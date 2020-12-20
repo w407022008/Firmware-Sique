@@ -404,7 +404,7 @@ PARAM_DEFINE_FLOAT(MPC_MAN_TILT_MAX, 35.0f);
  * @value 1 Yaw angular acceleration input
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_INT32(MPC_MAN_Y_MODE, 1);
+PARAM_DEFINE_INT32(MPC_MAN_Y_MODE, 0);
 
 /**
  * Max manual yaw angular acceleration
@@ -415,7 +415,7 @@ PARAM_DEFINE_INT32(MPC_MAN_Y_MODE, 1);
  * @decimal 1
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_FLOAT(MPC_MAN_Y_A_MAX, 2.0f);
+PARAM_DEFINE_FLOAT(MPC_MAN_Y_A_MAX, 1.0f);
 
 /**
  * Manual yaw angular acceleration input filter time constant
@@ -438,7 +438,7 @@ PARAM_DEFINE_FLOAT(MPC_MAN_Y_A_TAU, 0.08f);
  * @decimal 1
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_FLOAT(MPC_MAN_NED_SET, -70.0f);
+PARAM_DEFINE_FLOAT(MPC_MAN_NED_SET, 0.0f);
 
 /**
  * Max manual yaw rate

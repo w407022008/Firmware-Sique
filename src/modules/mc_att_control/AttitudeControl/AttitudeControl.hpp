@@ -51,6 +51,9 @@
 #include <matrix/matrix/math.hpp>
 #include <mathlib/math/Limits.hpp>
 
+#define YAWRATEINPUT 0
+#define YAWACCELINPUT 1
+
 class AttitudeControl
 {
 public:
@@ -69,6 +72,12 @@ public:
 	 * @param rate_limit [rad/s] 3D vector containing limits for roll, pitch, yaw
 	 */
 	void setRateLimit(const matrix::Vector3f &rate_limit) { _rate_limit = rate_limit; }
+
+	/**
+	 * Set yaw setpoint input mode
+	 * @param _yaw_input_mode [bool] 0: manully input yaw rate; 1: manully input yaw rate accel
+	 */
+	void setYawInputMode(const bool &yaw_input_mode) { _yaw_input_mode = yaw_input_mode; }
 
 	/**
 	 * Set a new attitude setpoint replacing the one tracked before
@@ -93,7 +102,8 @@ public:
 
 private:
 	matrix::Vector3f _proportional_gain;
-	matrix::Vector3f _rate_limit;
+    matrix::Vector3f _rate_limit;
+    bool _yaw_input_mode; // YAWRATEINPUT or YAWACCELINPUT
 	float _yaw_w{0.f}; ///< yaw weight [0,1] to deprioritize caompared to roll and pitch
 
 	matrix::Quatf _attitude_setpoint_q; ///< latest known attitude setpoint e.g. from position control
