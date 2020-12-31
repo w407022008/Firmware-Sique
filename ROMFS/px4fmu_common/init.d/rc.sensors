@@ -91,32 +91,32 @@ fi
 
 if param compare -s SENS_EN_TFMINI_0 1
 then
-	tfmini_s_0 start -X -R 24
+	tfmini_s_0 start -X -R 25
 fi
 
 if param compare -s SENS_EN_TFMINI_1 1
 then
-	tfmini_s_1 start -X -R 1
+	tfmini_s_1 start -X -R 7
 fi
 
 if param compare -s SENS_EN_TFMINI_2 1
 then
-	tfmini_s_2 start -X -R 3
+	tfmini_s_2 start -X -R 5
 fi
 
 if param compare -s SENS_EN_TFMINI_3 1
 then
-	tfmini_s_3 start -X -R 5
+	tfmini_s_3 start -X -R 3
 fi
 
 if param compare -s SENS_EN_TFMINI_4 1
 then
-	tfmini_s_4 start -X -R 7
+	tfmini_s_4 start -X -R 1
 fi
 
 if param compare -s SENS_EN_TFMINI_5 1
 then
-	tfmini_s_5 start -X -R 25
+	tfmini_s_5 start -X -R 24
 fi
 
 # Possible external pmw3901 optical flow sensor

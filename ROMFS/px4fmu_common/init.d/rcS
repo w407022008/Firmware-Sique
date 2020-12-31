@@ -351,7 +351,7 @@ else
 		set OUTPUT_MODE hil
 		sensors start -h
 		commander start -h
-		# disable GPS
+		# enable/disable GPS
 		param set GPS_1_CONFIG 0
 
 		# start the simulator in hardware if needed

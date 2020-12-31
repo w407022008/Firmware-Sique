@@ -41,6 +41,10 @@ uint8 vz_reset_counter
 float32 ax        # North velocity derivative in NED earth-fixed frame, (metres/sec^2)
 float32 ay        # East velocity derivative in NED earth-fixed frame, (metres/sec^2)
 float32 az        # Down velocity derivative in NED earth-fixed frame, (metres/sec^2)
+# Acceleration in Body frame
+float32 af        # Forward velocity derivative in Body frame, (metres/sec^2)
+float32 ar        # Right velocity derivative in Body frame, (metres/sec^2)
+float32 ad        # Down velocity derivative in Body frame, (metres/sec^2)
 
 float32 heading				# Euler yaw angle transforming the tangent plane relative to NED earth-fixed frame, -PI..+PI,  (radians)
 float32 delta_heading

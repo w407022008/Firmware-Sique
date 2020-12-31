@@ -91,10 +91,10 @@ void AirspeedEstimation::Run()
 		custom_airspeed_estimation_s last_data;
 		_cst_airspeed_est_sub.update(&last_data);
 
-		report.timestamp_sample_ctl = last_data.timestamp_sample_ctl;
-		for(int i=0;i<4;i++){
-			report.control[i] = last_data.control[i];
-		}
+//		report.timestamp_sample_ctl = last_data.timestamp_sample_ctl;
+//		for(int i=0;i<4;i++){
+//			report.control[i] = last_data.control[i];
+//		}
 
 		report.timestamp_sample_pwm = last_data.timestamp_sample_pwm;
 		for(int i=0;i<4;i++){
@@ -102,8 +102,8 @@ void AirspeedEstimation::Run()
 		}
 
 		report.timestamp_sample_att = last_data.timestamp_sample_att;
-		for(int i=0;i<4;i++){
-			report.vehicle_attitude_quaternion_ned[i] = last_data.vehicle_attitude_quaternion_ned[i];
+                for(int i=0;i<3;i++){
+                        report.vehicle_attitude_ned[i] = last_data.vehicle_attitude_ned[i];
 		}
 
                 report.timestamp_sample_imu = last_data.timestamp_sample_imu;
@@ -112,16 +112,19 @@ void AirspeedEstimation::Run()
                         report.vehicle_acceleration_xyz[i] = last_data.vehicle_acceleration_xyz[i];
                 }
 
-                report.timestamp_sample_bias = last_data.timestamp_sample_bias;
-                for(int i=0;i<3;i++){
-                        report.gyro_bias[i] = last_data.gyro_bias[i];
-                        report.accel_bias[i] = last_data.accel_bias[i];
-                }
+//                report.timestamp_sample_bias = last_data.timestamp_sample_bias;
+//                for(int i=0;i<3;i++){
+//                        report.gyro_bias[i] = last_data.gyro_bias[i];
+//                        report.accel_bias[i] = last_data.accel_bias[i];
+//                }
 
 		report.timestamp_sample_ground_truth = last_data.timestamp_sample_ground_truth;
 		report.ground_truth_acceleration_ned[0] = last_data.ground_truth_acceleration_ned[0];
 		report.ground_truth_acceleration_ned[1] = last_data.ground_truth_acceleration_ned[1];
 		report.ground_truth_acceleration_ned[2] = last_data.ground_truth_acceleration_ned[2];
+                report.ground_truth_acceleration_xyz[0] = last_data.ground_truth_acceleration_xyz[0];
+                report.ground_truth_acceleration_xyz[1] = last_data.ground_truth_acceleration_xyz[1];
+                report.ground_truth_acceleration_xyz[2] = last_data.ground_truth_acceleration_xyz[2];
 		report.ground_truth_velocity_ned[0] = last_data.ground_truth_velocity_ned[0];
 		report.ground_truth_velocity_ned[1] = last_data.ground_truth_velocity_ned[1];
 		report.ground_truth_velocity_ned[2] = last_data.ground_truth_velocity_ned[2];
@@ -150,6 +153,9 @@ void AirspeedEstimation::Run()
                 report.ground_truth_acceleration_ned[0] = vehicle_ground_truth.ax;
                 report.ground_truth_acceleration_ned[1] = vehicle_ground_truth.ay;
                 report.ground_truth_acceleration_ned[2] = vehicle_ground_truth.az;
+                report.ground_truth_acceleration_xyz[0] = vehicle_ground_truth.af;
+                report.ground_truth_acceleration_xyz[1] = vehicle_ground_truth.ar;
+                report.ground_truth_acceleration_xyz[2] = vehicle_ground_truth.ad;
                 report.ground_truth_velocity_ned[0] = vehicle_ground_truth.vx;
                 report.ground_truth_velocity_ned[1] = vehicle_ground_truth.vy;
                 report.ground_truth_velocity_ned[2] = vehicle_ground_truth.vz;
@@ -162,9 +168,11 @@ void AirspeedEstimation::Run()
 		vehicle_attitude_s vehicle_attitude;
 		_vehicle_attitude_sub.update(&vehicle_attitude);
 		report.timestamp_sample_att = vehicle_attitude.timestamp;
-		for(int i=0;i<4;i++){
-			report.vehicle_attitude_quaternion_ned[i] = vehicle_attitude.q[i];
-		}
+                const matrix::Quatf q = matrix::Quatf(vehicle_attitude.q);
+                report.vehicle_attitude_ned[0] = matrix::Eulerf(q).phi();
+                report.vehicle_attitude_ned[1] = matrix::Eulerf(q).theta();
+                report.vehicle_attitude_ned[2] = matrix::Eulerf(q).psi();
+
 	}
 
 //        if (_vehicle_acceleration_sub.updated()){
@@ -192,14 +200,14 @@ void AirspeedEstimation::Run()
 //                }
 //        }
 
-        if (_actuator_controls_sub.updated()){
-                actuator_controls_s actuator_controls;
-                _actuator_controls_sub.update(&actuator_controls);
-                report.timestamp_sample_ctl = actuator_controls.timestamp;
-                for(int i=0;i<4;i++){
-                        report.control[i] = actuator_controls.control[i];
-                }
-        }
+//        if (_actuator_controls_sub.updated()){
+//                actuator_controls_s actuator_controls;
+//                _actuator_controls_sub.update(&actuator_controls);
+//                report.timestamp_sample_ctl = actuator_controls.timestamp;
+//                for(int i=0;i<4;i++){
+//                        report.control[i] = actuator_controls.control[i];
+//                }
+//        }
 
         if (_actuator_outputs_sub.updated()){
                 actuator_outputs_s actuator_outputs;
@@ -210,15 +218,15 @@ void AirspeedEstimation::Run()
                 }
         }
 
-        if (_estimator_sensor_bias_sub.updated()){
-                estimator_sensor_bias_s estimator_sensor_bias;
-                _estimator_sensor_bias_sub.update(&estimator_sensor_bias);
-                report.timestamp_sample_bias = estimator_sensor_bias.timestamp;
-                for(int i=0;i<3;i++){
-                        report.gyro_bias[i] = estimator_sensor_bias.gyro_bias[i];
-                        report.accel_bias[i] = estimator_sensor_bias.accel_bias[i];
-                }
-        }
+//        if (_estimator_sensor_bias_sub.updated()){
+//                estimator_sensor_bias_s estimator_sensor_bias;
+//                _estimator_sensor_bias_sub.update(&estimator_sensor_bias);
+//                report.timestamp_sample_bias = estimator_sensor_bias.timestamp;
+//                for(int i=0;i<3;i++){
+//                        report.gyro_bias[i] = estimator_sensor_bias.gyro_bias[i];
+//                        report.accel_bias[i] = estimator_sensor_bias.accel_bias[i];
+//                }
+//        }
 
         if (_vehicle_sensor_combined_sub.updated()){
                 sensor_combined_s sensor_combined;

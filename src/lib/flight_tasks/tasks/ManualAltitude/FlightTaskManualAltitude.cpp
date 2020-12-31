@@ -306,7 +306,7 @@ void FlightTaskManualAltitude::_rotateIntoHeadingFrame(Vector2f &v)
     if(_param_mpc_man_y_mode.get()==YAWRATEINPUT) {
         yaw_rotate = PX4_ISFINITE(_yaw_setpoint) ? _yaw_setpoint : _yaw;
     } else if(_param_mpc_man_y_mode.get()==YAWACCELINPUT) {
-        yaw_rotate = math::radians(_param_mpc_man_ned_set.get()); //custom set:-50deg
+        yaw_rotate = math::radians(_param_mpc_man_ned_set.get()); //custom set:-69deg
     }
     Vector3f v_r = Vector3f(Dcmf(Eulerf(0.0f, 0.0f, yaw_rotate)) * Vector3f(v(0), v(1), 0.0f));
     v(0) = v_r(0);

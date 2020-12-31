@@ -23,40 +23,41 @@ then
 	param set CBRK_IO_SAFETY 22027
 
 	# Sensors Parameters
-	param set SENS_FLOW_MAXHGT 12
+	param set SENS_EN_PX4FLOW 1
+	param set SENS_FLOW_MAXHGT 10
 	param set SENS_FLOW_MINHGT 0.3
+	param set SENS_FLOW_MAXR 4.0
 	param set SENS_FLOW_ROT 6
 	param set SENS_EN_TFMINI_0 1
 	param set SENS_EN_TFMINI_1 1
 	param set SENS_EN_TFMINI_2 1
 	param set SENS_EN_TFMINI_3 1
 	param set SENS_EN_TFMINI_4 1
-	param set SENS_EN_PX4FLOW 1
 	param set GPS_1_CONFIG  0
 
 	# System parameters
 	# use FMU motor outputs for less delay in the rate control loop
 	param set SYS_USE_IO 0
-	param set FAILSAFE 100
+	# param set FAILSAFE 100
 
 	# Vehicle attitude PID tuning
-	param set MC_ROLL_P  40
-	param set MC_ROLLRATE_P 0.06
-	param set MC_ROLLRATE_I 0.18
-	param set MC_ROLLRATE_D 0.001
-	param set MC_RR_INT_LIM 0.1
+	param set MC_ROLL_P  6.5
+	param set MC_ROLLRATE_P 0.148
+	param set MC_ROLLRATE_I 0.196
+	param set MC_ROLLRATE_D 0.0028
+	param set MC_RR_INT_LIM 0.3
 
-	param set MC_PITCH_P 40
-	param set MC_PITCHRATE_P 0.06
-	param set MC_PITCHRATE_I 0.18
-	param set MC_PITCHRATE_D 0.001
-	param set MC_PR_INT_LIM 0.1
+	param set MC_PITCH_P 6.5
+	param set MC_PITCHRATE_P 0.15
+	param set MC_PITCHRATE_I 0.196
+	param set MC_PITCHRATE_D 0.003
+	param set MC_PR_INT_LIM 0.3
 
-	param set MC_YAW_P 5
-	param set MC_YAWRATE_P 0.15
-	param set MC_YAWRATE_I 0.2
-	param set MC_YAWRATE_D 0.02
-	param set MC_YR_INT_LIM 0.1
+	param set MC_YAW_P 2.8
+	param set MC_YAWRATE_P 0.5
+	param set MC_YAWRATE_I 0.3
+	param set MC_YAWRATE_D 0.0
+	param set MC_YR_INT_LIM 0.3
 
 	param set MC_ACRO_R_MAX 1000
 	param set MC_ACRO_P_MAX 1000
@@ -76,15 +77,26 @@ then
 
 	# Position Control Tuning
 	param set MPC_MAN_Y_MODE 1
-	param set MPC_MAN_NED_SET -70
+	param set MPC_MAN_Y_A_MAX 2
+	param set MPC_MAN_NED_SET -69
+	param set MPC_Z_VEL_MAX_UP 3.0
+	param set MPC_Z_VEL_MAX_DN 2.0
+	param set MPC_MAN_TILT_MAX 20
+	param set MPC_ALT_MODE 1
 
 	# EKF2 parameters
-	param set EKF2_AID_MASK 2
-	param set EKF2_HGT_MODE 2
+	param set EKF2_AID_MASK 3
+	param set EKF2_HGT_MODE 1
+	param set EKF2_RNG_AID 1
+	param set EKF2_RNG_A_VMAX 2.0
+	param set EKF2_RNG_A_HMAX 5.0
 	param set EKF2_RNG_NOISE 0.06
 	param set EKF2_TERR_NOISE 0.5
 	param set EKF2_TERR_GRAD 0.01
 	param set EKF2_IMU_POS_Z -0.04
+	param set EKF2_IMU_POS_X -0.01
+	param set EKF2_GPS_POS_Z -0.04
+	param set EKF2_GPS_POS_X 0.05
 	param set EKF2_OF_POS_Z 0.06
 	param set EKF2_RNG_POS_X 0.02
 	param set EKF2_RNG_POS_Z 0.07

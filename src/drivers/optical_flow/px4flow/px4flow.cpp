@@ -317,15 +317,15 @@ PX4FLOW::collect()
 	_px4flow_topic.publish(report);
 
 	/* publish to the distance_sensor topic as well */
-	if (_class_instance == CLASS_DEVICE_PRIMARY) {
+        if (_class_instance == CLASS_DEVICE_PRIMARY && report.ground_distance_m > report.min_ground_distance) {
 		distance_sensor_s distance_report{};
 		distance_report.timestamp = report.timestamp;
 		distance_report.min_distance = PX4FLOW_MIN_DISTANCE;
 		distance_report.max_distance = PX4FLOW_MAX_DISTANCE;
 		distance_report.current_distance = report.ground_distance_m;
-		distance_report.variance = 0.0f;
-		distance_report.signal_quality = -1;
-		distance_report.type = distance_sensor_s::MAV_DISTANCE_SENSOR_ULTRASOUND;
+                distance_report.variance = 0.06f;
+                distance_report.signal_quality = 1;
+                distance_report.type = distance_sensor_s::MAV_DISTANCE_SENSOR_LASER;
 		/* TODO: the ID needs to be properly set */
 		distance_report.id = 0;
 		distance_report.orientation = _sonar_rotation;

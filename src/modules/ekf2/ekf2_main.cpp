@@ -444,9 +444,9 @@ private:
 		(ParamExtFloat<px4::params::EKF2_GPS_POS_X>) _param_ekf2_gps_pos_x,		///< X position of GPS antenna in body frame (m)
 		(ParamExtFloat<px4::params::EKF2_GPS_POS_Y>) _param_ekf2_gps_pos_y,		///< Y position of GPS antenna in body frame (m)
 		(ParamExtFloat<px4::params::EKF2_GPS_POS_Z>) _param_ekf2_gps_pos_z,		///< Z position of GPS antenna in body frame (m)
-		(ParamExtFloat<px4::params::EKF2_RNG_POS_X>) _param_ekf2_rng_pos_x,		///< X position of range finder in body frame (m)
-		(ParamExtFloat<px4::params::EKF2_RNG_POS_Y>) _param_ekf2_rng_pos_y,		///< Y position of range finder in body frame (m)
-		(ParamExtFloat<px4::params::EKF2_RNG_POS_Z>) _param_ekf2_rng_pos_z,		///< Z position of range finder in body frame (m)
+        (ParamExtFloat<px4::params::EKF2_RNG_POS_X>) _param_ekf2_rng_pos_x,		///< X position of downward range finder in body frame (m)
+        (ParamExtFloat<px4::params::EKF2_RNG_POS_Y>) _param_ekf2_rng_pos_y,		///< Y position of downward range finder in body frame (m)
+        (ParamExtFloat<px4::params::EKF2_RNG_POS_Z>) _param_ekf2_rng_pos_z,		///< Z position of downward range finder in body frame (m)
 		(ParamExtFloat<px4::params::EKF2_OF_POS_X>)
 		_param_ekf2_of_pos_x,	///< X position of optical flow sensor focal point in body frame (m)
 		(ParamExtFloat<px4::params::EKF2_OF_POS_Y>)
@@ -1315,13 +1315,18 @@ void Ekf2::Run()
 
 				// Vehicle odometry quaternion
 				q.copyTo(odom.q);
+                Dcmf body_to_earth = Dcmf(q);
 
-				// Velocity of body origin in local Body frame (m/s)
-				Dcmf body_in_earth = Dcmf(q);
-				const Vector3f v_r = Vector3f(body_in_earth.transpose() * Vector3f(velocity(0), velocity(1), velocity(2)));
+                // Velocity of body origin in local Body frame (m/s)
+                const Vector3f v_r = Vector3f(body_to_earth.transpose() * Vector3f(velocity(0), velocity(1), velocity(2)));
 				lpos.vf = v_r(0);
 				lpos.vr = v_r(1);
 				lpos.vd = v_r(2);
+                // Velocity of body origin in local Body frame (m/s)
+                const Vector3f a_r = Vector3f(body_to_earth.transpose() * Vector3f(vel_deriv(0), vel_deriv(1), vel_deriv(2)));
+                lpos.af = a_r(0);
+                lpos.ar = a_r(1);
+                lpos.ad = a_r(2);
 
 				// Vehicle odometry angular rates
 				const Vector3f gyro_bias = _ekf.getGyroBias();
@@ -1541,7 +1546,7 @@ void Ekf2::Run()
 			_ekf.getOutputTrackingError().copyTo(status.output_tracking_error);
 			_ekf.get_gps_check_status(&status.gps_check_fail_flags);
 			// only report enabled GPS check failures (the param indexes are shifted by 1 bit, because they don't include
-			// the GPS Fix bit, which is always checked)
+            // the GPS Fix bit, which is always checked)
 			status.gps_check_fail_flags &= ((uint16_t)_params->gps_check_mask << 1) | 1;
 			status.control_mode_flags = control_status.value;
 			_ekf.get_filter_fault_status(&status.filter_fault_flags);
