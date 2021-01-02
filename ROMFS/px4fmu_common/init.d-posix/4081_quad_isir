@@ -19,12 +19,15 @@ then
 	param set BAT_N_CELLS 2
 
 	# EKF2 parameters
-	param set EKF2_AID_MASK 3
-	param set EKF2_HGT_MODE 0
+	param set EKF2_AID_MASK 1
+	param set EKF2_HGT_MODE 1
 	param set EKF2_IMU_POS_X 0.02
+	param set EKF2_GPS_MASK 7
 	param set EKF2_GPS_POS_X 0.055
 	param set EKF2_GPS_POS_Z -0.15
 	param set EKF2_OF_POS_Z 0.06
+	param set EKF2_RNG_POS_X 0.02
+	param set EKF2_RNG_POS_Z 0.07
 	param set EKF2_REQ_HDRIFT 0.3
 	param set EKF2_REQ_SACC 1
 	param set EKF2_REQ_VDRIFT 0.3
@@ -36,7 +39,12 @@ then
 
 	# Position Control Tuning
 	param set MPC_MAN_Y_MODE 1
+	param set MPC_MAN_Y_A_MAX 2
 	param set MPC_MAN_NED_SET 0
+	param set MPC_Z_VEL_MAX_UP 3.0
+	param set MPC_Z_VEL_MAX_DN 2.0
+	param set MPC_MAN_TILT_MAX 20
+	param set MPC_ALT_MODE 3
 
 	# Vehicle attitude PID tuning
 	param set MC_ROLL_P  2
@@ -65,7 +73,7 @@ then
 	param set SENS_BOARD_ROT 0
 	param set SENS_FLOW_MAXHGT 12
 	param set SENS_FLOW_MINHGT 0.3
-	param set SENS_FLOW_ROT 0
+	param set SENS_FLOW_ROT 6
 
 	# Logging Parameters
 	param set SDLOG_PROFILE 131
