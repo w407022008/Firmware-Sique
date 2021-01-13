@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# AMOVLAB P450 specific board defaults
+#------------------------------------------------------------------------------
+
+
+if [ $AUTOCNF = yes ]
+then
+
+fi
+
+set LOGGER_BUF 64
+
+rgbled_pwm start
+safety_button start
