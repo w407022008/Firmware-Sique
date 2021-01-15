@@ -35,7 +35,7 @@ then
 	# setup
 	# main board rotation: pitch 180
 	param set SENS_BOARD_ROT    12
-	# solo external mag rotation
+	# p450 external mag rotation
 	param set CAL_MAG0_ROT      38
 	# no safety switch
 	param set CBRK_IO_SAFETY    22027
