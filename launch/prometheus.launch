@@ -1,0 +1,40 @@
+<launch>
+    <arg name="x" default="0"/>
+    <arg name="y" default="0"/>
+    <arg name="z" default="0"/>
+    <arg name="R" default="0"/>
+    <arg name="P" default="0"/>
+    <arg name="Y" default="0"/>
+	<!-- 启动Prometheus代码 -->
+	<!-- run the px4_pos_estimator.cpp -->
+	<!-- 仅订阅发布消息 -->
+	<arg name="input_source" default="2"/>
+	<arg name="rate_hz" default="30"/>
+	<node pkg="prometheus_control" type="px4_pos_estimator" name="px4_pos_estimator" output="screen">
+		<!-- 定位数据输入源 0 for vicon， 1 for 激光SLAM, 2 for gazebo ground truth, 3 for Intel T265 dual camera slam，4 for SLAM (but where pub?), 9 for outdoor (with rel_alt)-->
+		<param name="input_source" value="$(arg input_source)" />
+		<param name="rate_hz" value="$(arg rate_hz)" />
+		<param name="offset_x" value="$(arg x)" />
+		<param name="offset_y" value="$(arg y)" />
+		<param name="offset_z" value="$(arg z)" />
+	</node>
+	<!-- run the px4_sender.cpp -->
+	<!-- 通过MAVLink协议发布pos_vel_setpoint到px4 -->
+	<node pkg="prometheus_control" type="px4_sender" name="px4_sender" output="screen">
+		<rosparam command="load" file="$(find prometheus_gazebo)/config/prometheus_control_config/px4_sender.yaml"/>
+	</node>
+
+	<!-- run the ground_station.cpp -->
+	<!-- 打印飞行消息到终端 -->
+	<node pkg="prometheus_station" type="ground_station" name="ground_station" output="screen" launch-prefix="gnome-terminal --tab --">	
+		<param name="refresh_time" value="1.0" type="double"/>	<!-- release cycle -->
+		<param name="mission_type" value="0" type="int"/>	<!-- vision detection -->
+	</node>
+
+	<!-- run the ground_station_msg.cpp -->
+	<!-- 订阅规划&识别消息 -->
+	<node pkg="prometheus_station" type="ground_station_msg" name="ground_station_msg" output="screen" launch-prefix="gnome-terminal --tab --">	
+	</node>
+
+</launch>
+

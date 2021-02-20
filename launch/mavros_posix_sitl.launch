@@ -52,9 +52,9 @@
         <arg name="respawn_mavros" value="$(arg respawn_mavros)"/>
     </include>
     <!-- TF static -->
-    <node pkg="tf" type="static_transform_publisher" name="depth_camera_frame" args="0 0 0 0 0 0 1 base_link quad_isir/depth_camera_frame 50" />
-    <node pkg="tf" type="static_transform_publisher" name="laser_hor_frame" args="0 0 0 0 0 0 1 base_link quad_isir/laser_hor_frame 50" />
-    <node pkg="tf" type="static_transform_publisher" name="laser_upward_frame" args="0 0 0 0 0 0 1 base_link quad_isir/laser_upward_frame 50" />
+    <node pkg="tf" type="static_transform_publisher" name="tf_depth_camera_frame" args="0.0809 0.0 0.104 0 0 0 base_link quad_isir/depth_camera_frame 50" />
+    <node pkg="tf" type="static_transform_publisher" name="tf_laser_hor_frame" args="0 0 0 0 0 0 base_link quad_isir/laser_hor_frame 50" />
+    <node pkg="tf" type="static_transform_publisher" name="tf_laser_upward_frame" args="0.013208 0 0.1187 0 0 0 base_link quad_isir/laser_upward_frame 50" />
     <param name="robot_description" textfile="$(find mavlink_sitl_gazebo)/models/$(arg vehicle)/model.urdf"/>
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" ns="/quad_isir" respawn="false" output="screen">
         <param name="publish_frequency" value="20.0"/>
