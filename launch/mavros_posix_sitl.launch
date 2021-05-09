@@ -3,8 +3,8 @@
     <!-- MAVROS posix SITL environment launch script -->
     <!-- launches MAVROS, PX4 SITL, Gazebo environment, and spawns vehicle -->
     <!-- vehicle pose -->
-    <arg name="x" default="0"/>
-    <arg name="y" default="0"/>
+    <arg name="x" default="1"/>
+    <arg name="y" default="3"/>
     <arg name="z" default="0"/>
     <arg name="R" default="0"/>
     <arg name="P" default="0"/>
@@ -13,7 +13,7 @@
     <arg name="est" default="ekf2"/>
     <arg name="vehicle" default="quad_isir"/>
     <arg name="world" default="$(find mavlink_sitl_gazebo)/worlds/empty.world"/>
-    <arg name="sdf" default="$(find mavlink_sitl_gazebo)/models/$(arg vehicle)/$(arg vehicle).sdf"/>
+    <arg name="sdf" default="$(find mavlink_sitl_gazebo)/models/drone_isir/drone_isir.sdf"/>
 
     <!-- gazebo configs -->
     <arg name="gui" default="true"/>
@@ -55,8 +55,8 @@
     <node pkg="tf" type="static_transform_publisher" name="tf_depth_camera_frame" args="0.0809 0.0 0.104 0 0 0 base_link quad_isir/depth_camera_frame 50" />
     <node pkg="tf" type="static_transform_publisher" name="tf_laser_hor_frame" args="0 0 0 0 0 0 base_link quad_isir/laser_hor_frame 50" />
     <node pkg="tf" type="static_transform_publisher" name="tf_laser_upward_frame" args="0.013208 0 0.1187 0 0 0 base_link quad_isir/laser_upward_frame 50" />
-    <param name="robot_description" textfile="$(find mavlink_sitl_gazebo)/models/$(arg vehicle)/model.urdf"/>
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" ns="/quad_isir" respawn="false" output="screen">
-        <param name="publish_frequency" value="20.0"/>
-    </node>
+<!--    <param name="robot_description" textfile="$(find mavlink_sitl_gazebo)/models/drone_isir/model.urdf"/>-->
+<!--    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" ns="/quad_isir" respawn="false" output="screen">-->
+<!--        <param name="publish_frequency" value="20.0"/>-->
+<!--    </node>-->
 </launch>

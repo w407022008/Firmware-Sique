@@ -37,7 +37,7 @@
 
 
 sfm3000::sfm3000(I2CSPIBusOption bus_option, const int bus, const uint8_t rotation, int bus_frequency) :
-    I2C(DRV_ANEMO_DEVTYPE_SFM3000, MODULE_NAME, bus, SFM_BASEADDR, bus_frequency),
+    I2C(DRV_ANEMO_DEVTYPE_SFM3000, MODULE_NAME, bus, TCA_ADDR, bus_frequency),
     I2CSPIDriver(MODULE_NAME, px4::device_bus_to_wq(get_device_id()), bus_option, bus),
     _px4_anemometer(get_device_id(), rotation)
 {
@@ -57,7 +57,7 @@ int sfm3000::collect()
     const hrt_abstime timestamp_sample = hrt_absolute_time();
     float measurement[3];
     float confidence[3];
-    uint8_t orientation = windspeed_s::ROTATION_FORWARD_FACING;
+    uint8_t orientation = 128;
 
     perf_begin(_sample_perf);
 
@@ -88,26 +88,23 @@ int sfm3000::collect()
         orientation = _sensor_rotations[index];
 
         switch (orientation) {
-        case windspeed_s::ROTATION_FORWARD_FACING:
-        {
-            measurement[0] = speed_m_s;
-            confidence[0] = 1;
-        }
-            break;
+		    case windspeed_s::ROTATION_FORWARD_FACING:{
+		        measurement[0] = speed_m_s;
+		        confidence[0] = 1;
+		        break;
+		        }
 
-        case windspeed_s::ROTATION_RIGHT_FACING:
-        {
-            measurement[1] = speed_m_s;
-            confidence[1] = 1;
-        }
-            break;
+		    case windspeed_s::ROTATION_RIGHT_FACING:{
+		        measurement[1] = speed_m_s;
+		        confidence[1] = 1;
+		        break;
+		        }
 
-        case windspeed_s::ROTATION_DOWNWARD_FACING:
-        {
-            measurement[2] = speed_m_s;
-            confidence[2] = 1;
-        }
-            break;
+		    case windspeed_s::ROTATION_DOWNWARD_FACING:{
+		        measurement[2] = speed_m_s;
+		        confidence[2] = 1;
+		        break;
+		        }
         }
     }
 
@@ -143,7 +140,9 @@ int sfm3000::init()
             // starting from the base address 0x40 and incrementing
             int j=0;
             int i=0;
-            while (j <= ANEMOMETER_MAX_SENSORS || i <= TCA9578A_MAX_CHANAL) {
+        	int32_t SFM_NUM = ANEMOMETER_MAX_SENSORS;
+        	param_get(param_find("SFM_NUM"), &SFM_NUM);
+            while (j < SFM_NUM || i < TCA9578A_MAX_CHANAL) {
                 // set TCA9578A chanal
                 set_device_address(TCA_ADDR);
                 uint8_t cmd = 1 << i; // for port #index in tca9548a
@@ -193,9 +192,9 @@ sfm3000::get_sensor_rotation(const size_t index)
     int _q_sensor_x; // x
     int _q_sensor_y; // y
     int _q_sensor_z; // z
-    param_get(param_find("SFM_ROT_X"),&_q_sensor_x);
-    param_get(param_find("SFM_ROT_Y"),&_q_sensor_y);
-    param_get(param_find("SFM_ROT_Z"),&_q_sensor_z);
+    param_get(param_find("SFM_ROT_X"),&_q_sensor_x); // default 1
+    param_get(param_find("SFM_ROT_Y"),&_q_sensor_y); // default 2
+    param_get(param_find("SFM_ROT_Z"),&_q_sensor_z); // default 3
     switch (index) {
     case 0:
         return (_q_sensor_x == 1)?windspeed_s::ROTATION_FORWARD_FACING:((_q_sensor_y == 1)?windspeed_s::ROTATION_RIGHT_FACING:((_q_sensor_z == 1)?windspeed_s::ROTATION_DOWNWARD_FACING:128));

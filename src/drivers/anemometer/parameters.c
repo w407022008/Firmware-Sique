@@ -32,16 +32,16 @@
  ****************************************************************************/
 
 /**
- * SENSIRION SFM Low Pressure DropDigital Flow Meter (i2c)
+ * TCA9578A I2C Expander
  *
  * @reboot_required true
  * @min 0
  * @max 1
  * @group Sensors
  * @value 0 Disabled
- * @value 1 SFM3000
+ * @value 1 Enable
  */
-PARAM_DEFINE_INT32(SENS_EN_TCA9578A, 0);
+PARAM_DEFINE_INT32(SENS_EN_TCA9578A, 1);
 
 /**
  * SENSIRION SFM Low Pressure DropDigital Flow Meter (i2c)
@@ -54,6 +54,23 @@ PARAM_DEFINE_INT32(SENS_EN_TCA9578A, 0);
  * @value 1 SFM3000
  */
 PARAM_DEFINE_INT32(SENS_EN_SFM3000, 1);
+
+/**
+ * SFM Sensor
+ *
+ * This parameter defines the number of SFM sensor.
+ *
+ * @reboot_required true
+ * @min 0
+ * @max 3
+ * @group Sensors
+ *
+ * @value 0 No sensor
+ * @value 1 One sensor
+ * @value 2 Two sensors
+ * @value 3 Three sensors
+ */
+PARAM_DEFINE_INT32(SFM_NUM, 2);
 
 /**
  * SFM Sensor 0 Rotation

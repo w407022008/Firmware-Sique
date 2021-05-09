@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (c) 2019 PX4 Development Team. All rights reserved.
+ *   Copyright (c) 2017 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,57 +31,30 @@
  *
  ****************************************************************************/
 
-#include "PX4Anemometer.hpp"
+/**
+ * @file board_config.h
+ *
+ * SITL internal definitions
+ */
 
-#include <lib/drivers/device/Device.hpp>
+#pragma once
 
-PX4Anemometer::PX4Anemometer(const uint32_t device_id, const uint8_t device_orientation) :
-        _anemometer_pub{ORB_ID(windspeed)}
-{
-	_anemometer_pub.advertise();
+#define BOARD_OVERRIDE_UUID "SIMULATIONID0000" // must be of length 16
+#define PX4_SOC_ARCH_ID     PX4_SOC_ARCH_ID_SITL
 
-    set_device_id(device_id);
-    set_orientation(device_orientation);
-}
+#define BOARD_BATTERY1_V_DIV   (10.177939394f)
+#define BOARD_BATTERY1_A_PER_V (15.391030303f)
 
-PX4Anemometer::~PX4Anemometer()
-{
-	_anemometer_pub.unadvertise();
-}
+#define BOARD_HAS_POWER_CONTROL 1
+#define CONFIG_BOARDCTL_POWEROFF 1
 
-void PX4Anemometer::set_device_type(uint8_t device_type)
-{
-	// TODO: range finders should have device ids
+#define PX4_NUMBER_I2C_BUSES 1
 
-	// // current DeviceStructure
-	// union device::Device::DeviceId device_id;
-	// device_id.devid = _anemometer_pub.get().device_id;
+#define BOARD_NUMBER_BRICKS     0
+#define BOARD_HAS_CONTROL_STATUS_LEDS 1
+#define BOARD_OVERLOAD_LED     LED_RED
+#define BOARD_ARMED_LED        LED_BLUE
+#define BOARD_ARMED_STATE_LED  LED_GREEN
 
-	// // update to new device type
-	// device_id.devid_s.devtype = devtype;
-
-	// // copy back to report
-	// _anemometer_pub.get().device_id = device_id.devid;
-}
-
-void PX4Anemometer::set_orientation(const uint8_t device_orientation)
-{
-	_anemometer_pub.get().orientation = device_orientation;
-}
-
-void PX4Anemometer::update(const hrt_abstime &timestamp_sample, const float measurement[3], const float quality[3], const int orientation, const float air_temperature_celsius)
-{
-	windspeed_s &report = _anemometer_pub.get();
-
-	report.timestamp = timestamp_sample;
-	report.measurement_windspeed_x_m_s = measurement[0];
-	report.measurement_windspeed_y_m_s = measurement[1];
-    report.measurement_windspeed_z_m_s = measurement[2];
-	report.confidence_x = quality[0];
-	report.confidence_y = quality[1];
-	report.confidence_z = quality[2];
-	report.orientation = orientation;
-	report.air_temperature_celsius =air_temperature_celsius;
-
-	_anemometer_pub.update();
-}
+#include <system_config.h>
+#include <px4_platform_common/board_common.h>
