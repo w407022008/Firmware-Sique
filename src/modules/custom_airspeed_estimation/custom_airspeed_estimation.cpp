@@ -132,8 +132,14 @@ void AirspeedEstimation::Run()
                 report.ground_truth_velocity_xyz[1] = last_data.ground_truth_velocity_xyz[1];
                 report.ground_truth_velocity_xyz[2] = last_data.ground_truth_velocity_xyz[2];
 
+		report.timestamp_sample_baro = last_data.timestamp_sample_baro;
+		report.baro_alt_meter = last_data.baro_alt_meter;
+		report.baro_pressure_pa = last_data.baro_pressure_pa;
+		report.baro_temp_celcius = last_data.baro_temp_celcius;
+
 		report.timestamp_sample_wind = last_data.timestamp_sample_wind;
 		report.windspeed_x = last_data.windspeed_x;
+		report.windspeed_y = last_data.windspeed_y;
 
 		report.timestamp_sample_bat = last_data.timestamp_sample_bat;
 		report.battery_scale = last_data.battery_scale;
@@ -184,11 +190,21 @@ void AirspeedEstimation::Run()
 //		}
 //	}
 
+	if (_vehicle_air_data_sub.updated()){
+		vehicle_air_data_s vehicle_air_data;
+		_vehicle_air_data_sub.update(&vehicle_air_data);
+		report.timestamp_sample_baro = vehicle_air_data.timestamp;
+		report.baro_alt_meter = vehicle_air_data.baro_alt_meter;
+		report.baro_pressure_pa = vehicle_air_data.baro_pressure_pa;
+		report.baro_temp_celcius = vehicle_air_data.baro_temp_celcius;
+	}
+
 	if (_windspeed_sub.updated()){
 		windspeed_s windspeed;
 		_windspeed_sub.update(&windspeed);
 		report.timestamp_sample_wind = windspeed.timestamp;
 		report.windspeed_x = windspeed.measurement_windspeed_x_m_s;
+		report.windspeed_y = windspeed.measurement_windspeed_y_m_s;
 	}
 
 //        if (_vehicle_rate_sub.updated()){
