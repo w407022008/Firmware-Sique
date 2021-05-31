@@ -17,7 +17,7 @@ px4_add_board(
 		TEL4:/dev/ttyS3
 	DRIVERS
 		adc
-                anemometer # SFM 3000
+        anemometer # SFM 3000
 		barometer # all available barometer drivers
 		batt_smbus
 		camera_capture
@@ -60,6 +60,7 @@ px4_add_board(
 		test_ppm
 		tone_alarm
 		uavcan
+		uwb
 	MODULES
 		airspeed_selector
 		attitude_estimator_q
@@ -90,6 +91,7 @@ px4_add_board(
 		sensors
 		sih
 		temperature_compensation
+		uwb_indoor_position
 		vmount
 		vtol_att_control
 	SYSTEMCMDS
@@ -135,4 +137,5 @@ px4_add_board(
                 tfmini_s_test
 		uuv_example_app
 		work_item
+		ychiot_test
 	)

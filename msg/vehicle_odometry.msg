@@ -62,4 +62,4 @@ float32 yawspeed		# Angular velocity about Z body axis
 # If angular velocity covariance invalid/unknown, 16th cell is NaN
 float32[21] velocity_covariance
 
-# TOPICS vehicle_odometry vehicle_mocap_odometry vehicle_visual_odometry vehicle_visual_odometry_aligned
+# TOPICS vehicle_odometry vehicle_mocap_odometry vehicle_visual_odometry vehicle_visual_odometry_aligned vehicle_uwb_odometry

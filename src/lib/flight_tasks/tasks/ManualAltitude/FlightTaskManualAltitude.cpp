@@ -308,7 +308,7 @@ void FlightTaskManualAltitude::_rotateIntoHeadingFrame(Vector2f &v)
     } else if(_param_mpc_man_y_mode.get()==YAWACCELINPUT) {
         yaw_rotate = math::radians(_param_mpc_man_ned_set.get()); //custom set:-69deg
     }
-    Vector3f v_r = Vector3f(Dcmf(Eulerf(0.0f, 0.0f, yaw_rotate)) * Vector3f(v(0), v(1), 0.0f));
+    Vector3f v_r = Vector3f(Dcmf(Eulerf(0.0f, 0.0f, yaw_rotate)) * Vector3f(v(0), v(1), 0.0f)); // R_Local_to(in)_NED * Vec_in_Local
     v(0) = v_r(0);
     v(1) = v_r(1);
 }
@@ -370,8 +370,8 @@ void FlightTaskManualAltitude::_updateSetpoints()
     _man_input_filter.update(sp);// filter is disabled due to 0.0s
     sp = _man_input_filter.getState();//sp=sp
 
-    // by default (YAWRATEINPUT):manul_input_xy(in NED) to manul_input_xy(in XYZ)
-    // if set (YAWACCELINPUT):manul_input_xy(in NED) to manul_input_xy(in NED(modified))
+    // by default (YAWRATEINPUT): input manul_input_xy(in XYZ) output manul_input_xy(in NED)
+    // if set (YAWACCELINPUT): input manul_input_xy(in NED(custom modified)) output manul_input_xy(in NED)
     _rotateIntoHeadingFrame(sp);
 	if (sp.length() > 1.0f) {
 		sp.normalize();

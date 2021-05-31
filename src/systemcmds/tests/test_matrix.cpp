@@ -574,8 +574,28 @@ bool MatrixTest::sliceTests()
 		13, 14
 	};
 
+    float dt =0.1;
+    float state_transition_data[81] = {1, 0, 0, dt,  0,  0, 0.5f*dt*dt,         0,          0,
+                                       0, 1, 0,  0, dt,  0,          0, 0.5f*dt*dt,          0,
+                                       0, 0, 1,  0,  0, dt,          0,          0, 0.5f*dt*dt,
+                                       0, 0, 0,  1,  0,  0,         dt,          0,          0,
+                                       0, 0, 0,  0,  1,  0,          0,         dt,          0,
+                                       0, 0, 0,  0,  0,  1,          0,          0,         dt,
+                                       0, 0, 0,  0,  0,  0,          1,          0,          0,
+                                       0, 0, 0,  0,  0,  0,          0,          1,          0,
+                                       0, 0, 0,  0,  0,  0,          0,          0,          1
+                                       };
+    Matrix<float, 9, 9> state_transition(state_transition_data);
+    Matrix<float, 9, 2*9+1> Sigma = ones<float, 9, 2*9+1>();
+    Matrix<float, 9, 2*9+1> Y;
+    for(int i=0;i<2*9+1;i++){
+        Vector<float, 9> col = Sigma.slice<9,1>(0,i);
+        Y.slice<9,1>(0,i) = state_transition * col;
+    }
+
 	Matrix<float, 2, 2> C(data_2);
-	A.slice<2, 2>(1, 1) = C;
+    Vector<float, 2> ccc = B_check.slice<2, 1>(0, 1);
+    A.slice<2, 1>(1, 1) = C * ccc;
 
 	float data_2_check[9] = {
 		0, 2, 3,

@@ -1,7 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (C) 2013 PX4 Development Team. All rights reserved.
- *   Author: Siddharth Bharat Purohit <sibpurohit@gmail.com>
+ *   Copyright (c) 2017 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,23 +32,25 @@
  ****************************************************************************/
 
 /**
- * @file matrix_alg.h
+ * YchIOT UWB Indoor positioning system
  *
- * Matrix algebra on raw arrays
+ * @reboot_required true
+ * @min 0
+ * @max 1
+ * @group Sensors
+ * @value 0 Disabled
+ * @value 1 Enable
  */
+PARAM_DEFINE_INT32(SENS_EN_YCHIOT, 1);
 
-
-#pragma once
-
-#include <inttypes.h>
-#include <string.h>
-#include <math.h>
-
-float *mat_mul(float *A, float *B, uint8_t n);
-float *mat_mul(float *A, float *B, uint8_t n, uint8_t m, uint8_t l);
-bool mat_inverse(float *A, float *inv, uint8_t n);
-bool inverse4x4(float m[], float invOut[]);
-bool mat_cholesky(float *A, float *chol, uint8_t n);
-bool mat_cholesky(double *A, double *chol, uint8_t n);
-float *mat_transpose(float *A, uint8_t n, uint8_t m);
-double *mat_transpose(double *A, uint8_t n, uint8_t m);
+/**
+ * YchIOT UWB Indoor positioning system
+ *
+ * @reboot_required true
+ * @min 0
+ * @max 10
+ * @group Sensors
+ * @value 0 Disabled
+ * @value 1 1 tag
+ */
+PARAM_DEFINE_INT32(SENS_UWB_TAG_NUM, 8);

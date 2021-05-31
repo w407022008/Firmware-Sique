@@ -1,0 +1,7 @@
+module_name: YchIOT UWB Indoor Positioning System
+serial_config:
+    - command: ychiot start -d ${SERIAL_DEV}
+      port_config_param:
+        name: SENS_YCHIOT_CFG
+        group: Sensors
+

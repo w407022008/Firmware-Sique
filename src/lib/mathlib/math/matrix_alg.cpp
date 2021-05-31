@@ -66,6 +66,33 @@ float *mat_mul(float *A, float *B, uint8_t n)
 	return ret;
 }
 
+/*
+ *    Does matrix multiplication of two regular/square matrices
+ *
+ *    @param     A,           Matrix A
+ *    @param     B,           Matrix B
+ *    @param     n,           dimemsion of matrix A n*m
+ *    @param     m,           dimemsion
+ *    @param     l,           dimemsion of matrix B m*l
+ *    @returns                multiplied matrix i.e. A*B
+ */
+
+float *mat_mul(float *A, float *B, uint8_t n, uint8_t m, uint8_t l)
+{
+    float *ret = new float[n * l];
+    memset(ret, 0.0f, n * l * sizeof(float));
+
+    for (uint8_t i = 0; i < n; i++) {
+        for (uint8_t j = 0; j < l; j++) {
+            for (uint8_t k = 0; k < m; k++) {
+                ret[i * n + j] += A[i * n + k] * B[k * l + j];
+            }
+        }
+    }
+
+    return ret;
+}
+
 static inline void swap(float &a, float &b)
 {
 	float c;
@@ -387,4 +414,89 @@ bool inverse4x4(float m[], float invOut[])
 	}
 
 	return true;
+}
+
+/*
+ *    Cholesky decomposition
+ *    A=chol*chol', where chol is a lower triagular matrix
+ *
+ *    @param     A,           input matrix
+ *    @param     chol,        Output decomposed matrix
+ *    @param     n,           dimension of square matrix
+ *    @returns                false = matrix is Singular, true = matrix decomposition successful
+ */
+bool mat_cholesky(float *A, float *chol, uint8_t n)
+{
+    float *L;
+    L = new float[n * n];
+
+    for(int i=0;i<n;i++)
+        for(int j=0;j<=i;j++){
+            float sum = 0.0f;
+            for(int k=0; k<j; k++)
+                sum += L[i*n+k] * L[j*n+k];
+
+            if(A[i*n+i] - sum < 1e-6f)
+                return false;
+
+            L[i*n+j] = (i == j)?
+                        (float)sqrt(A[i*n+i] - sum) :
+                        (1.0f / L[j*n+j] * (A[i*n+j] - sum));
+        }
+
+    memcpy(chol, L, n * n * sizeof(float));
+    return true;
+}
+
+bool mat_cholesky(double *A, double *chol, uint8_t n)
+{
+    double *L;
+    L = new double[n * n];
+
+    for(int i=0;i<n;i++)
+        for(int j=0;j<=i;j++){
+            double sum = 0.0;
+            for(int k=0; k<j; k++)
+                sum += L[i*n+k] * L[j*n+k];
+
+            if(A[i*n+i] - sum < 1e-12)
+                return false;
+
+            L[i*n+j] = (i == j)?
+                        sqrt(A[i*n+i] - sum) :
+                        (1.0 / L[j*n+j] * (A[i*n+j] - sum));
+        }
+
+    memcpy(chol, L, n * n * sizeof(double));
+    return true;
+}
+
+/*
+ *    Matrix Transpose
+ *
+ *    @param     A,           input matrix n*m
+ *    @param     n,           dimension of matrix
+ *    @param     m,           dimension of matrix
+ *    @returns                transposed matrix
+ */
+float *mat_transpose(float *A, uint8_t n, uint8_t m)
+{
+    float *ret = new float[m * n];
+    memset(ret, 0.0f, m * n * sizeof(float));
+
+    for (uint8_t i = 0; i < m; i++)
+        for (uint8_t j = 0; j < n; j++)
+                ret[i * n + j] = A[j * m + i];
+    return ret;
+}
+
+double *mat_transpose(double *A, uint8_t n, uint8_t m)
+{
+    double *ret = new double[m * n];
+    memset(ret, 0.0, m * n * sizeof(double));
+
+    for (uint8_t i = 0; i < m; i++)
+        for (uint8_t j = 0; j < n; j++)
+                ret[i * n + j] = A[j * m + i];
+    return ret;
 }

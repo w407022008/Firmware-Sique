@@ -1,7 +1,6 @@
 /****************************************************************************
  *
  *   Copyright (C) 2013 PX4 Development Team. All rights reserved.
- *   Author: Siddharth Bharat Purohit <sibpurohit@gmail.com>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,23 +32,19 @@
  ****************************************************************************/
 
 /**
- * @file matrix_alg.h
- *
- * Matrix algebra on raw arrays
+ * @file UWB driver interface.
  */
 
+#ifndef _DRV_UWB_H
+#define _DRV_UWB_H
 
-#pragma once
+#include <stdint.h>
+#include <sys/ioctl.h>
 
-#include <inttypes.h>
-#include <string.h>
-#include <math.h>
+#include "drv_sensor.h"
+#include "drv_orb_dev.h"
 
-float *mat_mul(float *A, float *B, uint8_t n);
-float *mat_mul(float *A, float *B, uint8_t n, uint8_t m, uint8_t l);
-bool mat_inverse(float *A, float *inv, uint8_t n);
-bool inverse4x4(float m[], float invOut[]);
-bool mat_cholesky(float *A, float *chol, uint8_t n);
-bool mat_cholesky(double *A, double *chol, uint8_t n);
-float *mat_transpose(float *A, uint8_t n, uint8_t m);
-double *mat_transpose(double *A, uint8_t n, uint8_t m);
+#define UWB_BASE_DEVICE_PATH	"/dev/uwb"
+#define UWB0_DEVICE_PATH	"/dev/uwb0"
+
+#endif /* _DRV_UWB_H */
