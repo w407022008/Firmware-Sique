@@ -84,7 +84,7 @@ protected:
 					(ParamFloat<px4::params::MPC_HOLD_MAX_XY>) _param_mpc_hold_max_xy,
 					(ParamFloat<px4::params::MPC_Z_P>) _param_mpc_z_p, /**< position controller altitude propotional gain */
                     (ParamInt<px4::params::MPC_MAN_Y_MODE>) _param_mpc_man_y_mode, /**< yaw input mode */
-                    (ParamFloat<px4::params::MPC_MAN_NED_SET>) _param_mpc_man_ned_set, /**< rotate the NED frame along D-axis */
+                    (ParamFloat<px4::params::MPC_MAN_NED_SET>) _param_mpc_man_ned_set, /**< rotate the NED frame along Down-axis */
 					(ParamFloat<px4::params::MPC_MAN_Y_MAX>) _param_mpc_man_y_max, /**< scaling factor from stick to yaw rate */
 					(ParamFloat<px4::params::MPC_MAN_Y_TAU>) _param_mpc_man_y_tau,
                     (ParamFloat<px4::params::MPC_MAN_Y_A_MAX>) _param_mpc_man_y_a_max, /**< scaling factor from stick to yaw angular acceleration */

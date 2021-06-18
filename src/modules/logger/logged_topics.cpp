@@ -180,6 +180,7 @@ void LoggedTopics::add_estimator_replay_topics()
 	add_topic("vehicle_status");
 	add_topic("vehicle_visual_odometry");
 	add_topic("vehicle_visual_odometry_aligned");
+    add_topic("vehicle_uwb_odometry", 50);
 	add_topic_multi("distance_sensor");
 	add_topic_multi("vehicle_gps_position");
 }
@@ -202,8 +203,9 @@ void LoggedTopics::add_sensor_comparison_topics()
 void LoggedTopics::add_vision_and_avoidance_topics()
 {
 	add_topic("collision_constraints");
-	add_topic("obstacle_distance_fused");
-	add_topic("vehicle_mocap_odometry", 30);
+    add_topic("obstacle_distance_fused");
+    add_topic("vehicle_mocap_odometry", 30);
+    add_topic("vehicle_uwb_odometry", 50);
 	add_topic("vehicle_trajectory_waypoint", 200);
 	add_topic("vehicle_trajectory_waypoint_desired", 200);
 	add_topic("vehicle_visual_odometry", 30);
@@ -227,6 +229,8 @@ void LoggedTopics::add_system_identification_topics()
 	//add_topic("sensor_combined");
     add_topic("custom_airspeed_estimation",5);
     add_topic("windspeed", 2);
+    add_topic("vehicle_uwb_odometry", 100);
+    add_topic("uwb_msg", 100);
 }
 
 int LoggedTopics::add_topics_from_file(const char *fname)

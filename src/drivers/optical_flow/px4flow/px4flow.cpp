@@ -317,7 +317,7 @@ PX4FLOW::collect()
 	_px4flow_topic.publish(report);
 
 	/* publish to the distance_sensor topic as well */
-        if (_class_instance == CLASS_DEVICE_PRIMARY && report.ground_distance_m > report.min_ground_distance) {
+        if (report.ground_distance_m > report.min_ground_distance) {
 		distance_sensor_s distance_report{};
 		distance_report.timestamp = report.timestamp;
 		distance_report.min_distance = PX4FLOW_MIN_DISTANCE;

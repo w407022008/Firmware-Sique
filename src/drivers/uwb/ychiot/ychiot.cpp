@@ -101,7 +101,7 @@ YCHIOT::collect()
             return PX4_OK;
         }
 
-        for(int k=0;k<8;k++){
+        for(int k=0;k<tag_num;k++){
             int val = 0;
             bool good = 1;
             for(int i=2+4*k; i<6+4*k; i++){

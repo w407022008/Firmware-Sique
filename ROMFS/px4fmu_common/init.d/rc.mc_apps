@@ -73,3 +73,10 @@ land_detector start multicopter
 # Publish Custom Airspeed Estimation Topic
 #
 custom_airspeed_estimation start
+
+# UWB Positioning System - YCHIOT
+if param compare -s SENS_EN_UWB 1
+then
+	uwb_indoor_position start
+fi
+

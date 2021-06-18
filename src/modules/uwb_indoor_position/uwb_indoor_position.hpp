@@ -92,43 +92,55 @@ private:
 
         matrix::Dcmf _R_NED_to_EV;
 
+        int test{0};
+        int mode{0};
+        int initWithAnalytical{1};
+        bool inited{false};
         int uwb_tag_num;                                    ///< number of landmark
         static constexpr uint8_t uwb_tag_num_max{12};		///< max number of landmark
         static constexpr uint8_t dim{9};                    ///< number of UKF states
-        float p_p = 1.0f;
-        float p_v = 0.1f;
-        float p_a = 1.0f;
-        float q_p = 0.0f;
-        float q_v = 0.0f;
-        float q_a = 1.5f;
-        float r = 1.0f;
+        const double p_p = 0.1f;
+        const double p_v = 0.1f;
+        const double p_a = 1.0f;
+        const double q_p = 0.1f;
+        const double q_v = 0.5f;
+        const double q_a = 5.0f;
+        const double r = 0.1f;
 
-        float alpha = 0.01f;
-        float ki = 1.0f;
-        float beta = 2.0f;
-        float lambda = alpha*alpha*(dim+ki)-dim;
+        const double alpha = 0.8f;
+        const double ki = 3-dim;
+        const double beta = 2.0f;
+        const double lambda = alpha*alpha*(dim+ki)-dim;
 
-        float dt = 0.1;
+        const double dt = 0.1; // 10Hz
 
-        float Tag_pos[3*12];
-        float *State[dim];
-        float *sigma[dim*(2*dim+1)];
-        float *VarP[dim*dim];
-        float VarQ[dim*dim];
+        double Tag_pos[3*uwb_tag_num_max] {0,4,0,1,8,1,2,6,2,3,2,1,1,5,6,4,2,3,5,2,4,1,2,5,1,5,3,4,8,6,2,8,1,6,4,9};
+        double State[dim];
+        double Wm[2*dim+1];
+        double W[(2*dim+1)*(2*dim+1)];
+        double sigma[dim*(2*dim+1)];
+        double P[dim*dim];
+        double Q[dim];
 
-        bool is_positive_definit;
+        bool is_positive_definit = true;
+        bool p_z_inv_able = true;
+        bool P_is_good = true;
 
         /*
          * ukf
          */
-        void ukf_update(float dist[]);
-        void Predict(float wm[], float w[]);
-        void Measure(float Z[]);
-        bool check_healthy() {return is_positive_definit;}
+        void Predict();
+        void ukf_update(double dist[]);
+        void analysis_solution(double dist[]);
+        bool check_healthy() {return (is_positive_definit & p_z_inv_able & P_is_good);}
+        void reset();
 
 
 
         DEFINE_PARAMETERS(
+                (ParamInt<px4::params::UWB_INIT_ANA>) _param_init,
+                (ParamInt<px4::params::UWB_EST_MODE>) _param_mode,
+                (ParamInt<px4::params::UWB_TEST>) _param_test,
                 (ParamFloat<px4::params::UWB_TAG_0_X>) _param_tag_0_x,
                 (ParamFloat<px4::params::UWB_TAG_0_Y>) _param_tag_0_y,
                 (ParamFloat<px4::params::UWB_TAG_0_Z>) _param_tag_0_z,
@@ -166,7 +178,7 @@ private:
                 (ParamFloat<px4::params::UWB_TAG_11_Y>) _param_tag_11_y,
                 (ParamFloat<px4::params::UWB_TAG_11_Z>) _param_tag_11_z,
                 (ParamInt<px4::params::SENS_UWB_TAG_NUM>) _param_uwb_tag_num,
-                (ParamFloat<px4::params::MPC_MAN_NED_SET>) _param_yaw_offset /**< rotate the NED frame along Z-axis descripted in NED frame */
+                (ParamFloat<px4::params::MPC_MAN_NED_SET>) _param_yaw_offset /**< rotate the NED frame along Down-axis descripted in NED frame */
         );
 
 	// Subscriptions
@@ -181,11 +193,11 @@ private:
 //        uORB::Subscription 	_vehicle_air_data_sub{ORB_ID(vehicle_air_data)};
 //        uORB::Subscription 	_windspeed_sub{ORB_ID(windspeed)};
 //        uORB::Subscription 	_battery_sub{ORB_ID(battery_status)};
-	uORB::Subscription 	_uwb_msg_sub{ORB_ID(uwb_msg)};
+        uORB::Subscription 	_uwb_msg_sub{ORB_ID(uwb_msg)};
 //        uORB::Subscription _estimator_sensor_bias_sub{ORB_ID(estimator_sensor_bias)};
 
 	// Publications
-	uORB::PublicationData<vehicle_odometry_s>	_uwb_odom_pub{ORB_ID(vehicle_uwb_odometry)};			/**< rate setpoint publication */
+        uORB::PublicationData<vehicle_odometry_s>	_uwb_odom_pub{ORB_ID(vehicle_uwb_odometry)};			/**< rate setpoint publication */
 
     perf_counter_t	_loop_perf{perf_alloc(PC_ELAPSED, MODULE_NAME": uwb_odometry_cycle")};
     perf_counter_t	_loop_interval_perf{perf_alloc(PC_INTERVAL, MODULE_NAME": uwb_odometry_interval")};

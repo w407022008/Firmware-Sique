@@ -44,21 +44,53 @@
 /*
  *    Does matrix multiplication of two regular/square matrices
  *
+ *    @param     A,           Matrix A n*m
+ *    @param     B,           Matrix B n*m
+ *    @param     n,           row dimemsion
+ *    @param     m,           col dimemsion
+ *    @param     positive,    +/-
+ *    @returns                plused matrix i.e. A+B
+ */
+
+bool mat_plus(float *out, float *A, float *B, uint8_t n, uint8_t m, bool positive)
+{
+    bool ret = true;
+    memset(out, 0.0f, n * m * sizeof(float));
+
+    if(positive)
+        for (uint8_t i = 0; i < n; i++) {
+            for (uint8_t j = 0; j < m; j++) {
+                out[i * m + j] = A[i * m + j] + B[i * m + j];
+            }
+        }
+    else
+        for (uint8_t i = 0; i < n; i++) {
+            for (uint8_t j = 0; j < m; j++) {
+                out[i * m + j] = A[i * m + j] - B[i * m + j];
+            }
+        }
+
+    return ret;
+}
+
+/*
+ *    Does matrix multiplication of two regular/square matrices
+ *
  *    @param     A,           Matrix A
  *    @param     B,           Matrix B
  *    @param     n,           dimemsion of square matrices
  *    @returns                multiplied matrix i.e. A*B
  */
 
-float *mat_mul(float *A, float *B, uint8_t n)
+bool mat_mul(float *out, float *A, float *B, uint8_t n)
 {
-	float *ret = new float[n * n];
-	memset(ret, 0.0f, n * n * sizeof(float));
+    bool ret = true;
+    memset(out, 0.0f, n * n * sizeof(float));
 
 	for (uint8_t i = 0; i < n; i++) {
 		for (uint8_t j = 0; j < n; j++) {
 			for (uint8_t k = 0; k < n; k++) {
-				ret[i * n + j] += A[i * n + k] * B[k * n + j];
+                out[i * n + j] += A[i * n + k] * B[k * n + j];
 			}
 		}
 	}
@@ -77,15 +109,15 @@ float *mat_mul(float *A, float *B, uint8_t n)
  *    @returns                multiplied matrix i.e. A*B
  */
 
-float *mat_mul(float *A, float *B, uint8_t n, uint8_t m, uint8_t l)
+bool mat_mul(float *out, float *A, float *B, uint8_t n, uint8_t m, uint8_t l)
 {
-    float *ret = new float[n * l];
-    memset(ret, 0.0f, n * l * sizeof(float));
+    bool ret = true;
+    memset(out, 0.0f, n * l * sizeof(float));
 
     for (uint8_t i = 0; i < n; i++) {
         for (uint8_t j = 0; j < l; j++) {
             for (uint8_t k = 0; k < m; k++) {
-                ret[i * n + j] += A[i * n + k] * B[k * l + j];
+                out[i * n + j] += A[i * n + k] * B[k * l + j];
             }
         }
     }
@@ -199,7 +231,8 @@ static void mat_LU_decompose(float *A, float *L, float *U, float *P, uint8_t n)
 	memset(P, 0, n * n * sizeof(float));
 	mat_pivot(A, P, n);
 
-	float *APrime = mat_mul(P, A, n);
+    float *APrime = new float[n*n];
+    mat_mul(APrime, P, A, n);
 
 	for (uint8_t i = 0; i < n; i++) {
 		L[i * n + i] = 1;
@@ -261,13 +294,15 @@ bool mat_inverse(float *A, float *inv, uint8_t n)
 	delete[] L;
 	delete[] U;
 
-	float *inv_unpivoted = mat_mul(U_inv, L_inv, n);
-	float *inv_pivoted = mat_mul(inv_unpivoted, P, n);
+    float *inv_unpivoted = new float[n*n];
+    mat_mul(inv_unpivoted, U_inv, L_inv, n);
+    float *inv_pivoted = new float[n*n];
+    mat_mul(inv_pivoted, inv_unpivoted, P, n);
 
 	//check sanity of results
 	for (uint8_t i = 0; i < n; i++) {
 		for (uint8_t j = 0; j < n; j++) {
-			if (!PX4_ISFINITE(inv_pivoted[i * n + j])) {
+            if (!PX4_ISFINITE(inv_pivoted[i * n + j])) {
 				ret = false;
 			}
 		}
@@ -436,7 +471,7 @@ bool mat_cholesky(float *A, float *chol, uint8_t n)
             for(int k=0; k<j; k++)
                 sum += L[i*n+k] * L[j*n+k];
 
-            if(A[i*n+i] - sum < 1e-6f)
+            if(A[i*n+i] - sum < 1e-12f)
                 return false;
 
             L[i*n+j] = (i == j)?
@@ -445,6 +480,7 @@ bool mat_cholesky(float *A, float *chol, uint8_t n)
         }
 
     memcpy(chol, L, n * n * sizeof(float));
+    delete[] L;
     return true;
 }
 
@@ -468,6 +504,7 @@ bool mat_cholesky(double *A, double *chol, uint8_t n)
         }
 
     memcpy(chol, L, n * n * sizeof(double));
+    delete[] L;
     return true;
 }
 
@@ -479,24 +516,24 @@ bool mat_cholesky(double *A, double *chol, uint8_t n)
  *    @param     m,           dimension of matrix
  *    @returns                transposed matrix
  */
-float *mat_transpose(float *A, uint8_t n, uint8_t m)
+bool mat_transpose(float *out, float *A, uint8_t n, uint8_t m)
 {
-    float *ret = new float[m * n];
-    memset(ret, 0.0f, m * n * sizeof(float));
+    bool ret = true;
+    memset(out, 0.0f, m * n * sizeof(float));
 
     for (uint8_t i = 0; i < m; i++)
         for (uint8_t j = 0; j < n; j++)
-                ret[i * n + j] = A[j * m + i];
+                out[i * n + j] = A[j * m + i];
     return ret;
 }
 
-double *mat_transpose(double *A, uint8_t n, uint8_t m)
+bool mat_transpose(double *out, double *A, uint8_t n, uint8_t m)
 {
-    double *ret = new double[m * n];
-    memset(ret, 0.0, m * n * sizeof(double));
+    bool ret = true;
+    memset(out, 0.0, m * n * sizeof(double));
 
     for (uint8_t i = 0; i < m; i++)
         for (uint8_t j = 0; j < n; j++)
-                ret[i * n + j] = A[j * m + i];
+                out[i * n + j] = A[j * m + i];
     return ret;
 }

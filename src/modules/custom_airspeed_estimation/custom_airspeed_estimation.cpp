@@ -319,7 +319,7 @@ $ module start
 
 )DESCR_STR");
 
-	PRINT_MODULE_USAGE_NAME("custome_airspeed_estimation", "template");
+        PRINT_MODULE_USAGE_NAME("custom_airspeed_estimation", "template");
 	PRINT_MODULE_USAGE_COMMAND("start");
 	PRINT_MODULE_USAGE_DEFAULT_COMMANDS();
 

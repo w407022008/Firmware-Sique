@@ -45,11 +45,12 @@
 #include <string.h>
 #include <math.h>
 
-float *mat_mul(float *A, float *B, uint8_t n);
-float *mat_mul(float *A, float *B, uint8_t n, uint8_t m, uint8_t l);
+bool mat_mul(float *out, float *A, float *B, uint8_t n);
+bool mat_mul(float *out, float *A, float *B, uint8_t n, uint8_t m, uint8_t l);
+bool mat_plus(float *out, float *A, float *B, uint8_t n, uint8_t m, bool positive);
 bool mat_inverse(float *A, float *inv, uint8_t n);
 bool inverse4x4(float m[], float invOut[]);
 bool mat_cholesky(float *A, float *chol, uint8_t n);
 bool mat_cholesky(double *A, double *chol, uint8_t n);
-float *mat_transpose(float *A, uint8_t n, uint8_t m);
-double *mat_transpose(double *A, uint8_t n, uint8_t m);
+bool mat_transpose(float *out, float *A, uint8_t n, uint8_t m);
+bool mat_transpose(double *out, double *A, uint8_t n, uint8_t m);
