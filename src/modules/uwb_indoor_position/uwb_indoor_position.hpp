@@ -90,7 +90,7 @@ private:
 	 */
         void parameters_update(bool force);
 
-        matrix::Dcmf _R_NED_to_EV;
+        matrix::Dcmf _R_EV_to_NED;
 
         int test{0};
         int mode{0};
@@ -114,7 +114,7 @@ private:
 
         const double dt = 0.1; // 10Hz
 
-        double Tag_pos[3*uwb_tag_num_max] {0,4,0,1,8,1,2,6,2,3,2,1,1,5,6,4,2,3,5,2,4,1,2,5,1,5,3,4,8,6,2,8,1,6,4,9};
+        double Tag_pos[3*uwb_tag_num_max];
         double State[dim];
         double Wm[2*dim+1];
         double W[(2*dim+1)*(2*dim+1)];
@@ -131,7 +131,7 @@ private:
          */
         void Predict();
         void ukf_update(double dist[]);
-        void analysis_solution(double dist[]);
+        void trilateration(double dist[]);
         bool check_healthy() {return (is_positive_definit & p_z_inv_able & P_is_good);}
         void reset();
 

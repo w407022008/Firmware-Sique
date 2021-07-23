@@ -70,7 +70,7 @@ PARAM_DEFINE_INT32(SENS_EN_SFM3000, 1);
  * @value 2 Two sensors
  * @value 3 Three sensors
  */
-PARAM_DEFINE_INT32(SFM_NUM, 2);
+PARAM_DEFINE_INT32(SFM_NUM, 3);
 
 /**
  * SFM Sensor 0 Rotation

@@ -63,8 +63,10 @@ void UWBIndoorPosition::parameters_update(bool force)
 
             ModuleParams::updateParams();
 
-            // NWU(EU) -> NED -> NED(custom)
-            _R_NED_to_EV =matrix::Dcmf(matrix::Eulerf(0.0f, 0.0f, -math::radians(_param_yaw_offset.get()))) *  matrix::Dcmf(matrix::Eulerf(-3.1415926, 0.0f, 0.0f)); // refer to FlightTaskManualAltitude.cpp Fun:_rotateIntoHeadingFrame() -> R_Local_to(in)_NED
+            // _R_EV_to_NED: Rotation matrix from descripted in frame EV to descripted in frame NED
+            // _R_EV_in_NED(==_R_EV_to_NED): frame EV space matrix descripted in frame NED, which looks same as _R_EV_to_NED
+            // NED -> EV_frame_FRD -> EV_frame_FLU
+            _R_EV_to_NED = matrix::Dcmf(matrix::Eulerf(0.0f, 0.0f, math::radians(_param_yaw_offset.get()))) * matrix::Dcmf(matrix::Eulerf(M_PI, 0.0f, 0.0f)); // refer to FlightTaskManualAltitude.cpp Fun:_rotateIntoHeadingFrame() -> R_Local_to(in)_NED
 
             uwb_tag_num = _param_uwb_tag_num.get();
             if (uwb_tag_num_max<uwb_tag_num){
@@ -188,7 +190,7 @@ bool UWBIndoorPosition::init()
         return true;
 }
 
-void UWBIndoorPosition::analysis_solution(double dist[])
+void UWBIndoorPosition::trilateration(double dist[])
 {
     /************  buffer  *****************
     * tag_1 tag_2 tag_3 vote_tag_1 vote_tag_2 vote_tag_3 vote_tag_4 vote_tag_5 vote_tag_6 vote_tag_7 vote_tag_8 vote_tag_9
@@ -750,7 +752,7 @@ void UWBIndoorPosition::Run()
                     if(mode==0)
                         ukf_update(dist);
                     else if(mode==1)
-                        analysis_solution(dist);
+                        trilateration(dist);
 
                     /* virtual state update */
                     virtual_state[0] += virtual_state[3]*dt;
@@ -769,7 +771,7 @@ void UWBIndoorPosition::Run()
 
                     if(mode==0){
                         if(initWithAnalytical && !inited){
-                            analysis_solution(dist);
+                            trilateration(dist);
                         }
 
                         ukf_update(dist);
@@ -777,34 +779,36 @@ void UWBIndoorPosition::Run()
                         if(!check_healthy()){
                             PX4_ERR("chol decomposition faild! reset covariance matrix P");
                             reset();
-                            analysis_solution(dist);
+                            trilateration(dist);
                             is_positive_definit = true;
                             p_z_inv_able = true;
                             P_is_good = true;
                         }
 
                     }else if(mode==1)
-                        analysis_solution(dist);
+                        trilateration(dist);
                 }else
                     return;
 
                 matrix::Quatf q_ev{vehicle_attitude.q};
-                q_ev.copyTo(visual_odom.q_offset);
+//                q_ev.copyTo(visual_odom.q_offset); // body in NED
 //                double phi, theta, psi;
-                matrix::Dcmf Body_in_NED = matrix::Dcmf(q_ev);
-                matrix::Dcmf Body_in_EV_Local_Frame = _R_NED_to_EV * Body_in_NED;
-                q_ev = matrix::Quatf(Body_in_EV_Local_Frame);
-                q_ev.copyTo(visual_odom.q);
+//                matrix::Dcmf Body_in_NED = matrix::Dcmf(q_ev);
+//                matrix::Dcmf Body_in_EV_Local_Frame = _R_EV_to_NED.transpose() * Body_in_NED; // body in EV_frame
+//                q_ev = matrix::Quatf(Body_in_NED);
+                q_ev.copyTo(visual_odom.q); // body in EV
 //                phi = matrix::Eulerf(q).phi();
 //                theta = matrix::Eulerf(q).theta();
 //                psi = matrix::Eulerf(q).psi();
 
 
-                visual_odom.x = State[0];
-                visual_odom.y = State[1];
-                visual_odom.z = State[2];
+                matrix::Vector3f _position(State[0],State[1],State[2]);
+                _position = _R_EV_to_NED * _position;
+                visual_odom.x = _position(0);
+                visual_odom.y = _position(1);
+                visual_odom.z = _position(2);
 
-                visual_odom.local_frame = vehicle_odometry_s::LOCAL_FRAME_NED; // need to enable rotate external vision in EKF2_AID_MASK
+                visual_odom.local_frame = vehicle_odometry_s::LOCAL_FRAME_NED; // Do not need to enable rotate external vision in EKF2_AID_MASK
 
                 visual_odom.pose_covariance[0] = (float)P[0];
                 visual_odom.pose_covariance[1] = (float)P[1];
@@ -819,10 +823,12 @@ void UWBIndoorPosition::Run()
                 visual_odom.pose_covariance[18] = 1.0f;
                 visual_odom.pose_covariance[20] = 1.0f;
 
-                visual_odom.velocity_frame = vehicle_odometry_s::LOCAL_FRAME_FRD; // need to enable rotate external vision in EKF2_AID_MASK
-                visual_odom.vx = State[3];
-                visual_odom.vy = State[4];
-                visual_odom.vz = State[5];
+                visual_odom.velocity_frame = vehicle_odometry_s::LOCAL_FRAME_NED; // DO not need to enable rotate external vision in EKF2_AID_MASK
+                matrix::Vector3f _vel(State[3],State[4],State[5]);
+                _vel = _R_EV_to_NED * _vel;
+                visual_odom.vx = _vel(0);
+                visual_odom.vy = _vel(1);
+                visual_odom.vz = _vel(2);
                 visual_odom.rollspeed = NAN;
                 visual_odom.pitchspeed = NAN;
                 visual_odom.yawspeed = NAN;

@@ -303,7 +303,7 @@ PX4FLOW::collect()
 	report.integration_timespan = _frame_integral.integration_timespan; //microseconds
 	report.time_since_last_sonar_update = _frame_integral.sonar_timestamp;//microseconds
 	report.gyro_temperature = _frame_integral.gyro_temperature;//Temperature * 100 in centi-degrees Celsius
-	report.sensor_id = 0;
+	report.sensor_id += 1;
 	report.max_flow_rate = _sensor_max_flow_rate;
 	report.min_ground_distance = _sensor_min_range;
 	report.max_ground_distance = _sensor_max_range;
@@ -327,7 +327,7 @@ PX4FLOW::collect()
                 distance_report.signal_quality = 1;
                 distance_report.type = distance_sensor_s::MAV_DISTANCE_SENSOR_LASER;
 		/* TODO: the ID needs to be properly set */
-		distance_report.id = 0;
+		distance_report.id += 1;
 		distance_report.orientation = _sonar_rotation;
 
 		_distance_sensor_topic.publish(distance_report);

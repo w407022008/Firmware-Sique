@@ -237,6 +237,7 @@ private:
 	uORB::Subscription _airdata_sub{ORB_ID(vehicle_air_data)};
 	uORB::Subscription _airspeed_sub{ORB_ID(airspeed)};
 	uORB::Subscription _ev_odom_sub{ORB_ID(vehicle_visual_odometry)};
+    uORB::Subscription _uwb_odom_sub{ORB_ID(vehicle_uwb_odometry)};
 	uORB::Subscription _landing_target_pose_sub{ORB_ID(landing_target_pose)};
 	uORB::Subscription _magnetometer_sub{ORB_ID(vehicle_magnetometer)};
 	uORB::Subscription _optical_flow_sub{ORB_ID(optical_flow)};
@@ -1187,7 +1188,89 @@ void Ekf2::Run()
 
 			ekf2_timestamps.visual_odometry_timestamp_rel = (int16_t)((int64_t)_ev_odom.timestamp / 100 -
 					(int64_t)ekf2_timestamps.timestamp / 100);
-		}
+
+        }else if (_uwb_odom_sub.updated()) {
+            new_ev_data_received = true;
+
+            // copy both attitude & position, we need both to fill a single extVisionSample
+            _uwb_odom_sub.copy(&_ev_odom);
+
+            extVisionSample ev_data {};
+
+            // check for valid velocity data
+            if (PX4_ISFINITE(_ev_odom.vx) && PX4_ISFINITE(_ev_odom.vy) && PX4_ISFINITE(_ev_odom.vz)) {
+                ev_data.vel(0) = _ev_odom.vx;
+                ev_data.vel(1) = _ev_odom.vy;
+                ev_data.vel(2) = _ev_odom.vz;
+
+                if (_ev_odom.velocity_frame == vehicle_odometry_s::BODY_FRAME_FRD) {
+                    ev_data.vel_frame = estimator::BODY_FRAME_FRD;
+
+                } else {
+                    ev_data.vel_frame = estimator::LOCAL_FRAME_FRD;
+                }
+
+                // velocity measurement error from ev_data or parameters
+                float param_evv_noise_var = sq(_param_ekf2_evv_noise.get());
+
+                if (!_param_ekf2_ev_noise_md.get() && PX4_ISFINITE(_ev_odom.velocity_covariance[_ev_odom.COVARIANCE_MATRIX_VX_VARIANCE])
+                    && PX4_ISFINITE(_ev_odom.velocity_covariance[_ev_odom.COVARIANCE_MATRIX_VY_VARIANCE])
+                    && PX4_ISFINITE(_ev_odom.velocity_covariance[_ev_odom.COVARIANCE_MATRIX_VZ_VARIANCE])) {
+                    ev_data.velCov(0, 0) = _ev_odom.velocity_covariance[_ev_odom.COVARIANCE_MATRIX_VX_VARIANCE];
+                    ev_data.velCov(0, 1) = ev_data.velCov(1, 0) = _ev_odom.velocity_covariance[1];
+                    ev_data.velCov(0, 2) = ev_data.velCov(2, 0) = _ev_odom.velocity_covariance[2];
+                    ev_data.velCov(1, 1) = _ev_odom.velocity_covariance[_ev_odom.COVARIANCE_MATRIX_VY_VARIANCE];
+                    ev_data.velCov(1, 2) = ev_data.velCov(2, 1) = _ev_odom.velocity_covariance[7];
+                    ev_data.velCov(2, 2) = _ev_odom.velocity_covariance[_ev_odom.COVARIANCE_MATRIX_VZ_VARIANCE];
+
+                } else {
+                    ev_data.velCov = matrix::eye<float, 3>() * param_evv_noise_var;
+                }
+            }
+
+            // check for valid position data
+            if (PX4_ISFINITE(_ev_odom.x) && PX4_ISFINITE(_ev_odom.y) && PX4_ISFINITE(_ev_odom.z)) {
+                ev_data.pos(0) = _ev_odom.x;
+                ev_data.pos(1) = _ev_odom.y;
+                ev_data.pos(2) = _ev_odom.z;
+
+                float param_evp_noise_var = sq(_param_ekf2_evp_noise.get());
+
+                // position measurement error from ev_data or parameters
+                if (!_param_ekf2_ev_noise_md.get() && PX4_ISFINITE(_ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_X_VARIANCE])
+                    && PX4_ISFINITE(_ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Y_VARIANCE])
+                    && PX4_ISFINITE(_ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Z_VARIANCE])) {
+                    ev_data.posVar(0) = fmaxf(param_evp_noise_var, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_X_VARIANCE]);
+                    ev_data.posVar(1) = fmaxf(param_evp_noise_var, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Y_VARIANCE]);
+                    ev_data.posVar(2) = fmaxf(param_evp_noise_var, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Z_VARIANCE]);
+
+                } else {
+                    ev_data.posVar.setAll(param_evp_noise_var);
+                }
+            }
+
+            // check for valid orientation data
+            if (PX4_ISFINITE(_ev_odom.q[0])) {
+                ev_data.quat = matrix::Quatf(_ev_odom.q);
+
+                // orientation measurement error from ev_data or parameters
+                float param_eva_noise_var = sq(_param_ekf2_eva_noise.get());
+
+                if (!_param_ekf2_ev_noise_md.get() && PX4_ISFINITE(_ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_YAW_VARIANCE])) {
+                    ev_data.angVar = fmaxf(param_eva_noise_var, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_YAW_VARIANCE]);
+
+                } else {
+                    ev_data.angVar = param_eva_noise_var;
+                }
+            }
+
+            // use timestamp from external computer, clocks are synchronized when using MAVROS
+            ev_data.time_us = _ev_odom.timestamp_sample;
+            _ekf.setExtVisionData(ev_data);
+
+            ekf2_timestamps.visual_odometry_timestamp_rel = (int16_t)((int64_t)_ev_odom.timestamp / 100 -
+                    (int64_t)ekf2_timestamps.timestamp / 100);
+        }
 
 		bool vehicle_land_detected_updated = _vehicle_land_detected_sub.updated();
 
