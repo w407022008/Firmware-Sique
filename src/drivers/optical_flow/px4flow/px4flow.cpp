@@ -327,7 +327,7 @@ PX4FLOW::collect()
                 distance_report.signal_quality = 1;
                 distance_report.type = distance_sensor_s::MAV_DISTANCE_SENSOR_LASER;
 		/* TODO: the ID needs to be properly set */
-		distance_report.id += 1;
+		distance_report.id = 1;
 		distance_report.orientation = _sonar_rotation;
 
 		_distance_sensor_topic.publish(distance_report);
