@@ -30,6 +30,7 @@ uint64 timestamp_sample_baro 			# timestamp of the data sample on which this mes
 
 float32 windspeed_x						# Airspeed measurement along x-axis in body frame, (metres/sec)
 float32 windspeed_y						# Airspeed measurement along y-axis in body frame, (metres/sec)
+float32 windspeed_z						# Airspeed measurement along z-axis in body frame, (metres/sec)
 uint64 timestamp_sample_wind 			# timestamp of the data sample on which this message is based (microseconds)
 
 float32 battery_scale					# Power scaling factor, >= 1, or -1 if unknown

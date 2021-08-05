@@ -228,9 +228,10 @@ void LoggedTopics::add_system_identification_topics()
 	//add_topic("actuator_controls_1");
 	//add_topic("sensor_combined");
     add_topic("custom_airspeed_estimation",5);
-    add_topic("windspeed", 2);
-    add_topic("vehicle_uwb_odometry", 100);
-    add_topic("uwb_msg", 100);
+    //add_topic("windspeed", 2);
+    add_topic("vehicle_visual_odometry_aligned", 5);
+    //add_topic("vehicle_visual_odometry", 30);
+    //add_topic("vehicle_uwb_odometry", 100);
 }
 
 int LoggedTopics::add_topics_from_file(const char *fname)
