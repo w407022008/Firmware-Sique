@@ -140,6 +140,7 @@ private:
         DEFINE_PARAMETERS(
                 (ParamInt<px4::params::UWB_INIT_ANA>) _param_init,
                 (ParamInt<px4::params::UWB_EST_MODE>) _param_mode,
+                (ParamInt<px4::params::UWB_OUTPUT_NED>) _param_output_in_ned,
                 (ParamInt<px4::params::UWB_TEST>) _param_test,
                 (ParamFloat<px4::params::UWB_TAG_0_X>) _param_tag_0_x,
                 (ParamFloat<px4::params::UWB_TAG_0_Y>) _param_tag_0_y,

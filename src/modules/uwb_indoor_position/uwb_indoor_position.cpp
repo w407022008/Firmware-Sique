@@ -66,7 +66,8 @@ void UWBIndoorPosition::parameters_update(bool force)
             // _R_EV_to_NED: Rotation matrix from descripted in frame EV to descripted in frame NED
             // _R_EV_in_NED(==_R_EV_to_NED): frame EV space matrix descripted in frame NED, which looks same as _R_EV_to_NED
             // NED -> EV_frame_FRD -> EV_frame_FLU
-            _R_EV_to_NED = matrix::Dcmf(matrix::Eulerf(0.0f, 0.0f, math::radians(_param_yaw_offset.get()))) * matrix::Dcmf(matrix::Eulerf(M_PI, 0.0f, 0.0f)); // refer to FlightTaskManualAltitude.cpp Fun:_rotateIntoHeadingFrame() -> R_Local_to(in)_NED
+            if(_param_output_in_ned.get())
+            	_R_EV_to_NED = matrix::Dcmf(matrix::Eulerf(0.0f, 0.0f, math::radians(_param_yaw_offset.get()))) * matrix::Dcmf(matrix::Eulerf(M_PI, 0.0f, 0.0f)); // refer to FlightTaskManualAltitude.cpp Fun:_rotateIntoHeadingFrame() -> R_Local_to(in)_NED
 
             uwb_tag_num = _param_uwb_tag_num.get();
             if (uwb_tag_num_max<uwb_tag_num){
@@ -327,12 +328,12 @@ void UWBIndoorPosition::trilateration(double dist[])
     double x[3] = {0,0,0};
     int weight_total=0;
     for(int i=0;i<num;i++){
-        if(buffer[i*21+15]>=4){
+        if(buffer[i*21+15]>=3){
             x[0] += buffer[i*21+12]*buffer[i*21+15];
             x[1] += buffer[i*21+13]*buffer[i*21+15];
             x[2] += buffer[i*21+14]*buffer[i*21+15];
             weight_total += buffer[i*21+15];
-        }else if(buffer[i*21+19]>=4){
+        }else if(buffer[i*21+19]>=3){
             x[0] += buffer[i*21+16]*buffer[i*21+19];
             x[1] += buffer[i*21+17]*buffer[i*21+19];
             x[2] += buffer[i*21+18]*buffer[i*21+19];
