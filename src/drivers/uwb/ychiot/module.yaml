@@ -4,4 +4,5 @@ serial_config:
       port_config_param:
         name: SENS_YCHIOT_CFG
         group: Sensors
+        default: 0
 

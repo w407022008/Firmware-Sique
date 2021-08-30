@@ -1,17 +1,5 @@
 
 /**
- * UWB Indoor Positionning System: Module Start
- *
- * @reboot_required true
- * @min 0
- * @max 1
- * @group Sensors
- * @value 0 Disabled
- * @value 1 Enabled
- */
-PARAM_DEFINE_INT32(SENS_EN_UWB, 1);
-
-/**
  * UWB Indoor Positionning System: Initialisation with Analytical Solution
  *
  * @min 0
