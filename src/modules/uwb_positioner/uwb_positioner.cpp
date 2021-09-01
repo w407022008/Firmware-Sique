@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#include "uwb_indoor_position.hpp"
+#include "uwb_positioner.hpp"
 
 #include <drivers/drv_hrt.h>
 
@@ -67,7 +67,7 @@ void UWBIndoorPosition::parameters_update(bool force)
             // _R_EV_in_NED(==_R_EV_to_NED): frame EV space matrix descripted in frame NED, which looks same as _R_EV_to_NED
             // NED -> EV_frame_FRD -> EV_frame_FLU
             if(_param_output_in_ned.get())
-            	_R_EV_to_NED = matrix::Dcmf(matrix::Eulerf(0.0f, 0.0f, math::radians(_param_yaw_offset.get()))) * matrix::Dcmf(matrix::Eulerf(M_PI, 0.0f, 0.0f)); // refer to FlightTaskManualAltitude.cpp Fun:_rotateIntoHeadingFrame() -> R_Local_to(in)_NED
+            	_R_EV_to_NED = matrix::Dcmf(matrix::Eulerf(0.0f, 0.0f, math::radians(_param_yaw_offset.get()) + (float)M_PI/2.0f)) * matrix::Dcmf(matrix::Eulerf(M_PI, 0.0f, 0.0f)); // refer to FlightTaskManualAltitude.cpp Fun:_rotateIntoHeadingFrame() -> R_Local_to(in)_NED
 
             uwb_tag_num = _param_uwb_tag_num.get();
             if (uwb_tag_num_max<uwb_tag_num){
@@ -76,45 +76,84 @@ void UWBIndoorPosition::parameters_update(bool force)
             }
 
             initWithAnalytical = _param_init.get();
-            mode = _param_mode.get();
+            ukf_mode = _param_mode.get();
             test = _param_test.get();
 
-            Tag_pos[0] = _param_tag_0_x.get();
-            Tag_pos[12] = _param_tag_0_y.get();
-            Tag_pos[24] = _param_tag_0_z.get();
-            Tag_pos[1] = _param_tag_1_x.get();
-            Tag_pos[13] = _param_tag_1_y.get();
-            Tag_pos[25] = _param_tag_1_z.get();
-            Tag_pos[2] = _param_tag_2_x.get();
-            Tag_pos[14] = _param_tag_2_y.get();
-            Tag_pos[26] = _param_tag_2_z.get();
-            Tag_pos[3] = _param_tag_3_x.get();
-            Tag_pos[15] = _param_tag_3_y.get();
-            Tag_pos[27] = _param_tag_3_z.get();
-            Tag_pos[4] = _param_tag_4_x.get();
-            Tag_pos[16] = _param_tag_4_y.get();
-            Tag_pos[28] = _param_tag_4_z.get();
-            Tag_pos[5] = _param_tag_5_x.get();
-            Tag_pos[17] = _param_tag_5_y.get();
-            Tag_pos[29] = _param_tag_5_z.get();
-            Tag_pos[6] = _param_tag_6_x.get();
-            Tag_pos[18] = _param_tag_6_y.get();
-            Tag_pos[30] = _param_tag_6_z.get();
-            Tag_pos[7] = _param_tag_7_x.get();
-            Tag_pos[19] = _param_tag_7_y.get();
-            Tag_pos[31] = _param_tag_7_z.get();
-            Tag_pos[8] = _param_tag_8_x.get();
-            Tag_pos[20] = _param_tag_8_y.get();
-            Tag_pos[32] = _param_tag_8_z.get();
-            Tag_pos[9] = _param_tag_9_x.get();
-            Tag_pos[21] = _param_tag_9_y.get();
-            Tag_pos[33] = _param_tag_9_z.get();
-            Tag_pos[10] = _param_tag_10_x.get();
-            Tag_pos[22] = _param_tag_10_y.get();
-            Tag_pos[34] = _param_tag_10_z.get();
-            Tag_pos[11] = _param_tag_11_x.get();
-            Tag_pos[23] = _param_tag_11_y.get();
-            Tag_pos[35] = _param_tag_11_z.get();
+			if(_param_flying_outdoor.get()){
+		        Tag_pos[0] = _param_outdoor_tag_0_x.get();
+		        Tag_pos[12] = _param_outdoor_tag_0_y.get();
+		        Tag_pos[24] = _param_outdoor_tag_0_z.get();
+		        Tag_pos[1] = _param_outdoor_tag_1_x.get();
+		        Tag_pos[13] = _param_outdoor_tag_1_y.get();
+		        Tag_pos[25] = _param_outdoor_tag_1_z.get();
+		        Tag_pos[2] = _param_outdoor_tag_2_x.get();
+		        Tag_pos[14] = _param_outdoor_tag_2_y.get();
+		        Tag_pos[26] = _param_outdoor_tag_2_z.get();
+		        Tag_pos[3] = _param_outdoor_tag_3_x.get();
+		        Tag_pos[15] = _param_outdoor_tag_3_y.get();
+		        Tag_pos[27] = _param_outdoor_tag_3_z.get();
+		        Tag_pos[4] = _param_outdoor_tag_4_x.get();
+		        Tag_pos[16] = _param_outdoor_tag_4_y.get();
+		        Tag_pos[28] = _param_outdoor_tag_4_z.get();
+		        Tag_pos[5] = _param_outdoor_tag_5_x.get();
+		        Tag_pos[17] = _param_outdoor_tag_5_y.get();
+		        Tag_pos[29] = _param_outdoor_tag_5_z.get();
+		        Tag_pos[6] = _param_outdoor_tag_6_x.get();
+		        Tag_pos[18] = _param_outdoor_tag_6_y.get();
+		        Tag_pos[30] = _param_outdoor_tag_6_z.get();
+		        Tag_pos[7] = _param_outdoor_tag_7_x.get();
+		        Tag_pos[19] = _param_outdoor_tag_7_y.get();
+		        Tag_pos[31] = _param_outdoor_tag_7_z.get();
+		        Tag_pos[8] = _param_outdoor_tag_8_x.get();
+		        Tag_pos[20] = _param_outdoor_tag_8_y.get();
+		        Tag_pos[32] = _param_outdoor_tag_8_z.get();
+		        Tag_pos[9] = _param_outdoor_tag_9_x.get();
+		        Tag_pos[21] = _param_outdoor_tag_9_y.get();
+		        Tag_pos[33] = _param_outdoor_tag_9_z.get();
+		        Tag_pos[10] = _param_outdoor_tag_10_x.get();
+		        Tag_pos[22] = _param_outdoor_tag_10_y.get();
+		        Tag_pos[34] = _param_outdoor_tag_10_z.get();
+		        Tag_pos[11] = _param_outdoor_tag_11_x.get();
+		        Tag_pos[23] = _param_outdoor_tag_11_y.get();
+		        Tag_pos[35] = _param_outdoor_tag_11_z.get();
+	        } else {
+                Tag_pos[0] = _param_indoor_tag_0_x.get();
+		        Tag_pos[12] = _param_indoor_tag_0_y.get();
+		        Tag_pos[24] = _param_indoor_tag_0_z.get();
+		        Tag_pos[1] = _param_indoor_tag_1_x.get();
+		        Tag_pos[13] = _param_indoor_tag_1_y.get();
+		        Tag_pos[25] = _param_indoor_tag_1_z.get();
+		        Tag_pos[2] = _param_indoor_tag_2_x.get();
+		        Tag_pos[14] = _param_indoor_tag_2_y.get();
+		        Tag_pos[26] = _param_indoor_tag_2_z.get();
+		        Tag_pos[3] = _param_indoor_tag_3_x.get();
+		        Tag_pos[15] = _param_indoor_tag_3_y.get();
+		        Tag_pos[27] = _param_indoor_tag_3_z.get();
+		        Tag_pos[4] = _param_indoor_tag_4_x.get();
+		        Tag_pos[16] = _param_indoor_tag_4_y.get();
+		        Tag_pos[28] = _param_indoor_tag_4_z.get();
+		        Tag_pos[5] = _param_indoor_tag_5_x.get();
+		        Tag_pos[17] = _param_indoor_tag_5_y.get();
+		        Tag_pos[29] = _param_indoor_tag_5_z.get();
+		        Tag_pos[6] = _param_indoor_tag_6_x.get();
+		        Tag_pos[18] = _param_indoor_tag_6_y.get();
+		        Tag_pos[30] = _param_indoor_tag_6_z.get();
+		        Tag_pos[7] = _param_indoor_tag_7_x.get();
+		        Tag_pos[19] = _param_indoor_tag_7_y.get();
+		        Tag_pos[31] = _param_indoor_tag_7_z.get();
+		        Tag_pos[8] = _param_indoor_tag_8_x.get();
+		        Tag_pos[20] = _param_indoor_tag_8_y.get();
+		        Tag_pos[32] = _param_indoor_tag_8_z.get();
+		        Tag_pos[9] = _param_indoor_tag_9_x.get();
+		        Tag_pos[21] = _param_indoor_tag_9_y.get();
+		        Tag_pos[33] = _param_indoor_tag_9_z.get();
+		        Tag_pos[10] = _param_indoor_tag_10_x.get();
+		        Tag_pos[22] = _param_indoor_tag_10_y.get();
+		        Tag_pos[34] = _param_indoor_tag_10_z.get();
+		        Tag_pos[11] = _param_indoor_tag_11_x.get();
+		        Tag_pos[23] = _param_indoor_tag_11_y.get();
+		        Tag_pos[35] = _param_indoor_tag_11_z.get();
+	        }
     }
 
 }
@@ -249,7 +288,7 @@ void UWBIndoorPosition::trilateration(double dist[])
         double z_0 ;
         if(1/t_1 != (double) NAN){
             // (t_1==0) means that x=0 assumption failure
-            // point on the intersection line of the three spheres
+            // point at the intersection line of the three spheres
             if(1/gamma_1!=(double) NAN){
                 x_0 = 0;
                 y_0 = (theta_1*gamma_2-theta_2*gamma_1)/(beta_1*gamma_2-beta_2*gamma_1);
@@ -262,7 +301,7 @@ void UWBIndoorPosition::trilateration(double dist[])
                 continue;
         }else if(1/t_2 != (double) NAN){
             // (t_2==0) means that y=0 assumption failure
-            // point on the intersection line of the three spheres
+            // point at the intersection line of the three spheres
             if(1/alpha_1!=(double) NAN){
                 x_0 = (theta_1 - (theta_1*alpha_2-theta_2*alpha_1)/(gamma_1*alpha_2-gamma_2*alpha_1) * gamma_1)/alpha_1;
                 y_0 = 0;
@@ -275,7 +314,7 @@ void UWBIndoorPosition::trilateration(double dist[])
                 continue;
         }else if(1/t_3 != (double) NAN){
             // (t_3==0) means that z=0 assumption failure
-            // point on the intersection line of the three spheres
+            // point at the intersection line of the three spheres
             if(1/alpha_1!=(double) NAN){
                 x_0 = (theta_1 - (theta_1*alpha_2-theta_2*alpha_1)/(beta_1*alpha_2-beta_2*alpha_1) * beta_1)/alpha_1;
                 y_0 = (theta_1*alpha_2-theta_2*alpha_1)/(beta_1*alpha_2-beta_2*alpha_1);
@@ -291,7 +330,7 @@ void UWBIndoorPosition::trilateration(double dist[])
             continue;
 
         // Intersection points parameters
-        double a = t_1*t_1+t_2*t_2+t_3*t_3;
+        double a = t_1*t_1+t_2*t_2+t_3*t_3; // a == 0 if t_1,t_2,t_3 == 0
         double b = 2*(t_1*(x_0-a_1)+t_2*(y_0-b_1)+t_3*(z_0-c_1));
         double c = (x_0-a_1)*(x_0-a_1)+(y_0-b_1)*(y_0-b_1)+(z_0-c_1)*(z_0-c_1)-r_1*r_1;
         double judg = b*b-4*a*c;
@@ -328,21 +367,24 @@ void UWBIndoorPosition::trilateration(double dist[])
     double x[3] = {0,0,0};
     int weight_total=0;
     for(int i=0;i<num;i++){
-        if(buffer[i*21+15]>=3){
+        if(buffer[i*21+15]>=(uwb_tag_num-2)/2){
             x[0] += buffer[i*21+12]*buffer[i*21+15];
             x[1] += buffer[i*21+13]*buffer[i*21+15];
             x[2] += buffer[i*21+14]*buffer[i*21+15];
             weight_total += buffer[i*21+15];
-        }else if(buffer[i*21+19]>=3){
+        }else if(buffer[i*21+19]>=(uwb_tag_num-2)/2){
             x[0] += buffer[i*21+16]*buffer[i*21+19];
             x[1] += buffer[i*21+17]*buffer[i*21+19];
             x[2] += buffer[i*21+18]*buffer[i*21+19];
             weight_total += buffer[i*21+19];
         }
     }
-    x[0] /= weight_total;
-    x[1] /= weight_total;
-    x[2] /= weight_total;
+    
+    if(weight_total != 0){
+		x[0] /= weight_total;
+		x[1] /= weight_total;
+		x[2] /= weight_total;
+	}
 
     /************ update ****************/
     if(inited){
@@ -750,9 +792,9 @@ void UWBIndoorPosition::Run()
                             dist[j] = sqrt(sum) + 0.1*(2*static_cast<double>(rand()) / static_cast<double>(RAND_MAX)-1);
                     }
 
-                    if(mode==0)
+                    if(ukf_mode == 1)
                         ukf_update(dist);
-                    else if(mode==1)
+                    else if(ukf_mode == 0)
                         trilateration(dist);
 
                     /* virtual state update */
@@ -770,7 +812,7 @@ void UWBIndoorPosition::Run()
                         dist[i] = uwb_msg.distance[i];
                     }
 
-                    if(mode==0){
+                    if(ukf_mode == 1){
                         if(initWithAnalytical && !inited){
                             trilateration(dist);
                         }
@@ -786,7 +828,7 @@ void UWBIndoorPosition::Run()
                             P_is_good = true;
                         }
 
-                    }else if(mode==1)
+                    }else if(ukf_mode == 0)
                         trilateration(dist);
                 }else
                     return;
@@ -825,30 +867,30 @@ void UWBIndoorPosition::Run()
                 visual_odom.pose_covariance[20] = 1.0f;
 
                 visual_odom.velocity_frame = vehicle_odometry_s::LOCAL_FRAME_NED; // DO not need to enable rotate external vision in EKF2_AID_MASK
-                matrix::Vector3f _vel(State[3],State[4],State[5]);
-                _vel = _R_EV_to_NED * _vel;
-                visual_odom.vx = _vel(0);
-                visual_odom.vy = _vel(1);
-                visual_odom.vz = _vel(2);
+//                matrix::Vector3f _vel(State[3],State[4],State[5]);
+//                _vel = _R_EV_to_NED * _vel;
+                visual_odom.vx = NAN;// _vel(0);
+                visual_odom.vy = NAN;// _vel(1);
+                visual_odom.vz = NAN;// _vel(2);
                 visual_odom.rollspeed = NAN;
                 visual_odom.pitchspeed = NAN;
                 visual_odom.yawspeed = NAN;
-                if(!p_z_inv_able)
-                    visual_odom.rollspeed = 0;
-                if(!P_is_good)
-                    visual_odom.pitchspeed = 0;
-                if(!is_positive_definit)
-                    visual_odom.yawspeed = 0;
+//                if(!p_z_inv_able)
+//                    visual_odom.rollspeed = 0;
+//                if(!P_is_good)
+//                    visual_odom.pitchspeed = 0;
+//                if(!is_positive_definit)
+//                    visual_odom.yawspeed = 0;
 
 
-                visual_odom.velocity_covariance[0] = (float)P[3*dim+3];
-                visual_odom.velocity_covariance[1] = (float)P[3*dim+4];
-                visual_odom.velocity_covariance[2] = (float)P[3*dim+5];
+                visual_odom.velocity_covariance[0] = NAN;// (float)P[3*dim+3];
+                visual_odom.velocity_covariance[1] = NAN;// (float)P[3*dim+4];
+                visual_odom.velocity_covariance[2] = NAN;// (float)P[3*dim+5];
 
-                visual_odom.velocity_covariance[6] = (float)P[4*dim+4];
-                visual_odom.velocity_covariance[7] = (float)P[4*dim+5];
+                visual_odom.velocity_covariance[6] = NAN;// (float)P[4*dim+4];
+                visual_odom.velocity_covariance[7] = NAN;// (float)P[4*dim+5];
 
-                visual_odom.velocity_covariance[11] = (float)P[5*dim+5];
+                visual_odom.velocity_covariance[11] = NAN;// (float)P[5*dim+5];
 
                 visual_odom.velocity_covariance[15] = NAN;
                 visual_odom.velocity_covariance[18] = NAN;
@@ -923,14 +965,14 @@ $ module start
 
 )DESCR_STR");
 
-        PRINT_MODULE_USAGE_NAME("uwb_indoor_position", "template");
+    PRINT_MODULE_USAGE_NAME("uwb_positioner", "template");
 	PRINT_MODULE_USAGE_COMMAND("start");
 	PRINT_MODULE_USAGE_DEFAULT_COMMANDS();
 
 	return 0;
 }
 
-int uwb_indoor_position_main(int argc, char *argv[])
+int uwb_positioner_main(int argc, char *argv[])
 {
         return UWBIndoorPosition::main(argc, argv);
 }

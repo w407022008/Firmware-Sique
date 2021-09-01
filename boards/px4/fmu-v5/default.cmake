@@ -91,7 +91,7 @@ px4_add_board(
 		sensors
 		sih
 		temperature_compensation
-		uwb_indoor_position
+		uwb_positioner
 		vmount
 		vtol_att_control
 	SYSTEMCMDS

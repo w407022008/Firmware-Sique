@@ -631,6 +631,14 @@ PARAM_DEFINE_FLOAT(EKF2_TAS_GATE, 3.0f);
 PARAM_DEFINE_INT32(EKF2_AID_MASK, 1);
 
 /**
+ * UWB Positionning System: Manually set to use uwb data
+ *
+ * @boolean
+ * @group EKF2
+ */
+PARAM_DEFINE_INT32(EKF2_UWB_EN, 1);
+
+/**
  * Determines the primary source of height data used by the EKF.
  *
  * The range sensor option should only be used when for operation over a flat surface as the local NED origin will move up and down with ground level.
@@ -1211,7 +1219,7 @@ PARAM_DEFINE_FLOAT(EKF2_EVV_GATE, 3.0f);
 
 /**
  * Gate size for vision position fusion
- * Sets the number of standard deviations used by the innovation consistency test.
+ * Sets the number of standard deviations used by the innovation consistency test. Test success : innov^2 < EKF2_EVP_GATE^2 * innov_var
  * @group EKF2
  * @min 1.0
  * @unit SD

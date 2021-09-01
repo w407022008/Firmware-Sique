@@ -426,6 +426,9 @@ private:
 		(ParamExtFloat<px4::params::EKF2_EVP_GATE>)
 		_param_ekf2_evp_gate,	///< external vision position innovation consistency gate size (STD)
 
+        // uwb estimate fusion
+        (ParamInt<px4::params::EKF2_UWB_EN>) _param_ekf2_uwb_en,
+
 		// optical flow fusion
 		(ParamExtFloat<px4::params::EKF2_OF_N_MIN>)
 		_param_ekf2_of_n_min,	///< best quality observation noise for optical flow LOS rate measurements (rad/sec)
@@ -459,7 +462,7 @@ private:
 		(ParamExtFloat<px4::params::EKF2_EV_POS_Y>)
 		_param_ekf2_ev_pos_y,		///< Y position of VI sensor focal point in body frame (m)
 		(ParamExtFloat<px4::params::EKF2_EV_POS_Z>)
-		_param_ekf2_ev_pos_z,		///< Z position of VI sensor focal point in body frame (m)
+        _param_ekf2_ev_pos_z,		///< Z position of VI sensor focal point in body frame (m)
 
 		// control of airspeed and sideslip fusion
 		(ParamFloat<px4::params::EKF2_ARSP_THR>)
@@ -611,7 +614,7 @@ Ekf2::Ekf2(bool replay_mode):
 	_param_ekf2_rng_a_hmax(_params->max_hagl_for_range_aid),
 	_param_ekf2_rng_a_igate(_params->range_aid_innov_gate),
 	_param_ekf2_evv_gate(_params->ev_vel_innov_gate),
-	_param_ekf2_evp_gate(_params->ev_pos_innov_gate),
+    _param_ekf2_evp_gate(_params->ev_pos_innov_gate),
 	_param_ekf2_of_n_min(_params->flow_noise),
 	_param_ekf2_of_n_max(_params->flow_noise_qual_min),
 	_param_ekf2_of_qmin(_params->flow_qual_min),
@@ -1059,7 +1062,7 @@ void Ekf2::Run()
 				flow.gyro_xyz(0) = -optical_flow.gyro_x_rate_integral;
 				flow.gyro_xyz(1) = -optical_flow.gyro_y_rate_integral;
 				flow.gyro_xyz(2) = -optical_flow.gyro_z_rate_integral;
-				flow.quality = optical_flow.quality;
+                flow.quality = optical_flow.quality;// qual:0~255 ==> std = EKF2_OF_N_MIN~EKF2_OF_N_MAX(rad/s) ==> var = range^2*(std)^2
 				flow.dt = 1e-6f * (float)optical_flow.integration_timespan;
 				flow.time_us = optical_flow.timestamp;
 
@@ -1189,7 +1192,7 @@ void Ekf2::Run()
 			ekf2_timestamps.visual_odometry_timestamp_rel = (int16_t)((int64_t)_ev_odom.timestamp / 100 -
 					(int64_t)ekf2_timestamps.timestamp / 100);
 
-        }else if (_uwb_odom_sub.updated()) {
+        }else if (_param_ekf2_uwb_en.get() && _uwb_odom_sub.updated()) {
             new_ev_data_received = true;
 
             // copy both attitude & position, we need both to fill a single extVisionSample
@@ -1234,18 +1237,20 @@ void Ekf2::Run()
                 ev_data.pos(1) = _ev_odom.y;
                 ev_data.pos(2) = _ev_odom.z;
 
-                float param_evp_noise_var = sq(_param_ekf2_evp_noise.get());
+//                float param_evp_noise_var = sq(_param_ekf2_evp_noise.get());
 
                 // position measurement error from ev_data or parameters
                 if (!_param_ekf2_ev_noise_md.get() && PX4_ISFINITE(_ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_X_VARIANCE])
                     && PX4_ISFINITE(_ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Y_VARIANCE])
                     && PX4_ISFINITE(_ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Z_VARIANCE])) {
-                    ev_data.posVar(0) = fmaxf(param_evp_noise_var, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_X_VARIANCE]);
-                    ev_data.posVar(1) = fmaxf(param_evp_noise_var, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Y_VARIANCE]);
-                    ev_data.posVar(2) = fmaxf(param_evp_noise_var, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Z_VARIANCE]);
+                    ev_data.posVar(0) = fmaxf(0.01, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_X_VARIANCE]);
+                    ev_data.posVar(1) = fmaxf(0.01, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Y_VARIANCE]);
+                    ev_data.posVar(2) = fmaxf(0.02, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Z_VARIANCE]);
 
                 } else {
-                    ev_data.posVar.setAll(param_evp_noise_var);
+                    ev_data.posVar(0) = 0.01;
+                    ev_data.posVar(1) = 0.01;
+                    ev_data.posVar(2) = 0.02;
                 }
             }
 

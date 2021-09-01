@@ -32,11 +32,11 @@
 ############################################################################
 
 px4_add_module(
-	MODULE modules__uwb_indoor_position
-	MAIN uwb_indoor_position
+	MODULE modules__uwb_positioner
+	MAIN uwb_positioner
 	SRCS
-		uwb_indoor_position.cpp
-		uwb_indoor_position.hpp
+		uwb_positioner.cpp
+		uwb_positioner.hpp
 	DEPENDS
 		px4_work_queue
 	)
