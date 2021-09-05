@@ -96,6 +96,9 @@ private:
         int ukf_mode{1};
         int initWithAnalytical{1};
         bool inited{false};
+
+        float pos_z{0.0f};
+
         int uwb_tag_num;                                    ///< number of landmark
         static constexpr uint8_t uwb_tag_num_max{12};		///< max number of landmark
         static constexpr uint8_t dim{9};                    ///< number of UKF states
@@ -142,6 +145,7 @@ private:
                 (ParamInt<px4::params::UWB_EST_UKF>) _param_mode,
                 (ParamInt<px4::params::UWB_OUTPUT_NED>) _param_output_in_ned,
                 (ParamInt<px4::params::UWB_TEST>) _param_test,
+                (ParamFloat<px4::params::UWB_POS_Z>) _param_pos_z,
                 (ParamInt<px4::params::UWB_OUTDOOR_FLY>) _param_flying_outdoor,
                 (ParamFloat<px4::params::UWB_TAG_IND_0_X>) _param_indoor_tag_0_x,
                 (ParamFloat<px4::params::UWB_TAG_IND_0_Y>) _param_indoor_tag_0_y,

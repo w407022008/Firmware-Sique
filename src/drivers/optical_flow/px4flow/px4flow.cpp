@@ -292,15 +292,16 @@ PX4FLOW::collect()
 	optical_flow_s report{};
 
 	report.timestamp = hrt_absolute_time();
-	report.pixel_flow_x_integral = static_cast<float>(_frame_integral.pixel_flow_x_integral) / 10000.0f;//convert to radians
-	report.pixel_flow_y_integral = static_cast<float>(_frame_integral.pixel_flow_y_integral) / 10000.0f;//convert to radians
+        float delta_t = 1e-6f * (float)_frame_integral.integration_timespan;
+        report.pixel_flow_x_integral = static_cast<float>(_frame_integral.pixel_flow_x_integral) / 10000.0f / delta_t;//convert to radians
+        report.pixel_flow_y_integral = static_cast<float>(_frame_integral.pixel_flow_y_integral) / 10000.0f / delta_t;//convert to radians
 	report.frame_count_since_last_readout = _frame_integral.frame_count_since_last_readout;
 	report.ground_distance_m = static_cast<float>(_frame_integral.ground_distance) / 1000.0f;//convert to meters
 	report.quality = _frame_integral.qual; //0:bad ; 255 max quality
-	report.gyro_x_rate_integral = static_cast<float>(_frame_integral.gyro_x_rate_integral) / 10000.0f; //convert to radians
-	report.gyro_y_rate_integral = static_cast<float>(_frame_integral.gyro_y_rate_integral) / 10000.0f; //convert to radians
-	report.gyro_z_rate_integral = static_cast<float>(_frame_integral.gyro_z_rate_integral) / 10000.0f; //convert to radians
-	report.integration_timespan = _frame_integral.integration_timespan; //microseconds
+        report.gyro_x_rate_integral = static_cast<float>(_frame_integral.gyro_x_rate_integral) / 10000.0f / delta_t; //convert to radians
+        report.gyro_y_rate_integral = static_cast<float>(_frame_integral.gyro_y_rate_integral) / 10000.0f / delta_t; //convert to radians
+        report.gyro_z_rate_integral = static_cast<float>(_frame_integral.gyro_z_rate_integral) / 10000.0f / delta_t; //convert to radians
+        report.integration_timespan = delta_t;//microseconds
 	report.time_since_last_sonar_update = _frame_integral.sonar_timestamp;//microseconds
 	report.gyro_temperature = _frame_integral.gyro_temperature;//Temperature * 100 in centi-degrees Celsius
 	report.sensor_id += 1;
@@ -324,7 +325,7 @@ PX4FLOW::collect()
 		distance_report.max_distance = PX4FLOW_MAX_DISTANCE;
 		distance_report.current_distance = report.ground_distance_m;
                 distance_report.variance = 0.0036f;
-                distance_report.signal_quality = report.ground_distance_m > PX4FLOW_MIN_DISTANCE + 0.1;
+                distance_report.signal_quality = report.ground_distance_m > (PX4FLOW_MIN_DISTANCE + 0.1f);
                 distance_report.type = distance_sensor_s::MAV_DISTANCE_SENSOR_LASER;
 		/* TODO: the ID needs to be properly set */
 		distance_report.id = 1;

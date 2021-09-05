@@ -1057,13 +1057,14 @@ void Ekf2::Run()
 				flowSample flow {};
 				// NOTE: the EKF uses the reverse sign convention to the flow sensor. EKF assumes positive LOS rate
 				// is produced by a RH rotation of the image about the sensor axis.
-				flow.flow_xy_rad(0) = -optical_flow.pixel_flow_x_integral;
-				flow.flow_xy_rad(1) = -optical_flow.pixel_flow_y_integral;
-				flow.gyro_xyz(0) = -optical_flow.gyro_x_rate_integral;
-				flow.gyro_xyz(1) = -optical_flow.gyro_y_rate_integral;
-				flow.gyro_xyz(2) = -optical_flow.gyro_z_rate_integral;
+                float delta_t = 1e-6f * (float)optical_flow.integration_timespan;
+                flow.flow_xy_rad(0) = -optical_flow.pixel_flow_x_integral * delta_t;
+                flow.flow_xy_rad(1) = -optical_flow.pixel_flow_y_integral * delta_t;
+                flow.gyro_xyz(0) = -optical_flow.gyro_x_rate_integral * delta_t;
+                flow.gyro_xyz(1) = -optical_flow.gyro_y_rate_integral * delta_t;
+                flow.gyro_xyz(2) = -optical_flow.gyro_z_rate_integral * delta_t;
                 flow.quality = optical_flow.quality;// qual:0~255 ==> std = EKF2_OF_N_MIN~EKF2_OF_N_MAX(rad/s) ==> var = range^2*(std)^2
-				flow.dt = 1e-6f * (float)optical_flow.integration_timespan;
+                flow.dt = delta_t;
 				flow.time_us = optical_flow.timestamp;
 
 				if (PX4_ISFINITE(optical_flow.pixel_flow_y_integral) &&
@@ -1214,7 +1215,7 @@ void Ekf2::Run()
                 }
 
                 // velocity measurement error from ev_data or parameters
-                float param_evv_noise_var = sq(_param_ekf2_evv_noise.get());
+//                float param_evv_noise_var = sq(_param_ekf2_evv_noise.get());
 
                 if (!_param_ekf2_ev_noise_md.get() && PX4_ISFINITE(_ev_odom.velocity_covariance[_ev_odom.COVARIANCE_MATRIX_VX_VARIANCE])
                     && PX4_ISFINITE(_ev_odom.velocity_covariance[_ev_odom.COVARIANCE_MATRIX_VY_VARIANCE])
@@ -1227,7 +1228,7 @@ void Ekf2::Run()
                     ev_data.velCov(2, 2) = _ev_odom.velocity_covariance[_ev_odom.COVARIANCE_MATRIX_VZ_VARIANCE];
 
                 } else {
-                    ev_data.velCov = matrix::eye<float, 3>() * param_evv_noise_var;
+                    ev_data.velCov = matrix::diag(Vector3f(1.6f,1.6f,2.3f));
                 }
             }
 
@@ -1243,31 +1244,20 @@ void Ekf2::Run()
                 if (!_param_ekf2_ev_noise_md.get() && PX4_ISFINITE(_ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_X_VARIANCE])
                     && PX4_ISFINITE(_ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Y_VARIANCE])
                     && PX4_ISFINITE(_ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Z_VARIANCE])) {
-                    ev_data.posVar(0) = fmaxf(0.01, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_X_VARIANCE]);
-                    ev_data.posVar(1) = fmaxf(0.01, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Y_VARIANCE]);
-                    ev_data.posVar(2) = fmaxf(0.02, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Z_VARIANCE]);
+                    ev_data.posVar(0) = _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_X_VARIANCE];
+                    ev_data.posVar(1) = _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Y_VARIANCE];
+                    ev_data.posVar(2) = _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_Z_VARIANCE];
 
                 } else {
-                    ev_data.posVar(0) = 0.01;
-                    ev_data.posVar(1) = 0.01;
-                    ev_data.posVar(2) = 0.02;
+                    ev_data.posVar(0) = 0.013f;
+                    ev_data.posVar(1) = 0.013f;
+                    ev_data.posVar(2) = 0.025f;
                 }
             }
 
-            // check for valid orientation data
-            if (PX4_ISFINITE(_ev_odom.q[0])) {
-                ev_data.quat = matrix::Quatf(_ev_odom.q);
-
-                // orientation measurement error from ev_data or parameters
-                float param_eva_noise_var = sq(_param_ekf2_eva_noise.get());
-
-                if (!_param_ekf2_ev_noise_md.get() && PX4_ISFINITE(_ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_YAW_VARIANCE])) {
-                    ev_data.angVar = fmaxf(param_eva_noise_var, _ev_odom.pose_covariance[_ev_odom.COVARIANCE_MATRIX_YAW_VARIANCE]);
-
-                } else {
-                    ev_data.angVar = param_eva_noise_var;
-                }
-            }
+            // no orientation data offered from UWB
+            if(_params->fusion_mode & MASK_USE_EVYAW)
+                _params->fusion_mode = _param_ekf2_aid_mask.get() - MASK_USE_EVYAW;
 
             // use timestamp from external computer, clocks are synchronized when using MAVROS
             ev_data.time_us = _ev_odom.timestamp_sample;

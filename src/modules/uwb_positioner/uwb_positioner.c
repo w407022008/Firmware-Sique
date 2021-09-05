@@ -37,6 +37,14 @@ PARAM_DEFINE_INT32(UWB_OUTPUT_NED, 1);
  */
 PARAM_DEFINE_INT32(UWB_OUTDOOR_FLY, 1);
 
+/**
+ * UWB Positionning System: Z position of UWB reciever in body(frd) frame (down axis with origin relative to vehicle centre of gravity)
+ *
+ * @unit m
+ * @decimal 3
+ * @group UWB Positioner
+ */
+PARAM_DEFINE_FLOAT(UWB_POS_Z, -0.08);
 
 /**
  * UWB Positionning System: Test Mode

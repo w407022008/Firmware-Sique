@@ -78,82 +78,82 @@ void UWBIndoorPosition::parameters_update(bool force)
             initWithAnalytical = _param_init.get();
             ukf_mode = _param_mode.get();
             test = _param_test.get();
-
-			if(_param_flying_outdoor.get()){
-		        Tag_pos[0] = _param_outdoor_tag_0_x.get();
-		        Tag_pos[12] = _param_outdoor_tag_0_y.get();
-		        Tag_pos[24] = _param_outdoor_tag_0_z.get();
-		        Tag_pos[1] = _param_outdoor_tag_1_x.get();
-		        Tag_pos[13] = _param_outdoor_tag_1_y.get();
-		        Tag_pos[25] = _param_outdoor_tag_1_z.get();
-		        Tag_pos[2] = _param_outdoor_tag_2_x.get();
-		        Tag_pos[14] = _param_outdoor_tag_2_y.get();
-		        Tag_pos[26] = _param_outdoor_tag_2_z.get();
-		        Tag_pos[3] = _param_outdoor_tag_3_x.get();
-		        Tag_pos[15] = _param_outdoor_tag_3_y.get();
-		        Tag_pos[27] = _param_outdoor_tag_3_z.get();
-		        Tag_pos[4] = _param_outdoor_tag_4_x.get();
-		        Tag_pos[16] = _param_outdoor_tag_4_y.get();
-		        Tag_pos[28] = _param_outdoor_tag_4_z.get();
-		        Tag_pos[5] = _param_outdoor_tag_5_x.get();
-		        Tag_pos[17] = _param_outdoor_tag_5_y.get();
-		        Tag_pos[29] = _param_outdoor_tag_5_z.get();
-		        Tag_pos[6] = _param_outdoor_tag_6_x.get();
-		        Tag_pos[18] = _param_outdoor_tag_6_y.get();
-		        Tag_pos[30] = _param_outdoor_tag_6_z.get();
-		        Tag_pos[7] = _param_outdoor_tag_7_x.get();
-		        Tag_pos[19] = _param_outdoor_tag_7_y.get();
-		        Tag_pos[31] = _param_outdoor_tag_7_z.get();
-		        Tag_pos[8] = _param_outdoor_tag_8_x.get();
-		        Tag_pos[20] = _param_outdoor_tag_8_y.get();
-		        Tag_pos[32] = _param_outdoor_tag_8_z.get();
-		        Tag_pos[9] = _param_outdoor_tag_9_x.get();
-		        Tag_pos[21] = _param_outdoor_tag_9_y.get();
-		        Tag_pos[33] = _param_outdoor_tag_9_z.get();
-		        Tag_pos[10] = _param_outdoor_tag_10_x.get();
-		        Tag_pos[22] = _param_outdoor_tag_10_y.get();
-		        Tag_pos[34] = _param_outdoor_tag_10_z.get();
-		        Tag_pos[11] = _param_outdoor_tag_11_x.get();
-		        Tag_pos[23] = _param_outdoor_tag_11_y.get();
-		        Tag_pos[35] = _param_outdoor_tag_11_z.get();
-	        } else {
+            pos_z = _param_pos_z.get();
+            if(_param_flying_outdoor.get()){
+                Tag_pos[0] = _param_outdoor_tag_0_x.get();
+                Tag_pos[12] = _param_outdoor_tag_0_y.get();
+                Tag_pos[24] = _param_outdoor_tag_0_z.get();
+                Tag_pos[1] = _param_outdoor_tag_1_x.get();
+                Tag_pos[13] = _param_outdoor_tag_1_y.get();
+                Tag_pos[25] = _param_outdoor_tag_1_z.get();
+                Tag_pos[2] = _param_outdoor_tag_2_x.get();
+                Tag_pos[14] = _param_outdoor_tag_2_y.get();
+                Tag_pos[26] = _param_outdoor_tag_2_z.get();
+                Tag_pos[3] = _param_outdoor_tag_3_x.get();
+                Tag_pos[15] = _param_outdoor_tag_3_y.get();
+                Tag_pos[27] = _param_outdoor_tag_3_z.get();
+                Tag_pos[4] = _param_outdoor_tag_4_x.get();
+                Tag_pos[16] = _param_outdoor_tag_4_y.get();
+                Tag_pos[28] = _param_outdoor_tag_4_z.get();
+                Tag_pos[5] = _param_outdoor_tag_5_x.get();
+                Tag_pos[17] = _param_outdoor_tag_5_y.get();
+                Tag_pos[29] = _param_outdoor_tag_5_z.get();
+                Tag_pos[6] = _param_outdoor_tag_6_x.get();
+                Tag_pos[18] = _param_outdoor_tag_6_y.get();
+                Tag_pos[30] = _param_outdoor_tag_6_z.get();
+                Tag_pos[7] = _param_outdoor_tag_7_x.get();
+                Tag_pos[19] = _param_outdoor_tag_7_y.get();
+                Tag_pos[31] = _param_outdoor_tag_7_z.get();
+                Tag_pos[8] = _param_outdoor_tag_8_x.get();
+                Tag_pos[20] = _param_outdoor_tag_8_y.get();
+                Tag_pos[32] = _param_outdoor_tag_8_z.get();
+                Tag_pos[9] = _param_outdoor_tag_9_x.get();
+                Tag_pos[21] = _param_outdoor_tag_9_y.get();
+                Tag_pos[33] = _param_outdoor_tag_9_z.get();
+                Tag_pos[10] = _param_outdoor_tag_10_x.get();
+                Tag_pos[22] = _param_outdoor_tag_10_y.get();
+                Tag_pos[34] = _param_outdoor_tag_10_z.get();
+                Tag_pos[11] = _param_outdoor_tag_11_x.get();
+                Tag_pos[23] = _param_outdoor_tag_11_y.get();
+                Tag_pos[35] = _param_outdoor_tag_11_z.get();
+            } else {
                 Tag_pos[0] = _param_indoor_tag_0_x.get();
-		        Tag_pos[12] = _param_indoor_tag_0_y.get();
-		        Tag_pos[24] = _param_indoor_tag_0_z.get();
-		        Tag_pos[1] = _param_indoor_tag_1_x.get();
-		        Tag_pos[13] = _param_indoor_tag_1_y.get();
-		        Tag_pos[25] = _param_indoor_tag_1_z.get();
-		        Tag_pos[2] = _param_indoor_tag_2_x.get();
-		        Tag_pos[14] = _param_indoor_tag_2_y.get();
-		        Tag_pos[26] = _param_indoor_tag_2_z.get();
-		        Tag_pos[3] = _param_indoor_tag_3_x.get();
-		        Tag_pos[15] = _param_indoor_tag_3_y.get();
-		        Tag_pos[27] = _param_indoor_tag_3_z.get();
-		        Tag_pos[4] = _param_indoor_tag_4_x.get();
-		        Tag_pos[16] = _param_indoor_tag_4_y.get();
-		        Tag_pos[28] = _param_indoor_tag_4_z.get();
-		        Tag_pos[5] = _param_indoor_tag_5_x.get();
-		        Tag_pos[17] = _param_indoor_tag_5_y.get();
-		        Tag_pos[29] = _param_indoor_tag_5_z.get();
-		        Tag_pos[6] = _param_indoor_tag_6_x.get();
-		        Tag_pos[18] = _param_indoor_tag_6_y.get();
-		        Tag_pos[30] = _param_indoor_tag_6_z.get();
-		        Tag_pos[7] = _param_indoor_tag_7_x.get();
-		        Tag_pos[19] = _param_indoor_tag_7_y.get();
-		        Tag_pos[31] = _param_indoor_tag_7_z.get();
-		        Tag_pos[8] = _param_indoor_tag_8_x.get();
-		        Tag_pos[20] = _param_indoor_tag_8_y.get();
-		        Tag_pos[32] = _param_indoor_tag_8_z.get();
-		        Tag_pos[9] = _param_indoor_tag_9_x.get();
-		        Tag_pos[21] = _param_indoor_tag_9_y.get();
-		        Tag_pos[33] = _param_indoor_tag_9_z.get();
-		        Tag_pos[10] = _param_indoor_tag_10_x.get();
-		        Tag_pos[22] = _param_indoor_tag_10_y.get();
-		        Tag_pos[34] = _param_indoor_tag_10_z.get();
-		        Tag_pos[11] = _param_indoor_tag_11_x.get();
-		        Tag_pos[23] = _param_indoor_tag_11_y.get();
-		        Tag_pos[35] = _param_indoor_tag_11_z.get();
-	        }
+                Tag_pos[12] = _param_indoor_tag_0_y.get();
+                Tag_pos[24] = _param_indoor_tag_0_z.get();
+                Tag_pos[1] = _param_indoor_tag_1_x.get();
+                Tag_pos[13] = _param_indoor_tag_1_y.get();
+                Tag_pos[25] = _param_indoor_tag_1_z.get();
+                Tag_pos[2] = _param_indoor_tag_2_x.get();
+                Tag_pos[14] = _param_indoor_tag_2_y.get();
+                Tag_pos[26] = _param_indoor_tag_2_z.get();
+                Tag_pos[3] = _param_indoor_tag_3_x.get();
+                Tag_pos[15] = _param_indoor_tag_3_y.get();
+                Tag_pos[27] = _param_indoor_tag_3_z.get();
+                Tag_pos[4] = _param_indoor_tag_4_x.get();
+                Tag_pos[16] = _param_indoor_tag_4_y.get();
+                Tag_pos[28] = _param_indoor_tag_4_z.get();
+                Tag_pos[5] = _param_indoor_tag_5_x.get();
+                Tag_pos[17] = _param_indoor_tag_5_y.get();
+                Tag_pos[29] = _param_indoor_tag_5_z.get();
+                Tag_pos[6] = _param_indoor_tag_6_x.get();
+                Tag_pos[18] = _param_indoor_tag_6_y.get();
+                Tag_pos[30] = _param_indoor_tag_6_z.get();
+                Tag_pos[7] = _param_indoor_tag_7_x.get();
+                Tag_pos[19] = _param_indoor_tag_7_y.get();
+                Tag_pos[31] = _param_indoor_tag_7_z.get();
+                Tag_pos[8] = _param_indoor_tag_8_x.get();
+                Tag_pos[20] = _param_indoor_tag_8_y.get();
+                Tag_pos[32] = _param_indoor_tag_8_z.get();
+                Tag_pos[9] = _param_indoor_tag_9_x.get();
+                Tag_pos[21] = _param_indoor_tag_9_y.get();
+                Tag_pos[33] = _param_indoor_tag_9_z.get();
+                Tag_pos[10] = _param_indoor_tag_10_x.get();
+                Tag_pos[22] = _param_indoor_tag_10_y.get();
+                Tag_pos[34] = _param_indoor_tag_10_z.get();
+                Tag_pos[11] = _param_indoor_tag_11_x.get();
+                Tag_pos[23] = _param_indoor_tag_11_y.get();
+                Tag_pos[35] = _param_indoor_tag_11_z.get();
+            }
     }
 
 }
@@ -806,7 +806,7 @@ void UWBIndoorPosition::Run()
                     virtual_state[5]  = 0.1*sin(virtual_state[0])*cos(virtual_state[1]);
 
                 }else if(updated_uwb){
-                    visual_odom.timestamp_sample = uwb_msg.timestamp;
+                    visual_odom.timestamp_sample = uwb_msg.timestamp - 130000; // 130ms delay refered to mocap
 
                     for(int i=0;i<uwb_tag_num;i++){
                         dist[i] = uwb_msg.distance[i];
@@ -849,7 +849,7 @@ void UWBIndoorPosition::Run()
                 _position = _R_EV_to_NED * _position;
                 visual_odom.x = _position(0);
                 visual_odom.y = _position(1);
-                visual_odom.z = _position(2);
+                visual_odom.z = _position(2)-pos_z;
 
                 visual_odom.local_frame = vehicle_odometry_s::LOCAL_FRAME_NED; // Do not need to enable rotate external vision in EKF2_AID_MASK
 
@@ -862,35 +862,35 @@ void UWBIndoorPosition::Run()
 
                 visual_odom.pose_covariance[11] = (float)P[2*dim+2];
 
-                visual_odom.pose_covariance[15] = 1.0f;
-                visual_odom.pose_covariance[18] = 1.0f;
-                visual_odom.pose_covariance[20] = 1.0f;
+                visual_odom.pose_covariance[15] = NAN;
+                visual_odom.pose_covariance[18] = NAN;
+                visual_odom.pose_covariance[20] = NAN;
 
                 visual_odom.velocity_frame = vehicle_odometry_s::LOCAL_FRAME_NED; // DO not need to enable rotate external vision in EKF2_AID_MASK
-//                matrix::Vector3f _vel(State[3],State[4],State[5]);
-//                _vel = _R_EV_to_NED * _vel;
-                visual_odom.vx = NAN;// _vel(0);
-                visual_odom.vy = NAN;// _vel(1);
-                visual_odom.vz = NAN;// _vel(2);
+                matrix::Vector3f _vel(State[3],State[4],State[5]);
+                _vel = _R_EV_to_NED * _vel;
+                visual_odom.vx = _vel(0);
+                visual_odom.vy = _vel(1);
+                visual_odom.vz = _vel(2);
                 visual_odom.rollspeed = NAN;
                 visual_odom.pitchspeed = NAN;
                 visual_odom.yawspeed = NAN;
-//                if(!p_z_inv_able)
-//                    visual_odom.rollspeed = 0;
-//                if(!P_is_good)
-//                    visual_odom.pitchspeed = 0;
-//                if(!is_positive_definit)
-//                    visual_odom.yawspeed = 0;
+                if(!p_z_inv_able)
+                    visual_odom.rollspeed = 0;
+                if(!P_is_good)
+                    visual_odom.pitchspeed = 0;
+                if(!is_positive_definit)
+                    visual_odom.yawspeed = 0;
 
 
-                visual_odom.velocity_covariance[0] = NAN;// (float)P[3*dim+3];
-                visual_odom.velocity_covariance[1] = NAN;// (float)P[3*dim+4];
-                visual_odom.velocity_covariance[2] = NAN;// (float)P[3*dim+5];
+                visual_odom.velocity_covariance[0] = (float)P[3*dim+3];
+                visual_odom.velocity_covariance[1] = (float)P[3*dim+4];
+                visual_odom.velocity_covariance[2] = (float)P[3*dim+5];
 
-                visual_odom.velocity_covariance[6] = NAN;// (float)P[4*dim+4];
-                visual_odom.velocity_covariance[7] = NAN;// (float)P[4*dim+5];
+                visual_odom.velocity_covariance[6] = (float)P[4*dim+4];
+                visual_odom.velocity_covariance[7] = (float)P[4*dim+5];
 
-                visual_odom.velocity_covariance[11] = NAN;// (float)P[5*dim+5];
+                visual_odom.velocity_covariance[11] = (float)P[5*dim+5];
 
                 visual_odom.velocity_covariance[15] = NAN;
                 visual_odom.velocity_covariance[18] = NAN;
