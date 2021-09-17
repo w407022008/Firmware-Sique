@@ -324,9 +324,9 @@ PX4FLOW::collect()
 		distance_report.min_distance = PX4FLOW_MIN_DISTANCE;
 		distance_report.max_distance = PX4FLOW_MAX_DISTANCE;
 		distance_report.current_distance = report.ground_distance_m;
-                distance_report.variance = 0.0036f;
-                distance_report.signal_quality = report.ground_distance_m > (PX4FLOW_MIN_DISTANCE + 0.1f);
-                distance_report.type = distance_sensor_s::MAV_DISTANCE_SENSOR_LASER;
+		distance_report.variance = 0.0036f;
+		distance_report.signal_quality = report.ground_distance_m > (PX4FLOW_MIN_DISTANCE + 0.1f);
+		distance_report.type = distance_sensor_s::MAV_DISTANCE_SENSOR_LASER;
 		/* TODO: the ID needs to be properly set */
 		distance_report.id = 1;
 		distance_report.orientation = _sonar_rotation;

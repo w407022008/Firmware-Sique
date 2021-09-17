@@ -45,6 +45,7 @@
 #include <px4_platform_common/i2c_spi_buses.h>
 #include <lib/drivers/anemometer/PX4Anemometer.hpp>
 #include <lib/perf/perf_counter.h>
+#include <lib/parameters/param.h>
 
 using namespace time_literals;
 
@@ -61,7 +62,7 @@ using namespace time_literals;
 class sfm3000 : public device::I2C, public I2CSPIDriver<sfm3000>
 {
 public:
-    sfm3000(I2CSPIBusOption bus_option, const int bus, const uint8_t rotation, int bus_frequency);
+    sfm3000(I2CSPIBusOption bus_option, const int bus, const uint16_t address, const uint8_t rotation, int bus_frequency);
     ~sfm3000() override;
 
     static I2CSPIDriverBase *instantiate(const BusCLIArguments &cli, const BusInstanceIterator &iterator,

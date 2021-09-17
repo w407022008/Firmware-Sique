@@ -57,7 +57,7 @@ using namespace time_literals;
 
 #define TFMINI_S_MEASUREMENT_INTERVAL         1_ms
 
-class tfmini_s_5 : public device::I2C, public I2CSPIDriver<tfmitfmini_s_5ni_s_back>
+class tfmini_s_5 : public device::I2C, public I2CSPIDriver<tfmini_s_5>
 {
 public:
 	tfmini_s_5(I2CSPIBusOption bus_option, const int bus, const uint8_t rotation, int bus_frequency);

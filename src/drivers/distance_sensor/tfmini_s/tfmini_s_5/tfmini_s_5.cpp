@@ -81,7 +81,7 @@ int tfmini_s_5::collect()
 		perf_end(_sample_perf);
 		return ret_val;
 	}
-	if (val[0] != 0x59 || val[1] != 0x59){
+	while (val[0] != 0x59 || val[1] != 0x59){
 		PX4_ERR("error reading from sensor: 0x%02X 0x%02X", val[0], val[1]);
 		perf_count(_comms_errors);
 		perf_end(_sample_perf);
@@ -105,7 +105,7 @@ int tfmini_s_5::collect()
 
 	if (crc8(val, 8) == val[8]) {
 		 _px4_rangefinder.update(timestamp_sample, distance_m,signal_quality);
-		 //PX4_INFO("Tested data as %f m",double(distance_m));
+		// PX4_INFO("Tested data as %f m",double(distance_m));
 	}
 
 	// Next phase is measurement.
@@ -119,11 +119,17 @@ int tfmini_s_5::collect()
 
 int tfmini_s_5::init()
 {
-	int32_t hw_enable = 0;
-	param_get(param_find("SENS_EN_TFMINI_5"), &hw_enable);
+	int32_t hw_model = 0;
+	param_get(param_find("SENS_EN_TFMINI_5"), &hw_model);
 
-	if (hw_enable){
-		int32_t address = TFMINI_S_B_ADDR;
+	switch (hw_model) {
+	case 0: // Disabled
+		PX4_WARN("Disabled");
+		return PX4_ERROR;
+
+	case 1: // Enable
+	{
+		int32_t address = TFMINI_S_ADDR;
 		set_device_address(address);
 		if (I2C::init() != OK) {
 		PX4_DEBUG("initialisation failed at i2c address 0x%02x",address);
@@ -135,12 +141,15 @@ int tfmini_s_5::init()
 			_px4_rangefinder.set_min_distance(TFMINI_S_MIN_DISTANCE);
 			_px4_rangefinder.set_max_distance(TFMINI_S_MAX_DISTANCE);
 		}
-		return PX4_OK;
-	}else{
-		PX4_WARN("Disabled");
+		}
+		break;
+
+	default:
+		PX4_ERR("invalid HW model %d.", hw_model);
 		return PX4_ERROR;
 	}
 
+	return PX4_OK;
 }
 
 int tfmini_s_5::measure()

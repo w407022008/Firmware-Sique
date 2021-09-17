@@ -33,11 +33,9 @@
 
 #include "sfm3000.hpp"
 
-#include <lib/parameters/param.h>
 
-
-sfm3000::sfm3000(I2CSPIBusOption bus_option, const int bus, const uint8_t rotation, int bus_frequency) :
-    I2C(DRV_ANEMO_DEVTYPE_SFM3000, MODULE_NAME, bus, TCA_ADDR, bus_frequency),
+sfm3000::sfm3000(I2CSPIBusOption bus_option, const int bus,const uint16_t address, const uint8_t rotation, int bus_frequency) :
+    I2C(DRV_ANEMO_DEVTYPE_SFM3000, MODULE_NAME, bus, address, bus_frequency),
     I2CSPIDriver(MODULE_NAME, px4::device_bus_to_wq(get_device_id()), bus_option, bus),
     _px4_anemometer(get_device_id(), rotation)
 {

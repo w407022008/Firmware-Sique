@@ -60,7 +60,14 @@ Setup/usage information: https://docs.px4.io/master/en/sensor/tfmini.html
 I2CSPIDriverBase *sfm3000::instantiate(const BusCLIArguments &cli, const BusInstanceIterator &iterator,
 				     int runtime_instance)
 {
-        sfm3000 *instance = new sfm3000(iterator.configuredBusOption(), iterator.bus(), cli.orientation, cli.bus_frequency);
+    int32_t enable_TCA9578A = 0;
+    uint16_t address = 0x00;
+    param_get(param_find("SENS_EN_TCA9578A"), &enable_TCA9578A);
+    if(enable_TCA9578A)
+    	address = TCA_ADDR;
+	else
+		address = SFM_BASEADDR;
+    sfm3000 *instance = new sfm3000(iterator.configuredBusOption(), iterator.bus(), address, cli.orientation, cli.bus_frequency);
 
 	if (instance == nullptr) {
 		PX4_ERR("alloc failed");
