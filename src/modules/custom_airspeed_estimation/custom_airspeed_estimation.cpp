@@ -118,6 +118,11 @@ void AirspeedEstimation::Run()
 //                        report.accel_bias[i] = last_data.accel_bias[i];
 //                }
 
+                report.timestamp_sample_external_vision =  last_data.timestamp_sample_external_vision;
+                report.external_vision_position_ned[0] = last_data.external_vision_position_ned[0];
+                report.external_vision_position_ned[1] = last_data.external_vision_position_ned[1];
+                report.external_vision_position_ned[2] = last_data.external_vision_position_ned[2];
+
 		report.timestamp_sample_ground_truth = last_data.timestamp_sample_ground_truth;
 		report.ground_truth_acceleration_ned[0] = last_data.ground_truth_acceleration_ned[0];
 		report.ground_truth_acceleration_ned[1] = last_data.ground_truth_acceleration_ned[1];
@@ -125,6 +130,9 @@ void AirspeedEstimation::Run()
                 report.ground_truth_acceleration_xyz[0] = last_data.ground_truth_acceleration_xyz[0];
                 report.ground_truth_acceleration_xyz[1] = last_data.ground_truth_acceleration_xyz[1];
                 report.ground_truth_acceleration_xyz[2] = last_data.ground_truth_acceleration_xyz[2];
+                report.ground_truth_position_ned[0] = last_data.ground_truth_position_ned[0];
+                report.ground_truth_position_ned[1] = last_data.ground_truth_position_ned[1];
+                report.ground_truth_position_ned[2] = last_data.ground_truth_position_ned[2];
 		report.ground_truth_velocity_ned[0] = last_data.ground_truth_velocity_ned[0];
 		report.ground_truth_velocity_ned[1] = last_data.ground_truth_velocity_ned[1];
 		report.ground_truth_velocity_ned[2] = last_data.ground_truth_velocity_ned[2];
@@ -153,6 +161,16 @@ void AirspeedEstimation::Run()
                 report.battery_scale = battery_status.scale;
         }
 
+        if (_ev_odom_sub.updated()) {
+                vehicle_odometry_s _ev_odom{};
+                // copy both attitude & position, we need both to fill a single extVisionSample
+                _ev_odom_sub.copy(&_ev_odom);
+                report.timestamp_sample_external_vision =  _ev_odom.timestamp_sample;
+                report.external_vision_position_ned[0] = _ev_odom.x;
+                report.external_vision_position_ned[1] = _ev_odom.y;
+                report.external_vision_position_ned[2] = _ev_odom.z;
+        }
+
         if (_vehicle_local_sub.updated()){
                 vehicle_local_position_s vehicle_ground_truth;
                 _vehicle_local_sub.update(&vehicle_ground_truth);
@@ -163,6 +181,9 @@ void AirspeedEstimation::Run()
                 report.ground_truth_acceleration_xyz[0] = vehicle_ground_truth.af;
                 report.ground_truth_acceleration_xyz[1] = vehicle_ground_truth.ar;
                 report.ground_truth_acceleration_xyz[2] = vehicle_ground_truth.ad;
+                report.ground_truth_position_ned[0] = vehicle_ground_truth.x;
+                report.ground_truth_position_ned[1] = vehicle_ground_truth.y;
+                report.ground_truth_position_ned[2] = vehicle_ground_truth.z;
                 report.ground_truth_velocity_ned[0] = vehicle_ground_truth.vx;
                 report.ground_truth_velocity_ned[1] = vehicle_ground_truth.vy;
                 report.ground_truth_velocity_ned[2] = vehicle_ground_truth.vz;
