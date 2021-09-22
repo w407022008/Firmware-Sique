@@ -228,7 +228,7 @@ void LoggedTopics::add_system_identification_topics()
 	//add_topic("actuator_controls_1");
 	//add_topic("sensor_combined");
     add_topic_multi("distance_sensor");
-    add_topic_multi("optical_flow");
+    //add_topic_multi("optical_flow");
     add_topic("manual_control_setpoint");
     add_topic("trajectory_setpoint");
     add_topic("vehicle_attitude");
@@ -236,7 +236,7 @@ void LoggedTopics::add_system_identification_topics()
     add_topic("vehicle_local_position");
     add_topic("vehicle_local_position_setpoint");
     add_topic("custom_airspeed_estimation",5);
-    //add_topic("windspeed", 2);
+    add_topic("windspeed", 2);
 //    add_topic("vehicle_visual_odometry_aligned");
     add_topic("vehicle_visual_odometry");
     add_topic("vehicle_uwb_odometry");
