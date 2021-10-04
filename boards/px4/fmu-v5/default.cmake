@@ -18,6 +18,7 @@ px4_add_board(
 	DRIVERS
 		adc
         anemometer # SFM 3000
+        arduino
 		barometer # all available barometer drivers
 		batt_smbus
 		camera_capture
