@@ -224,7 +224,7 @@ void LoggedTopics::add_raw_imu_accel_fifo()
 void LoggedTopics::add_system_identification_topics()
 {
 	// for system id need to log imu and controls at full rate
-`   add_topic("actuator_controls_0");
+    add_topic("actuator_controls_0");
 	//add_topic("actuator_controls_1");
 	//add_topic("sensor_combined");
     add_topic_multi("distance_sensor");
