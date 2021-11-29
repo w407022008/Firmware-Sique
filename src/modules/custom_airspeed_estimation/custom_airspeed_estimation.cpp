@@ -39,7 +39,7 @@ using namespace time_literals;
 
 AirspeedEstimation::AirspeedEstimation()
 	: ModuleParams(nullptr),
-	ScheduledWorkItem(MODULE_NAME, px4::wq_configurations::test1)
+	ScheduledWorkItem(MODULE_NAME, px4::wq_configurations::airspeed_collect)
 {
 	//parameters_update();
 	_cst_airspeed_est_pub.advertise();
