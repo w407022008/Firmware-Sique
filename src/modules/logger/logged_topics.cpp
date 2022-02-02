@@ -224,22 +224,22 @@ void LoggedTopics::add_raw_imu_accel_fifo()
 void LoggedTopics::add_system_identification_topics()
 {
     // for system id need to log imu and controls at full rate
-    add_topic("manual_control_setpoint");
-    add_topic("position_setpoint_triplet"); // input from mavlink
-    add_topic("trajectory_setpoint"); // pub in mc_pos, but generated in flight_task (e.g offboard) from pos_set_tri
-    add_topic("vehicle_attitude_setpoint"); //
-    add_topic("vehicle_local_position_setpoint"); // pub in mc_pos, and calculated from traj_set with PID
+    add_topic("manual_control_setpoint", 100);
+    add_topic("position_setpoint_triplet", 100); // input from mavlink
+    add_topic("trajectory_setpoint", 100); // pub in mc_pos, but generated in flight_task (e.g offboard) from pos_set_tri
+    add_topic("vehicle_attitude_setpoint", 100); //
+    add_topic("vehicle_local_position_setpoint", 100); // pub in mc_pos, and calculated from traj_set with PID
     add_topic("vehicle_attitude");
     add_topic("vehicle_local_position"); // pub in ekf
 
     add_topic("custom_airspeed_estimation",5);
-    add_topic("actuator_controls_0");
-    add_topic("sensor_combined");
-    add_topic_multi("distance_sensor");
+//    add_topic("actuator_controls_0");
+//    add_topic("sensor_combined");
+//    add_topic_multi("distance_sensor");
     //add_topic_multi("optical_flow");
-    add_topic("windspeed", 2);
+    add_topic("windspeed");
 //    add_topic("vehicle_visual_odometry_aligned");
-    add_topic("vehicle_visual_odometry");
+    add_topic("vehicle_visual_odometry", 20);
 //    add_topic("vehicle_uwb_odometry");
 
 //    add_topic("estimator_innovations");

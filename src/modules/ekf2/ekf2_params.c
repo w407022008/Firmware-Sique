@@ -1024,6 +1024,28 @@ PARAM_DEFINE_FLOAT(EKF2_TAU_VEL, 0.25f);
 PARAM_DEFINE_FLOAT(EKF2_TAU_POS, 0.25f);
 
 /**
+
+ * Velocity error integration limit
+ *
+ * @group EKF2
+ * @max 1.0
+ * @unit s
+ * @decimal 2
+ */
+PARAM_DEFINE_FLOAT(EKF2_V_INTG_MAX, 0.1f);
+
+/**
+ * Position error integration limit
+ *
+ * @group EKF2
+ * @min 0.1
+ * @max 1.0
+ * @unit s
+ * @decimal 2
+ */
+PARAM_DEFINE_FLOAT(EKF2_P_INTG_MAX, 0.1f);
+
+/**
  * 1-sigma IMU gyro switch-on bias
  *
  * @group EKF2

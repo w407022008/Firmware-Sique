@@ -475,6 +475,10 @@ private:
 		_param_ekf2_tau_vel,		///< time constant used by the output velocity complementary filter (sec)
 		(ParamExtFloat<px4::params::EKF2_TAU_POS>)
 		_param_ekf2_tau_pos,		///< time constant used by the output position complementary filter (sec)
+		(ParamExtFloat<px4::params::EKF2_V_INTG_MAX>)
+		_param_ekf2_vel_intg_max,		///< velcity error integration limit
+		(ParamExtFloat<px4::params::EKF2_P_INTG_MAX>)
+		_param_ekf2_pos_intg_max,		///< position error integration limit
 
 		// IMU switch on bias parameters
 		(ParamExtFloat<px4::params::EKF2_GBIAS_INIT>)
@@ -636,6 +640,8 @@ Ekf2::Ekf2(bool replay_mode):
 	_param_ekf2_ev_pos_z(_params->ev_pos_body(2)),
 	_param_ekf2_tau_vel(_params->vel_Tau),
 	_param_ekf2_tau_pos(_params->pos_Tau),
+	_param_ekf2_vel_intg_max(_params->vel_intg_max),
+	_param_ekf2_pos_intg_max(_params->pos_intg_max),
 	_param_ekf2_gbias_init(_params->switch_on_gyro_bias),
 	_param_ekf2_abias_init(_params->switch_on_accel_bias),
 	_param_ekf2_angerr_init(_params->initial_tilt_err),
