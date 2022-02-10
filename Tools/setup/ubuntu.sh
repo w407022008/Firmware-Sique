@@ -177,7 +177,7 @@ if [[ $INSTALL_SIM == "true" ]]; then
 	if [[ "${UBUNTU_RELEASE}" == "18.04" ]]; then
 		java_version=11
 	elif [[ "${UBUNTU_RELEASE}" == "20.04" ]]; then
-		java_version=14
+		java_version=13
 	else
 		java_version=14
 	fi
@@ -197,14 +197,14 @@ if [[ $INSTALL_SIM == "true" ]]; then
 	wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
 	sudo DEBIAN_FRONTEND=noninteractive apt-get -y --quiet --no-install-recommends install \
 		dmidecode \
-		gazebo9 \
+		gazebo11 \
 		gstreamer1.0-plugins-bad \
 		gstreamer1.0-plugins-base \
 		gstreamer1.0-plugins-good \
 		gstreamer1.0-plugins-ugly \
 		gstreamer1.0-libav \
 		libeigen3-dev \
-		libgazebo9-dev \
+		libgazebo11-dev \
 		libgstreamer-plugins-base1.0-dev \
 		libimage-exiftool-perl \
 		libopencv-dev \
