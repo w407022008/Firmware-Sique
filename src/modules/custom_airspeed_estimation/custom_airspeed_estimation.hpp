@@ -52,7 +52,7 @@
 #include <uORB/topics/windspeed.h>
 #include <uORB/topics/battery_status.h>
 #include <uORB/topics/estimator_sensor_bias.h>
-#include <uORB/topics/vehicle_air_data.h>
+#include <uORB/topics/sensor_baro.h>
 
 #include <uORB/topics/custom_airspeed_estimation.h>
 
@@ -103,7 +103,7 @@ private:
     uORB::Subscription 	_vehicle_attitude_sub{ORB_ID(vehicle_attitude)};
     uORB::Subscription _ev_odom_sub{ORB_ID(vehicle_visual_odometry)};
     uORB::Subscription 	_vehicle_local_sub{ORB_ID(vehicle_local_position)};
-	uORB::Subscription 	_vehicle_air_data_sub{ORB_ID(vehicle_air_data)};
+    uORB::Subscription 	_sensor_baro_sub{ORB_ID(sensor_baro)};
 	uORB::Subscription 	_windspeed_sub{ORB_ID(windspeed)};
 	uORB::Subscription 	_battery_sub{ORB_ID(battery_status)};
 	uORB::Subscription 	_cst_airspeed_est_sub{ORB_ID(custom_airspeed_estimation)};

@@ -140,10 +140,9 @@ void AirspeedEstimation::Run()
                 report.ground_truth_velocity_xyz[1] = last_data.ground_truth_velocity_xyz[1];
                 report.ground_truth_velocity_xyz[2] = last_data.ground_truth_velocity_xyz[2];
 
-		report.timestamp_sample_baro = last_data.timestamp_sample_baro;
-		report.baro_alt_meter = last_data.baro_alt_meter;
-		report.baro_pressure_pa = last_data.baro_pressure_pa;
-		report.baro_temp_celcius = last_data.baro_temp_celcius;
+                report.timestamp_sample_baro = last_data.timestamp_sample_baro;
+                report.pressure = last_data.pressure;
+                report.temperature = last_data.temperature;
 
 		report.timestamp_sample_wind = last_data.timestamp_sample_wind;
 		report.windspeed_x = last_data.windspeed_x;
@@ -212,13 +211,12 @@ void AirspeedEstimation::Run()
 //		}
 //	}
 
-	if (_vehicle_air_data_sub.updated()){
-		vehicle_air_data_s vehicle_air_data;
-		_vehicle_air_data_sub.update(&vehicle_air_data);
-		report.timestamp_sample_baro = vehicle_air_data.timestamp;
-		report.baro_alt_meter = vehicle_air_data.baro_alt_meter;
-		report.baro_pressure_pa = vehicle_air_data.baro_pressure_pa;
-		report.baro_temp_celcius = vehicle_air_data.baro_temp_celcius;
+        if (_sensor_baro_sub.updated()){
+                sensor_baro_s sensor_baro;
+                _sensor_baro_sub.update(&sensor_baro);
+                report.timestamp_sample_baro = sensor_baro.timestamp;
+                report.pressure = sensor_baro.pressure;
+                report.temperature = sensor_baro.temperature;
 	}
 
 	if (_windspeed_sub.updated()){

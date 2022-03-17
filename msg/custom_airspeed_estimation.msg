@@ -27,9 +27,8 @@ float32[3] ground_truth_velocity_xyz		# Velocity in Body frame, (metres/sec)
 float32[3] ground_truth_acceleration_ned	# Acceleration in NED earth-fixed frame, (metres/sec^2)
 float32[3] ground_truth_acceleration_xyz	# Acceleration in XYZ Body frame, (metres/sec^2)
 
-float32 baro_alt_meter					# Altitude above MSL calculated from temperature compensated baro sensor data using an ISA corrected for sea level pressure SENS_BARO_QNH.
-float32 baro_pressure_pa				# Absolute pressure in pascals
-float32 baro_temp_celcius				# Temperature in degrees celsius
+float32 pressure	                       # static pressure measurement in millibar
+float32 temperature	                       # static temperature measurement in deg C
 uint64 timestamp_sample_baro 			# timestamp of the data sample on which this message is based (microseconds)
 
 float32 windspeed_x						# Airspeed measurement along x-axis in body frame, (metres/sec)
