@@ -78,10 +78,10 @@ enum MS56XX_DEVICE_TYPES {
 
 /*
  * Maximum internal conversion time for OSR 1024 is 2.28 ms. We set an update
- * rate of 100Hz which is be very safe not to read the ADC before the
+ * rate of 200Hz which is be very safe not to read the ADC before the
  * conversion finished
  */
-#define MS5611_CONVERSION_INTERVAL	10000	/* microseconds */
+#define MS5611_CONVERSION_INTERVAL	5000	/* microseconds */
 #define MS5611_MEASUREMENT_RATIO	3	/* pressure measurements per temperature measurement */
 
 class MS5611 : public I2CSPIDriver<MS5611>
