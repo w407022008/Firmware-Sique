@@ -71,7 +71,7 @@ int sfm3000::collect()
         // Set address of the current sensor to collect data from.
         set_device_address(SFM_BASEADDR);
         // Transfer data from the bus.
-        if (PX4_OK != measure()) return 0;
+        //if (PX4_OK != measure()) return 0;
         int ret_val = transfer(nullptr, 0, &val[0], 2);
 
         if (ret_val != PX4_OK) {

@@ -62,7 +62,7 @@ int anemometer_test_main(int argc, char *argv[])
     /* limit the update rate to 1000 Hz */
     orb_set_interval(_anemometer_sub, 1);
 
-    const hrt_abstime now = hrt_absolute_time();
+    hrt_abstime now = hrt_absolute_time();
     int index_updated=0;
     while (hrt_absolute_time()-now<1000000) {
             bool updated;
@@ -84,7 +84,8 @@ int anemometer_test_main(int argc, char *argv[])
     }
     PX4_INFO("with PX4_INFO, total updates %d times in 1 second",index_updated);
     index_updated=0;
-    while (hrt_absolute_time()-now<2000000) {
+    now = hrt_absolute_time();
+    while (hrt_absolute_time()-now<1000000) {
             bool updated;
             orb_check(_anemometer_sub, &updated);
             if(updated){
