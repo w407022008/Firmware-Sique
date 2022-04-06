@@ -1027,8 +1027,8 @@ For testing it can be useful to fake a GPS signal (it will signal the system tha
 $ gps stop
 $ gps start -f
 
-Starting 2 GPS devices (the main GPS on /dev/ttyS3 and the secondary on /dev/ttyS4):
-$ gps start -d /dev/ttyS3 -e /dev/ttyS4
+Starting 2 GPS devices (the main GPS on /dev/ttyS0 and the secondary on /dev/ttyS4):
+$ gps start -d /dev/ttyS0 -e /dev/ttyS4
 
 Initiate warm restart of GPS device
 $ gps reset warm
@@ -1036,7 +1036,7 @@ $ gps reset warm
 
 	PRINT_MODULE_USAGE_NAME("gps", "driver");
 	PRINT_MODULE_USAGE_COMMAND("start");
-	PRINT_MODULE_USAGE_PARAM_STRING('d', "/dev/ttyS3", "<file:dev>", "GPS device", true);
+    PRINT_MODULE_USAGE_PARAM_STRING('d', "/dev/ttyS0", "<file:dev>", "GPS device", true);
 	PRINT_MODULE_USAGE_PARAM_INT('b', 0, 0, 3000000, "Baudrate (can also be p:<param_name>)", true);
 	PRINT_MODULE_USAGE_PARAM_STRING('e', nullptr, "<file:dev>", "Optional secondary GPS device", true);
 	PRINT_MODULE_USAGE_PARAM_INT('g', 0, 0, 3000000, "Baudrate (secondary GPS, can also be p:<param_name>)", true);
@@ -1110,7 +1110,7 @@ GPS *GPS::instantiate(int argc, char *argv[])
 
 GPS *GPS::instantiate(int argc, char *argv[], Instance instance)
 {
-	const char *device_name = "/dev/ttyS3";
+    const char *device_name = "/dev/ttyS0";
 	const char *device_name_secondary = nullptr;
 	int baudrate_main = 0;
 	int baudrate_secondary = 0;
