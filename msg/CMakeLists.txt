@@ -75,6 +75,7 @@ set(msg_files
 	input_rc.msg
 	iridiumsbd_status.msg
 	irlock_report.msg
+	jy901b_msg.msg
 	landing_gear.msg
 	landing_target_innovations.msg
 	landing_target_pose.msg

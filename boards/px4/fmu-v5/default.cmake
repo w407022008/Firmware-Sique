@@ -17,8 +17,8 @@ px4_add_board(
 		TEL4:/dev/ttyS3
 	DRIVERS
 		adc
-        anemometer # SFM 3000
-        arduino
+		anemometer # SFM 3000
+		arduino
 		barometer # all available barometer drivers
 		batt_smbus
 		camera_capture
@@ -36,6 +36,7 @@ px4_add_board(
 		imu/invensense/icm20602
 		imu/invensense/icm20689
 		#imu/mpu6000 # legacy icm20602/icm20689 driver
+		imu/jy901b
 		irlock
 		lights/blinkm
 		lights/rgbled
@@ -129,13 +130,14 @@ px4_add_board(
 		fixedwing_control # Tutorial code from https://px4.io/dev/example_fixedwing_control
 		hello
 		hwtest # Hardware test
+		jy901b_test
 		#matlab_csv_serial
 		px4flow_test
 		px4_mavlink_debug # Tutorial code from http://dev.px4.io/en/debug/debug_values.html
 		px4_simple_app # Tutorial code from http://dev.px4.io/en/apps/hello_sky.html
 		rover_steering_control # Rover example app
 		test
-                tfmini_s_test
+		tfmini_s_test
 		uuv_example_app
 		work_item
 		ychiot_test

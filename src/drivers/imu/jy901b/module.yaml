@@ -1,0 +1,7 @@
+module_name: JY901b IMU
+serial_config:
+    - command: jy901b start -d ${SERIAL_DEV}
+      port_config_param:
+        name: SENS_JY901B_CFG
+        group: Sensors
+

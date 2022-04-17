@@ -84,7 +84,7 @@ void AirspeedEstimation::Run()
 		updateParams();
 		parameters_update();
 	}*/
-	
+
 	custom_airspeed_estimation_s &report = _cst_airspeed_est_pub.get();
 
 	if (_cst_airspeed_est_sub.updated()){
@@ -111,6 +111,17 @@ void AirspeedEstimation::Run()
                         report.vehicle_angular_velocity_xyz[i] = last_data.vehicle_angular_velocity_xyz[i];
                         report.vehicle_acceleration_xyz[i] = last_data.vehicle_acceleration_xyz[i];
                 }
+
+                report.timestamp_sample_jy901b = last_data.timestamp_sample_jy901b;
+                for(int i=0;i<3;i++){
+                        report.jy901b_acc[i] = last_data.jy901b_acc[i];
+                        report.jy901b_gyro[i] = last_data.jy901b_gyro[i];
+                        report.jy901b_euler[i] = last_data.jy901b_euler[i];
+                        report.jy901b_q[i] = last_data.jy901b_q[i];
+                }
+		report.jy901b_q[3] = last_data.jy901b_q[3];
+		report.jy901b_baro = last_data.jy901b_baro;
+		report.jy901b_temp = last_data.jy901b_temp;
 
 //                report.timestamp_sample_bias = last_data.timestamp_sample_bias;
 //                for(int i=0;i<3;i++){
@@ -275,6 +286,21 @@ void AirspeedEstimation::Run()
                 }
         }
 
+        if (_jy901b_msg_sub.updated()){
+                jy901b_msg_s jy901b_msg;
+                _jy901b_msg_sub.update(&jy901b_msg);
+                report.timestamp_sample_jy901b = jy901b_msg.timestamp;
+                for(int i=0;i<3;i++){
+                        report.jy901b_acc[i] = jy901b_msg.acc[i];
+                        report.jy901b_gyro[i] = jy901b_msg.gyro[i];
+                        report.jy901b_euler[i] = jy901b_msg.euler[i];
+                        report.jy901b_q[i] = jy901b_msg.q[i];
+                }
+		report.jy901b_q[3] = jy901b_msg.q[3];
+		report.jy901b_baro = jy901b_msg.baro;
+		report.jy901b_temp = jy901b_msg.temp;
+        }
+
 	report.timestamp = hrt_absolute_time();
 	_cst_airspeed_est_pub.update();
 
@@ -336,7 +362,7 @@ Section describing the high-level implementation of this module.
 
 ### Examples
 CLI usage example:
-$ module start 
+$ module start
 
 )DESCR_STR");
 

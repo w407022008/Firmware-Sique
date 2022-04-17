@@ -10,6 +10,14 @@ uint64 timestamp_sample_imu			# timestamp of the data sample on which this messa
 float32[3] vehicle_acceleration_xyz		# Bias corrected acceleration (including gravity) in body axis (in m/s^2)
 float32[3] vehicle_angular_velocity_xyz		# Bias corrected angular velocity about X, Y, Z body axis (in rad/s)
 
+uint64 timestamp_sample_jy901b		# time since system start (microseconds)
+float32[3] jy901b_acc            # accel
+float32[3] jy901b_gyro            # gyro
+float32[3] jy901b_euler            # euler angle
+float32[4] jy901b_q            # quaternion
+int32 jy901b_baro            # pascal
+float32 jy901b_temp             # temp
+
 uint64 timestamp_sample_bias			# timestamp of the data sample on which this message is based (microseconds)
 float32[3] gyro_bias				# gyroscope in-run bias in body frame (rad/s)
 float32[3] accel_bias				# accelerometer in-run bias in body frame (m/s^2)
