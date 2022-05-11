@@ -1063,14 +1063,13 @@ void Ekf2::Run()
 				flowSample flow {};
 				// NOTE: the EKF uses the reverse sign convention to the flow sensor. EKF assumes positive LOS rate
 				// is produced by a RH rotation of the image about the sensor axis.
-                float delta_t = 1e-6f * (float)optical_flow.integration_timespan;
-                flow.flow_xy_rad(0) = -optical_flow.pixel_flow_x_integral * delta_t;
-                flow.flow_xy_rad(1) = -optical_flow.pixel_flow_y_integral * delta_t;
-                flow.gyro_xyz(0) = -optical_flow.gyro_x_rate_integral * delta_t;
-                flow.gyro_xyz(1) = -optical_flow.gyro_y_rate_integral * delta_t;
-                flow.gyro_xyz(2) = -optical_flow.gyro_z_rate_integral * delta_t;
-                flow.quality = optical_flow.quality;// qual:0~255 ==> std = EKF2_OF_N_MIN~EKF2_OF_N_MAX(rad/s) ==> var = range^2*(std)^2
-                flow.dt = delta_t;
+				flow.flow_xy_rad(0) = -optical_flow.pixel_flow_x_integral;
+				flow.flow_xy_rad(1) = -optical_flow.pixel_flow_y_integral;
+				flow.gyro_xyz(0) = -optical_flow.gyro_x_rate_integral;
+				flow.gyro_xyz(1) = -optical_flow.gyro_y_rate_integral;
+				flow.gyro_xyz(2) = -optical_flow.gyro_z_rate_integral;
+				flow.quality = optical_flow.quality;// qual:0~255 ==> std = EKF2_OF_N_MIN~EKF2_OF_N_MAX(rad/s) ==> var = range^2*(std)^2
+				flow.dt = 1e-6f * (float)optical_flow.integration_timespan;
 				flow.time_us = optical_flow.timestamp;
 
 				if (PX4_ISFINITE(optical_flow.pixel_flow_y_integral) &&

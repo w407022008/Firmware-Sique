@@ -54,7 +54,7 @@ public:
 
     void set_orientation(const uint8_t device_orientation);
 
-	void update(const hrt_abstime &timestamp_sample, const float measurement[3], const float confidence[3], const int orientation = windspeed_s::ROTATION_DOWNWARD_FACING, const float air_temperature_celsius = 0);
+	void update(const hrt_abstime &timestamp_sample, const float measurement[4], const float confidence[4], const int orientation = windspeed_s::ROTATION_DOWNWARD_FACING, const float air_temperature_celsius = 0);
 
 private:
 

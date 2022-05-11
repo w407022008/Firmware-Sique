@@ -7,13 +7,17 @@ float32 measurement_windspeed_x_m_s		# indicated windspeed_x in m/s
 
 float32 measurement_windspeed_y_m_s		# indicated windspeed_y in m/s
 
-float32 measurement_windspeed_z_m_s		# indicated windspeed_z in m/s
+float32 measurement_windspeed_z_m_s		# indicated windspeed_z1 in m/s
+
+float32 measurement_windspeed_zs_m_s		# indicated windspeed_z2 in m/s
 
 float32 filtered_windspeed_x_m_s		# true filtered windspeed_x in m/s
 
 float32 filtered_windspeed_y_m_s		# true filtered windspeed_y in m/s
 
-float32 filtered_windspeed_z_m_s		# true filtered windspeed_z in m/s
+float32 filtered_windspeed_z_m_s		# true filtered windspeed_z1 in m/s
+
+float32 filtered_windspeed_zs_m_s		# true filtered windspeed_z2 in m/s
 
 float32 air_temperature_celsius		# air temperature in degrees celsius, -1000 if unknown
 
@@ -21,7 +25,9 @@ float32 confidence_x			# confidence_x value from 0 to 1 for this sensor
 
 float32 confidence_y			# confidence_y value from 0 to 1 for this sensor
 
-float32 confidence_z			# confidence_z value from 0 to 1 for this sensor
+float32 confidence_z			# confidence_z1 value from 0 to 1 for this sensor
+
+float32 confidence_zs			# confidence_z2 value from 0 to 1 for this sensor
 
 
 uint8 orientation		# Direction the sensor faces from MAV_SENSOR_ORIENTATION enum
@@ -43,4 +49,4 @@ uint8 ROTATION_LEFT_FACING	= 6 # MAV_SENSOR_ROTATION_YAW_270
 uint8 ROTATION_UPWARD_FACING   = 24 # MAV_SENSOR_ROTATION_PITCH_90
 uint8 ROTATION_DOWNWARD_FACING = 25 # MAV_SENSOR_ROTATION_PITCH_270
 
-uint8 ROTATION_CUSTOM          = 100 # MAV_SENSOR_ROTATION_CUSTOM
+uint8 ROTATION_DOWNWARD_FACING_SECOND = 100 # ROTATION_DOWNWARD_FACING_SECOND

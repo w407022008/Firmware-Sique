@@ -159,6 +159,7 @@ void AirspeedEstimation::Run()
 		report.windspeed_x = last_data.windspeed_x;
 		report.windspeed_y = last_data.windspeed_y;
                 report.windspeed_z = last_data.windspeed_z;
+                report.windspeed_zs = last_data.windspeed_zs;
 
 		report.timestamp_sample_bat = last_data.timestamp_sample_bat;
 		report.battery_scale = last_data.battery_scale;
@@ -237,6 +238,7 @@ void AirspeedEstimation::Run()
 		report.windspeed_x = windspeed.measurement_windspeed_x_m_s;
 		report.windspeed_y = windspeed.measurement_windspeed_y_m_s;
                 report.windspeed_z = windspeed.measurement_windspeed_z_m_s;
+                report.windspeed_zs = windspeed.measurement_windspeed_zs_m_s;
 	}
 
 //        if (_vehicle_rate_sub.updated()){

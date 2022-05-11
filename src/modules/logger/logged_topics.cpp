@@ -231,7 +231,6 @@ void LoggedTopics::add_system_identification_topics()
     add_topic("vehicle_local_position_setpoint", 100); // pub in mc_pos, and calculated from traj_set with PID
     add_topic("vehicle_attitude");
     add_topic("vehicle_local_position"); // pub in ekf
-
     add_topic("custom_airspeed_estimation",5);
 //    add_topic("actuator_controls_0");
 //    add_topic("sensor_combined");
@@ -241,7 +240,6 @@ void LoggedTopics::add_system_identification_topics()
 //    add_topic("vehicle_visual_odometry_aligned");
     add_topic("vehicle_visual_odometry", 20);
 //    add_topic("vehicle_uwb_odometry");
-
 //    add_topic("estimator_innovations");
 //    add_topic("estimator_innovation_test_ratios");
 //    add_topic("estimator_innovation_variances");

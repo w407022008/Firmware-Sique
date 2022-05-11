@@ -72,10 +72,11 @@ int anemometer_test_main(int argc, char *argv[])
                 struct windspeed_s raw;
                 // copy sensors raw data into local buffer
                 orb_copy(ORB_ID(windspeed), _anemometer_sub, &raw);
-                PX4_INFO("anemometer measurement:\t (%8.4f, %8.4f, %8.4f)",
+                PX4_INFO("anemometer measurement:\t (%8.4f, %8.4f, %8.4f, %8.4f)",
 			(double)raw.measurement_windspeed_x_m_s, 
 			(double)raw.measurement_windspeed_y_m_s, 
-			(double)raw.measurement_windspeed_z_m_s);
+			(double)raw.measurement_windspeed_z_m_s, 
+			(double)raw.measurement_windspeed_zs_m_s);
 		index_updated++;
             } else{
                 PX4_INFO("not updated!");

@@ -69,17 +69,19 @@ void PX4Anemometer::set_orientation(const uint8_t device_orientation)
 	_anemometer_pub.get().orientation = device_orientation;
 }
 
-void PX4Anemometer::update(const hrt_abstime &timestamp_sample, const float measurement[3], const float quality[3], const int orientation, const float air_temperature_celsius)
+void PX4Anemometer::update(const hrt_abstime &timestamp_sample, const float measurement[4], const float quality[4], const int orientation, const float air_temperature_celsius)
 {
 	windspeed_s &report = _anemometer_pub.get();
 
 	report.timestamp = timestamp_sample;
 	report.measurement_windspeed_x_m_s = measurement[0];
 	report.measurement_windspeed_y_m_s = measurement[1];
-    report.measurement_windspeed_z_m_s = measurement[2];
+	report.measurement_windspeed_z_m_s = measurement[2];
+	report.measurement_windspeed_zs_m_s = measurement[3];
 	report.confidence_x = quality[0];
 	report.confidence_y = quality[1];
 	report.confidence_z = quality[2];
+	report.confidence_zs = quality[3];
 	report.orientation = orientation;
 	report.air_temperature_celsius =air_temperature_celsius;
 
